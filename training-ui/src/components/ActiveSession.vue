@@ -2,6 +2,7 @@
 import { reactive } from 'vue'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
+import { renderMarkdown } from '../composables/useMarkdown'
 
 defineProps({
   activeSession: Object,
@@ -86,7 +87,7 @@ function scoreTotal(form) {
             {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
           </button>
           <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
-            <pre class="question-desc-text">{{ contentStore[attempt.questionId].description }}</pre>
+            <div class="question-desc-text markdown-body" v-html="renderMarkdown(contentStore[attempt.questionId].description)"></div>
           </div>
         </div>
 

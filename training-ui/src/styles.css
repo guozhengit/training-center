@@ -385,13 +385,75 @@ h3 {
 }
 
 .question-desc-text {
-  margin: 0;
-  white-space: pre-wrap;
   word-break: break-word;
   font-family: "Noto Sans SC", "PingFang SC", sans-serif;
   font-size: 13.5px;
   line-height: 1.7;
   color: #334155;
+}
+
+.question-desc-text h1,
+.question-desc-text h2,
+.question-desc-text h3 {
+  margin: 1em 0 0.4em;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.question-desc-text h1 { font-size: 1.3em; }
+.question-desc-text h2 { font-size: 1.15em; }
+.question-desc-text h3 { font-size: 1.05em; }
+
+.question-desc-text p {
+  margin: 0.5em 0;
+}
+
+.question-desc-text ul,
+.question-desc-text ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.question-desc-text li {
+  margin: 0.25em 0;
+}
+
+.question-desc-text code {
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: #f1f5f9;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.9em;
+  color: #0f172a;
+}
+
+.question-desc-text pre {
+  margin: 0.75em 0;
+  padding: 14px;
+  border-radius: 8px;
+  background: #1e293b;
+  overflow-x: auto;
+}
+
+.question-desc-text pre code {
+  padding: 0;
+  background: none;
+  color: #e2e8f0;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.question-desc-text strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.question-desc-text blockquote {
+  margin: 0.75em 0;
+  padding: 0.5em 1em;
+  border-left: 3px solid #3b82f6;
+  background: #eff6ff;
+  border-radius: 0 6px 6px 0;
 }
 
 .code-editor-section {
