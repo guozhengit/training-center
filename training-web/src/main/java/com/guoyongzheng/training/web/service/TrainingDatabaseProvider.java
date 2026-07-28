@@ -1,6 +1,5 @@
 package com.guoyongzheng.training.web.service;
 
-import com.guoyongzheng.training.catalog.CatalogLoader;
 import com.guoyongzheng.training.domain.QuestionDescriptor;
 import com.guoyongzheng.training.persistence.TrainingDatabase;
 import org.springframework.stereotype.Component;
@@ -18,12 +17,13 @@ import java.util.List;
 @Component
 public class TrainingDatabaseProvider {
     private final WorkspaceLocator workspaceLocator;
-    private final CatalogLoader catalogLoader = new CatalogLoader();
+    private final CatalogCache catalogCache;
 
     private Path migratedDatabasePath;
 
-    public TrainingDatabaseProvider(WorkspaceLocator workspaceLocator) {
+    public TrainingDatabaseProvider(WorkspaceLocator workspaceLocator, CatalogCache catalogCache) {
         this.workspaceLocator = workspaceLocator;
+        this.catalogCache = catalogCache;
     }
 
     public Path workspace() {
@@ -40,7 +40,7 @@ public class TrainingDatabaseProvider {
             database.migrate();
             migratedDatabasePath = databasePath;
             try (Connection connection = database.openConnection()) {
-                syncQuestions(connection, catalogLoader.load(workspace).find(null));
+                syncQuestions(connection, catalogCache.get().find(null));
             } catch (SQLException exception) {
                 throw new IllegalStateException("Cannot sync question catalog to database", exception);
             }
@@ -49,7 +49,7 @@ public class TrainingDatabaseProvider {
     }
 
     public List<QuestionDescriptor> loadCatalog() {
-        return catalogLoader.load(workspaceLocator.locate()).find(null);
+        return catalogCache.get().find(null);
     }
 
     static void syncQuestions(Connection connection, List<QuestionDescriptor> questions) throws SQLException {

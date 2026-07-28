@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DashboardServiceTest {
+    private final WorkspaceLocator workspaceLocator =
+            new WorkspaceLocator(new TrainingProperties("", null, null, null));
     private final DashboardService service = new DashboardService(
-            new WorkspaceLocator(new TrainingProperties("", null, null, null)), new ObjectMapper());
+            workspaceLocator, new CatalogCache(workspaceLocator), new ObjectMapper());
 
     @Test
     void summarizesUnifiedTrainingCatalog() {

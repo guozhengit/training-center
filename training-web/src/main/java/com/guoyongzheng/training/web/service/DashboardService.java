@@ -2,7 +2,6 @@ package com.guoyongzheng.training.web.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guoyongzheng.training.catalog.CatalogLoader;
 import com.guoyongzheng.training.catalog.QuestionFilter;
 import com.guoyongzheng.training.catalog.TrainingCatalog;
 import com.guoyongzheng.training.domain.QuestionDescriptor;
@@ -26,13 +25,13 @@ public class DashboardService {
     private static final int MAX_QUESTION_LIMIT = 200;
 
     private final WorkspaceLocator workspaceLocator;
-    private final CatalogLoader catalogLoader;
+    private final CatalogCache catalogCache;
     private final ObjectMapper objectMapper;
 
-    public DashboardService(WorkspaceLocator workspaceLocator, ObjectMapper objectMapper) {
+    public DashboardService(WorkspaceLocator workspaceLocator, CatalogCache catalogCache, ObjectMapper objectMapper) {
         this.workspaceLocator = workspaceLocator;
+        this.catalogCache = catalogCache;
         this.objectMapper = objectMapper;
-        this.catalogLoader = new CatalogLoader();
     }
 
     public HealthResponse health() {
@@ -49,7 +48,7 @@ public class DashboardService {
 
     public CatalogSummaryResponse catalogSummary() {
         Path workspace = workspaceLocator.locate();
-        List<QuestionDescriptor> questions = loadCatalog(workspace).find(null);
+        List<QuestionDescriptor> questions = catalogCache.get().find(null);
         return new CatalogSummaryResponse(
                 workspace.toString(),
                 questions.size(),
@@ -63,7 +62,7 @@ public class DashboardService {
         Path workspace = workspaceLocator.locate();
         Track track = parseTrack(trackValue);
         int limit = Math.max(1, Math.min(requestedLimit, MAX_QUESTION_LIMIT));
-        List<QuestionCard> cards = loadCatalog(workspace)
+        List<QuestionCard> cards = catalogCache.get()
                 .find(new QuestionFilter(track, null, null, null, null))
                 .stream()
                 .limit(limit)
@@ -110,7 +109,7 @@ public class DashboardService {
 
     public QuestionContentResponse questionContent(String questionId) {
         Path workspace = workspaceLocator.locate();
-        TrainingCatalog catalog = loadCatalog(workspace);
+        TrainingCatalog catalog = catalogCache.get();
         List<QuestionDescriptor> all = catalog.find(null);
         QuestionDescriptor question = all.stream()
                 .filter(q -> q.id().equals(questionId))
@@ -140,10 +139,6 @@ public class DashboardService {
         } catch (IOException exception) {
             return "";
         }
-    }
-
-    private TrainingCatalog loadCatalog(Path workspace) {
-        return catalogLoader.load(workspace);
     }
 
     private static Path matrixReportPath(Path workspace) {
