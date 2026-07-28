@@ -1,0 +1,90 @@
+export function useExport(dashboard, historyComposable, training) {
+  function csvCell(value) {
+    const text = value == null ? '' : String(value)
+    return `"${text.replaceAll('"', '""')}"`
+  }
+
+  function markdownCell(value) {
+    return ` ${String(value).replaceAll('|', '\\|')} `
+  }
+
+  function downloadText(filename, text, type) {
+    const blob = new Blob([text], { type: `${type};charset=utf-8` })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = filename
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
+  function exportHistoryCsv() {
+    const header = ['题号', '类型', '标题', '状态', '结果', '开始时间', '提交时间', '用时秒', '最近判题', '通过数', '失败数', '沙箱']
+    const rows = historyComposable.filteredHistoryRows.value.map((entry) => {
+      const a = entry.attempt
+      const j = historyComposable.latestJudgement(entry)
+      return [
+        a.questionId, a.track, a.title, a.status, a.verdict,
+        training.formatDate(a.startedAt), training.formatDate(a.submittedAt),
+        a.durationSeconds ?? '', j?.status ?? '', j?.passedCount ?? '', j?.failedCount ?? '', a.sandboxPath ?? ''
+      ]
+    })
+    downloadText('training-history.csv', [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\n'), 'text/csv')
+  }
+
+  function exportHistoryMarkdown() {
+    const lines = [
+      '# 面试训练复盘历史', '',
+      `导出时间：${training.formatDate(new Date().toISOString())}`,
+      `数据库：${dashboard.history.value?.databasePath ?? '-'}`, '',
+      '| 题号 | 类型 | 标题 | 状态 | 结果 | 最近判题 | 通过/失败 | 沙箱 |',
+      '| --- | --- | --- | --- | --- | --- | --- | --- |'
+    ]
+    for (const entry of historyComposable.filteredHistoryRows.value) {
+      const a = entry.attempt
+      const j = historyComposable.latestJudgement(entry)
+      lines.push([
+        a.questionId, a.track, a.title, a.status, a.verdict ?? '-',
+        j?.status ?? '-', j ? `${j.passedCount ?? '-'}/${j.failedCount ?? '-'}` : '-', a.sandboxPath ?? '-'
+      ].map(markdownCell).join('|'))
+    }
+    downloadText('training-history.md', `${lines.join('\n')}\n`, 'text/markdown')
+  }
+
+  async function copyText(text, label) {
+    if (!text) return
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        fallbackCopyText(text)
+      }
+      training.trainingMessage.value = `${label}已复制`
+    } catch {
+      fallbackCopyText(text)
+      training.trainingMessage.value = `${label}已复制`
+    }
+  }
+
+  function fallbackCopyText(text) {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+  }
+
+  function copySandboxPath(path) {
+    return copyText(path, '沙箱路径')
+  }
+
+  function copyCdCommand(path) {
+    return copyText(`cd /d "${path}"`, '切换目录命令')
+  }
+
+  return { exportHistoryCsv, exportHistoryMarkdown, copySandboxPath, copyCdCommand }
+}

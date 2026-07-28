@@ -1,0 +1,94 @@
+{
+    "version":  1,
+    "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+    "cases":  [
+                  {
+                      "id":  "P001",
+                      "project_name":  "AnySign SaaS",
+                      "project_nature":  "production",
+                      "title":  "四、核心案例一：AnySign SaaS 合同全生命周期",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 四、核心案例一：AnySign SaaS 合同全生命周期",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 9. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P002",
+                      "project_name":  "AnySign SaaS",
+                      "project_nature":  "production",
+                      "title":  "五、核心案例二：AnySign SaaS 额度一致性",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 五、核心案例二：AnySign SaaS 额度一致性",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 9. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P003",
+                      "project_name":  "5G-sui-e-qian",
+                      "project_nature":  "production",
+                      "title":  "六、核心案例三：5G 随 e 签定时发起",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 六、核心案例三：5G 随 e 签定时发起",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 11. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P004",
+                      "project_name":  "hybrid-cloud",
+                      "project_nature":  "production",
+                      "title":  "七、核心案例四：混合云 OpenAPI 审计 Outbox",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 七、核心案例四：混合云 OpenAPI 审计 Outbox",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 10. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P005",
+                      "project_name":  "hybrid-cloud",
+                      "project_nature":  "production",
+                      "title":  "八、核心案例五：混合云合同状态机影子验证",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 八、核心案例五：混合云合同状态机影子验证",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 9. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P006",
+                      "project_name":  "ZKT",
+                      "project_nature":  "historical-production",
+                      "title":  "九、核心案例六：直客通奖励规则与提现",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 九、核心案例六：直客通奖励规则与提现",
+                      "evidence_entry":  "### 3. 可验证依据",
+                      "fact_boundary":  "### 9. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P007",
+                      "project_name":  "jxindependent",
+                      "project_nature":  "historical-production",
+                      "title":  "十、补充项目一：`jxindependent` 进项独立部署",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 十、补充项目一：`jxindependent` 进项独立部署",
+                      "evidence_entry":  "### 2. 证据、正常流与故障",
+                      "fact_boundary":  "### 5. 不支持声称警示",
+                      "recommended_seconds":  120
+                  },
+                  {
+                      "id":  "P008",
+                      "project_name":  "zkt-hotel-cloud",
+                      "project_nature":  "personal-practice",
+                      "title":  "十一、补充项目二：`zkt-hotel-cloud` AI 辅助个人练习",
+                      "source_path":  "output/interview/01-项目答辩型-详细版-郭永争专属面试资料.md",
+                      "section_heading":  "## 十一、补充项目二：`zkt-hotel-cloud` AI 辅助个人练习",
+                      "evidence_entry":  "### 2. 系统边界、证据与正常流",
+                      "fact_boundary":  "### 5. 不支持声称警示",
+                      "recommended_seconds":  120
+                  }
+              ]
+}

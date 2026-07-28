@@ -1,0 +1,842 @@
+[
+  {
+    "question_id": "B001",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B001TwoSum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B001TwoSum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B001TwoSumTest"
+  },
+  {
+    "question_id": "B002",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B002ValidAnagram.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B002ValidAnagram.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B002ValidAnagramTest"
+  },
+  {
+    "question_id": "B003",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B003GroupAnagrams.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B003GroupAnagrams.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B003GroupAnagramsTest"
+  },
+  {
+    "question_id": "B004",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B004LongestConsecutive.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B004LongestConsecutive.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B004LongestConsecutiveTest"
+  },
+  {
+    "question_id": "B005",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B005MergeIntervals.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B005MergeIntervals.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B005MergeIntervalsTest"
+  },
+  {
+    "question_id": "B006",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B006RotateArray.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B006RotateArray.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B006RotateArrayTest"
+  },
+  {
+    "question_id": "B007",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B007ProductExceptSelf.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B007ProductExceptSelf.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B007ProductExceptSelfTest"
+  },
+  {
+    "question_id": "B008",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B008FirstUniqueCodePoint.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B008FirstUniqueCodePoint.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B008FirstUniqueCodePointTest"
+  },
+  {
+    "question_id": "B009",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B009ValidPalindrome.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B009ValidPalindrome.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B009ValidPalindromeTest"
+  },
+  {
+    "question_id": "B010",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B010LongestCommonPrefix.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B010LongestCommonPrefix.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B010LongestCommonPrefixTest"
+  },
+  {
+    "question_id": "B011",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B011RemoveDuplicates.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B011RemoveDuplicates.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B011RemoveDuplicatesTest"
+  },
+  {
+    "question_id": "B012",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B012ContainerWithMostWater.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B012ContainerWithMostWater.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B012ContainerWithMostWaterTest"
+  },
+  {
+    "question_id": "B013",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B013ThreeSum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B013ThreeSum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B013ThreeSumTest"
+  },
+  {
+    "question_id": "B014",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B014LongestSubstringWithoutRepeating.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B014LongestSubstringWithoutRepeating.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B014LongestSubstringWithoutRepeatingTest"
+  },
+  {
+    "question_id": "B015",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B015MinimumSizeSubarraySum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B015MinimumSizeSubarraySum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B015MinimumSizeSubarraySumTest"
+  },
+  {
+    "question_id": "B016",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B016PermutationInString.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B016PermutationInString.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B016PermutationInStringTest"
+  },
+  {
+    "question_id": "B017",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B017ValidParentheses.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B017ValidParentheses.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B017ValidParenthesesTest"
+  },
+  {
+    "question_id": "B018",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B018MinStack.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B018MinStack.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B018MinStackTest"
+  },
+  {
+    "question_id": "B019",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B019TwoStackQueue.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B019TwoStackQueue.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B019TwoStackQueueTest"
+  },
+  {
+    "question_id": "B020",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B020BasicCalculator.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B020BasicCalculator.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B020BasicCalculatorTest"
+  },
+  {
+    "question_id": "B021",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B021ReverseLinkedList.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B021ReverseLinkedList.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B021ReverseLinkedListTest"
+  },
+  {
+    "question_id": "B022",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B022MergeTwoSortedLists.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B022MergeTwoSortedLists.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B022MergeTwoSortedListsTest"
+  },
+  {
+    "question_id": "B023",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B023LinkedListCycleEntry.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B023LinkedListCycleEntry.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B023LinkedListCycleEntryTest"
+  },
+  {
+    "question_id": "B024",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B024IntersectionOfTwoLinkedLists.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B024IntersectionOfTwoLinkedLists.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B024IntersectionOfTwoLinkedListsTest"
+  },
+  {
+    "question_id": "B025",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B025RemoveNthNodeFromEnd.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B025RemoveNthNodeFromEnd.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B025RemoveNthNodeFromEndTest"
+  },
+  {
+    "question_id": "B026",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B026BinarySearch.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B026BinarySearch.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B026BinarySearchTest"
+  },
+  {
+    "question_id": "B027",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B027SearchInsertPosition.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B027SearchInsertPosition.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B027SearchInsertPositionTest"
+  },
+  {
+    "question_id": "B028",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B028FindFirstAndLastPosition.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B028FindFirstAndLastPosition.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B028FindFirstAndLastPositionTest"
+  },
+  {
+    "question_id": "B029",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B029MergeSortedArray.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B029MergeSortedArray.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B029MergeSortedArrayTest"
+  },
+  {
+    "question_id": "B030",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B030QuickSort.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B030QuickSort.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B030QuickSortTest"
+  },
+  {
+    "question_id": "B031",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B031MaximumDepth.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B031MaximumDepth.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B031MaximumDepthTest"
+  },
+  {
+    "question_id": "B032",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B032LevelOrderTraversal.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B032LevelOrderTraversal.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B032LevelOrderTraversalTest"
+  },
+  {
+    "question_id": "B033",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B033InvertBinaryTree.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B033InvertBinaryTree.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B033InvertBinaryTreeTest"
+  },
+  {
+    "question_id": "B034",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B034SymmetricTree.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B034SymmetricTree.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B034SymmetricTreeTest"
+  },
+  {
+    "question_id": "B035",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B035PathSum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B035PathSum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B035PathSumTest"
+  },
+  {
+    "question_id": "B036",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B036LowestCommonAncestorBst.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B036LowestCommonAncestorBst.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B036LowestCommonAncestorBstTest"
+  },
+  {
+    "question_id": "B037",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B037BestTimeToBuyAndSellStock.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B037BestTimeToBuyAndSellStock.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B037BestTimeToBuyAndSellStockTest"
+  },
+  {
+    "question_id": "B038",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B038JumpGame.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B038JumpGame.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B038JumpGameTest"
+  },
+  {
+    "question_id": "B039",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B039ClimbingStairs.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B039ClimbingStairs.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B039ClimbingStairsTest"
+  },
+  {
+    "question_id": "B040",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B040MaximumSubarray.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/basic/B040MaximumSubarray.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "B040MaximumSubarrayTest"
+  },
+  {
+    "question_id": "A001",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A001KthLargest.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A001KthLargest.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A001KthLargestTest"
+  },
+  {
+    "question_id": "A002",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A002TopKFrequent.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A002TopKFrequent.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A002TopKFrequentTest"
+  },
+  {
+    "question_id": "A003",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A003MergeKSortedLists.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A003MergeKSortedLists.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A003MergeKSortedListsTest"
+  },
+  {
+    "question_id": "A004",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A004MedianFinder.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A004MedianFinder.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A004MedianFinderTest"
+  },
+  {
+    "question_id": "A005",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A005StreamingTopK.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A005StreamingTopK.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A005StreamingTopKTest"
+  },
+  {
+    "question_id": "A006",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A006DailyTemperatures.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A006DailyTemperatures.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A006DailyTemperaturesTest"
+  },
+  {
+    "question_id": "A007",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A007LargestRectangleHistogram.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A007LargestRectangleHistogram.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A007LargestRectangleHistogramTest"
+  },
+  {
+    "question_id": "A008",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A008SlidingWindowMaximum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A008SlidingWindowMaximum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A008SlidingWindowMaximumTest"
+  },
+  {
+    "question_id": "A009",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A009ShortestSubarrayAtLeastK.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A009ShortestSubarrayAtLeastK.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A009ShortestSubarrayAtLeastKTest"
+  },
+  {
+    "question_id": "A010",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A010Permutations.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A010Permutations.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A010PermutationsTest"
+  },
+  {
+    "question_id": "A011",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A011SubsetsWithDuplicates.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A011SubsetsWithDuplicates.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A011SubsetsWithDuplicatesTest"
+  },
+  {
+    "question_id": "A012",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A012CombinationSum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A012CombinationSum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A012CombinationSumTest"
+  },
+  {
+    "question_id": "A013",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A013NQueens.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A013NQueens.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A013NQueensTest"
+  },
+  {
+    "question_id": "A014",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A014WordSearch.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A014WordSearch.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A014WordSearchTest"
+  },
+  {
+    "question_id": "A015",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A015Trie.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A015Trie.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A015TrieTest"
+  },
+  {
+    "question_id": "A016",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A016WordDictionary.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A016WordDictionary.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A016WordDictionaryTest"
+  },
+  {
+    "question_id": "A017",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A017ConnectedComponents.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A017ConnectedComponents.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A017ConnectedComponentsTest"
+  },
+  {
+    "question_id": "A018",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A018EquationSatisfiability.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A018EquationSatisfiability.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A018EquationSatisfiabilityTest"
+  },
+  {
+    "question_id": "A019",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A019NumberOfIslands.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A019NumberOfIslands.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A019NumberOfIslandsTest"
+  },
+  {
+    "question_id": "A020",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A020CourseSchedule.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A020CourseSchedule.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A020CourseScheduleTest"
+  },
+  {
+    "question_id": "A021",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A021CourseOrder.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A021CourseOrder.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A021CourseOrderTest"
+  },
+  {
+    "question_id": "A022",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A022NetworkDelayTime.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A022NetworkDelayTime.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A022NetworkDelayTimeTest"
+  },
+  {
+    "question_id": "A023",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A023CheapestFlightWithinKStops.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A023CheapestFlightWithinKStops.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A023CheapestFlightWithinKStopsTest"
+  },
+  {
+    "question_id": "A024",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A024GridAStar.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A024GridAStar.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A024GridAStarTest"
+  },
+  {
+    "question_id": "A025",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A025ServiceDependencyCycle.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A025ServiceDependencyCycle.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A025ServiceDependencyCycleTest"
+  },
+  {
+    "question_id": "A026",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A026LongestIncreasingSubsequence.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A026LongestIncreasingSubsequence.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A026LongestIncreasingSubsequenceTest"
+  },
+  {
+    "question_id": "A027",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A027CoinChange.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A027CoinChange.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A027CoinChangeTest"
+  },
+  {
+    "question_id": "A028",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A028WordBreak.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A028WordBreak.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A028WordBreakTest"
+  },
+  {
+    "question_id": "A029",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A029LongestCommonSubsequence.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A029LongestCommonSubsequence.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A029LongestCommonSubsequenceTest"
+  },
+  {
+    "question_id": "A030",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A030EditDistance.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A030EditDistance.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A030EditDistanceTest"
+  },
+  {
+    "question_id": "A031",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A031HouseRobberII.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A031HouseRobberII.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A031HouseRobberIITest"
+  },
+  {
+    "question_id": "A032",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A032StockWithCooldown.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A032StockWithCooldown.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A032StockWithCooldownTest"
+  },
+  {
+    "question_id": "A033",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/A033PartitionEqualSubsetSum.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/A033PartitionEqualSubsetSum.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A033PartitionEqualSubsetSumTest"
+  },
+  {
+    "question_id": "A034",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A034ContractTransitionValidator.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A034ContractTransitionValidator.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A034ContractTransitionValidatorTest"
+  },
+  {
+    "question_id": "A035",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A035TaskScheduler.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A035TaskScheduler.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A035TaskSchedulerTest"
+  },
+  {
+    "question_id": "A036",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A036RewardRuleMatcher.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A036RewardRuleMatcher.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A036RewardRuleMatcherTest"
+  },
+  {
+    "question_id": "A037",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A037AuditTopK.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A037AuditTopK.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A037AuditTopKTest"
+  },
+  {
+    "question_id": "A038",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A038IdempotencyWindow.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A038IdempotencyWindow.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A038IdempotencyWindowTest"
+  },
+  {
+    "question_id": "A039",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A039LruCache.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A039LruCache.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A039LruCacheTest"
+  },
+  {
+    "question_id": "A040",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A040RetryScheduler.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/advanced/engineering/A040RetryScheduler.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "A040RetrySchedulerTest"
+  },
+  {
+    "question_id": "I001",
+    "starter_path": "training-center/starters/python/src/ai_exam/i001_jsonl_cleaning.py",
+    "sandbox_source_path": "python/src/ai_exam/i001_jsonl_cleaning.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i001_jsonl_cleaning.py"
+  },
+  {
+    "question_id": "I002",
+    "starter_path": "training-center/starters/python/src/ai_exam/i002_batching.py",
+    "sandbox_source_path": "python/src/ai_exam/i002_batching.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i002_batching.py"
+  },
+  {
+    "question_id": "I003",
+    "starter_path": "training-center/starters/python/src/ai_exam/i003_missing_stats.py",
+    "sandbox_source_path": "python/src/ai_exam/i003_missing_stats.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i003_missing_stats.py"
+  },
+  {
+    "question_id": "I004",
+    "starter_path": "training-center/starters/python/src/ai_exam/i004_dataset_split.py",
+    "sandbox_source_path": "python/src/ai_exam/i004_dataset_split.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i004_dataset_split.py"
+  },
+  {
+    "question_id": "I005",
+    "starter_path": "training-center/starters/python/src/ai_exam/i005_l2_norm.py",
+    "sandbox_source_path": "python/src/ai_exam/i005_l2_norm.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i005_l2_norm.py"
+  },
+  {
+    "question_id": "I006",
+    "starter_path": "training-center/starters/python/src/ai_exam/i006_cosine_similarity.py",
+    "sandbox_source_path": "python/src/ai_exam/i006_cosine_similarity.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i006_cosine_similarity.py"
+  },
+  {
+    "question_id": "I007",
+    "starter_path": "training-center/starters/python/src/ai_exam/i007_similarity_top_k.py",
+    "sandbox_source_path": "python/src/ai_exam/i007_similarity_top_k.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i007_similarity_top_k.py"
+  },
+  {
+    "question_id": "I008",
+    "starter_path": "training-center/starters/python/src/ai_exam/i008_normalize_rows.py",
+    "sandbox_source_path": "python/src/ai_exam/i008_normalize_rows.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i008_normalize_rows.py"
+  },
+  {
+    "question_id": "I009",
+    "starter_path": "training-center/starters/python/src/ai_exam/i009_stable_top_k.py",
+    "sandbox_source_path": "python/src/ai_exam/i009_stable_top_k.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i009_stable_top_k.py"
+  },
+  {
+    "question_id": "I010",
+    "starter_path": "training-center/starters/python/src/ai_exam/i010_vector_store.py",
+    "sandbox_source_path": "python/src/ai_exam/i010_vector_store.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i010_vector_store.py"
+  },
+  {
+    "question_id": "I011",
+    "starter_path": "training-center/starters/python/src/ai_exam/i011_fixed_chunks.py",
+    "sandbox_source_path": "python/src/ai_exam/i011_fixed_chunks.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i011_fixed_chunks.py"
+  },
+  {
+    "question_id": "I012",
+    "starter_path": "training-center/starters/python/src/ai_exam/i012_recursive_chunks.py",
+    "sandbox_source_path": "python/src/ai_exam/i012_recursive_chunks.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i012_recursive_chunks.py"
+  },
+  {
+    "question_id": "I013",
+    "starter_path": "training-center/starters/python/src/ai_exam/i013_dedupe_chunks.py",
+    "sandbox_source_path": "python/src/ai_exam/i013_dedupe_chunks.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i013_dedupe_chunks.py"
+  },
+  {
+    "question_id": "I014",
+    "starter_path": "training-center/starters/python/src/ai_exam/i014_pack_context.py",
+    "sandbox_source_path": "python/src/ai_exam/i014_pack_context.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i014_pack_context.py"
+  },
+  {
+    "question_id": "I015",
+    "starter_path": "training-center/starters/python/src/ai_exam/i015_prompt_rendering.py",
+    "sandbox_source_path": "python/src/ai_exam/i015_prompt_rendering.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i015_prompt_rendering.py"
+  },
+  {
+    "question_id": "I016",
+    "starter_path": "training-center/starters/python/src/ai_exam/i016_parse_answer.py",
+    "sandbox_source_path": "python/src/ai_exam/i016_parse_answer.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i016_parse_answer.py"
+  },
+  {
+    "question_id": "I017",
+    "starter_path": "training-center/starters/python/src/ai_exam/i017_retry.py",
+    "sandbox_source_path": "python/src/ai_exam/i017_retry.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i017_retry.py"
+  },
+  {
+    "question_id": "I018",
+    "starter_path": "training-center/starters/python/src/ai_exam/i018_stream_assembly.py",
+    "sandbox_source_path": "python/src/ai_exam/i018_stream_assembly.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i018_stream_assembly.py"
+  },
+  {
+    "question_id": "I019",
+    "starter_path": "training-center/starters/python/src/ai_exam/i019_async_map.py",
+    "sandbox_source_path": "python/src/ai_exam/i019_async_map.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i019_async_map.py"
+  },
+  {
+    "question_id": "I020",
+    "starter_path": "training-center/starters/python/src/ai_exam/i020_usage_aggregation.py",
+    "sandbox_source_path": "python/src/ai_exam/i020_usage_aggregation.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i020_usage_aggregation.py"
+  },
+  {
+    "question_id": "I021",
+    "starter_path": "training-center/starters/python/src/ai_exam/i021_rag_pipeline.py",
+    "sandbox_source_path": "python/src/ai_exam/i021_rag_pipeline.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i021_rag_pipeline.py"
+  },
+  {
+    "question_id": "I022",
+    "starter_path": "training-center/starters/python/src/ai_exam/i022_bm25.py",
+    "sandbox_source_path": "python/src/ai_exam/i022_bm25.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i022_bm25.py"
+  },
+  {
+    "question_id": "I023",
+    "starter_path": "training-center/starters/python/src/ai_exam/i023_rrf.py",
+    "sandbox_source_path": "python/src/ai_exam/i023_rrf.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i023_rrf.py"
+  },
+  {
+    "question_id": "I024",
+    "starter_path": "training-center/starters/python/src/ai_exam/i024_filtered_vector_search.py",
+    "sandbox_source_path": "python/src/ai_exam/i024_filtered_vector_search.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i024_filtered_vector_search.py"
+  },
+  {
+    "question_id": "I025",
+    "starter_path": "training-center/starters/python/src/ai_exam/i025_rerank.py",
+    "sandbox_source_path": "python/src/ai_exam/i025_rerank.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i025_rerank.py"
+  },
+  {
+    "question_id": "I026",
+    "starter_path": "training-center/starters/python/src/ai_exam/i026_tool_schema.py",
+    "sandbox_source_path": "python/src/ai_exam/i026_tool_schema.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i026_tool_schema.py"
+  },
+  {
+    "question_id": "I027",
+    "starter_path": "training-center/starters/python/src/ai_exam/i027_tool_registry.py",
+    "sandbox_source_path": "python/src/ai_exam/i027_tool_registry.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i027_tool_registry.py"
+  },
+  {
+    "question_id": "I028",
+    "starter_path": "training-center/starters/python/src/ai_exam/i028_agent_runner.py",
+    "sandbox_source_path": "python/src/ai_exam/i028_agent_runner.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i028_agent_runner.py"
+  },
+  {
+    "question_id": "I029",
+    "starter_path": "training-center/starters/python/src/ai_exam/i029_loop_guard.py",
+    "sandbox_source_path": "python/src/ai_exam/i029_loop_guard.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i029_loop_guard.py"
+  },
+  {
+    "question_id": "I030",
+    "starter_path": "training-center/starters/python/src/ai_exam/i030_parallel_tools.py",
+    "sandbox_source_path": "python/src/ai_exam/i030_parallel_tools.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i030_parallel_tools.py"
+  },
+  {
+    "question_id": "I031",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/ai/streaming/SseSessionService.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/ai/streaming/SseSessionService.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "I031SseSessionServiceTest"
+  },
+  {
+    "question_id": "I032",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/ai/streaming/CancellationRegistry.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/ai/streaming/CancellationRegistry.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "I032CancellationRegistryTest"
+  },
+  {
+    "question_id": "I033",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/ai/ratelimit/TenantTokenBucket.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/ai/ratelimit/TenantTokenBucket.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "I033TenantTokenBucketTest"
+  },
+  {
+    "question_id": "I034",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/ai/retry/RetryExecutor.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/ai/retry/RetryExecutor.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "I034RetryExecutorTest"
+  },
+  {
+    "question_id": "I035",
+    "starter_path": "training-center/starters/python/src/ai_exam/i035_semantic_cache.py",
+    "sandbox_source_path": "python/src/ai_exam/i035_semantic_cache.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i035_semantic_cache.py"
+  },
+  {
+    "question_id": "I036",
+    "starter_path": "training-center/starters/python/src/ai_exam/i036_trim_messages.py",
+    "sandbox_source_path": "python/src/ai_exam/i036_trim_messages.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i036_trim_messages.py"
+  },
+  {
+    "question_id": "I037",
+    "starter_path": "training-center/starters/python/src/ai_exam/i037_retrieval_metrics.py",
+    "sandbox_source_path": "python/src/ai_exam/i037_retrieval_metrics.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i037_retrieval_metrics.py"
+  },
+  {
+    "question_id": "I038",
+    "starter_path": "training-center/starters/python/src/ai_exam/i038_citation_check.py",
+    "sandbox_source_path": "python/src/ai_exam/i038_citation_check.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i038_citation_check.py"
+  },
+  {
+    "question_id": "I039",
+    "starter_path": "training-center/starters/python/src/ai_exam/i039_prompt_injection.py",
+    "sandbox_source_path": "python/src/ai_exam/i039_prompt_injection.py",
+    "runner_kind": "PYTEST",
+    "test_selector": "python/tests/test_i039_prompt_injection.py"
+  },
+  {
+    "question_id": "I040",
+    "starter_path": "training-center/starters/java/src/main/java/com/guoyongzheng/exam/ai/tenant/I040TenantKnowledgeService.java",
+    "sandbox_source_path": "java/src/main/java/com/guoyongzheng/exam/ai/tenant/I040TenantKnowledgeService.java",
+    "runner_kind": "MAVEN",
+    "test_selector": "I040TenantKnowledgeServiceTest"
+  }
+]

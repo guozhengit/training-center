@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+training:
+  workspace: ${TRAINING_WORKSPACE:}
+  jdk-home: ${TRAINING_JDK_HOME:D:/jdk/jdk-17.0.12}
+  maven-home: ${TRAINING_MAVEN_HOME:D:/Program Files (x86)/apache-maven-3.9.9}
+  python-executable: ${TRAINING_PYTHON:python}

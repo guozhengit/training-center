@@ -1,0 +1,32 @@
+# Build artifacts
+**/target/
+**/dist/
+**/node_modules/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+.gitignore
+
+# Runtime (mutable, mounted as volume)
+output/training-runtime/
+
+# Docs & misc
+*.md
+!training-center/README.md
+deploy/
+
+# Logs
+*.log

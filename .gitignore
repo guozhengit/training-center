@@ -1,0 +1,33 @@
+target/
+**/target/
+
+node_modules/
+**/node_modules/
+
+dist/
+**/dist/
+
+.idea/
+*.iml
+
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+*.env.local
+
+# Database (runtime, not source)
+*.db
+*.db-wal
+*.db-shm
+
+# VS Code
+.vscode/
+.settings/
+.classpath
+.project

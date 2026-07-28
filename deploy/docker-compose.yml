@@ -1,0 +1,39 @@
+services:
+  training-center:
+    build:
+      context: ..
+      dockerfile: training-center/Dockerfile
+    container_name: training-center
+    ports:
+      - "8080:8080"
+    environment:
+      - TRAINING_WORKSPACE=/workspace
+      - TRAINING_JDK_HOME=/opt/java/openjdk
+      - TRAINING_MAVEN_HOME=/opt/maven
+      - TRAINING_PYTHON=python3
+      - SERVER_PORT=8080
+      # JVM tuning for containers
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport
+    volumes:
+      # Mutable runtime data (database, sandboxes, exports, logs)
+      - training-runtime:/workspace/output/training-runtime
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    # Resource limits (adjust to your server)
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "2.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+
+volumes:
+  training-runtime:
+    driver: local

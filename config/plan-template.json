@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "daily_structure": [
+    { "key": "project_case", "description": "20 分钟项目案例" },
+    { "key": "knowledge_topic", "description": "20–30 分钟知识专题" },
+    { "key": "algorithm", "description": "3 道算法题" },
+    { "key": "ai_application", "description": "2 道 AI 应用题" },
+    { "key": "oral", "description": "5 道口述题" },
+    { "key": "review", "description": "10 分钟错题复盘" }
+  ],
+  "days": [
+    { "day": 1, "theme": "自我介绍、事实边界、数组/哈希、AI 数据与向量" },
+    { "day": 2, "theme": "合同生命周期、链表/栈、切分与上下文" },
+    { "day": 3, "theme": "定时发起、树/图、模型客户端与重试" },
+    { "day": 4, "theme": "Outbox、堆/回溯、RAG" },
+    { "day": 5, "theme": "状态机影子验证、动态规划、Tool Calling" },
+    { "day": 6, "theme": "jxindependent、工程算法、Agent 控制" },
+    { "day": 7, "theme": "第一轮混合模拟与错题复盘" },
+    { "day": 8, "theme": "Java 并发/JVM、薄弱算法专题" },
+    { "day": 9, "theme": "Spring/MySQL、语义缓存与上下文裁剪" },
+    { "day": 10, "theme": "Redis/MQ、检索评测" },
+    { "day": 11, "theme": "OAuth2/OpenAPI、安全、引用与 Prompt Injection" },
+    { "day": 12, "theme": "系统设计、流式响应、限流、重试和租户隔离" },
+    { "day": 13, "theme": "90 分钟完整模拟一面与二面" },
+    { "day": 14, "theme": "仅复习错题、事实风险、反问和投递口径" }
+  ]
+}
