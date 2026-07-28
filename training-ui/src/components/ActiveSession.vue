@@ -3,6 +3,7 @@ import { reactive } from 'vue'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
 import { renderMarkdown } from '../composables/useMarkdown'
+import CodeEditor from './CodeEditor.vue'
 
 defineProps({
   activeSession: Object,
@@ -94,13 +95,10 @@ function scoreTotal(form) {
         <!-- Code editor -->
         <div class="code-editor-section">
           <label class="code-editor-label">代码编辑区（{{ attempt.language }}）</label>
-          <textarea
-            class="code-editor"
-            :value="getCode(attempt.id)"
-            @input="setCode(attempt.id, $event.target.value)"
-            rows="12"
-            spellcheck="false"
-            :placeholder="'点击「查看题目」加载 starter 代码，或在此处直接编写你的解答...'"
+          <CodeEditor
+            :model-value="getCode(attempt.id)"
+            :language="attempt.language"
+            @update:model-value="setCode(attempt.id, $event)"
           />
         </div>
 

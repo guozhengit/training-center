@@ -6,7 +6,15 @@ export default defineConfig({
   base: '/',
   build: {
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          codemirror: ['codemirror', '@codemirror/lang-java', '@codemirror/lang-python', '@codemirror/theme-one-dark'],
+          markdown: ['marked', 'highlight.js']
+        }
+      }
+    }
   },
   server: {
     port: 5173,
