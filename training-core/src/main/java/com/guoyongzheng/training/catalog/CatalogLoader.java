@@ -45,6 +45,7 @@ public final class CatalogLoader {
         loadCoding(readArray(codingIndex, "coding catalog"), codingRoot, questions, byId);
         loadOral(readArrayMember(oralIndex, "questions"), root, interviewRoot, questions, byId);
         loadProjects(readArrayMember(projectIndex, "cases"), root, interviewRoot, questions, byId);
+        loadOdQuestionsIfPresent(root, codingRoot, questions, byId);
         return new ImmutableTrainingCatalog(questions, byId);
     }
 
@@ -63,6 +64,35 @@ public final class CatalogLoader {
             requireRegularFile(codingRoot, contentPath, id);
             requireRegularFile(codingRoot, sourcePath, id);
             requireRegularFile(codingRoot, testPath, id);
+            add(questions, byId, new QuestionDescriptor(
+                    id,
+                    Track.CODING,
+                    requiredText(entry, "group", id),
+                    requiredText(entry, "title", id),
+                    requiredText(entry, "topic", id),
+                    requiredText(entry, "difficulty", id),
+                    language,
+                    contentPath,
+                    "training-center/starters/" + sourcePath));
+        }
+    }
+
+    private static void loadOdQuestionsIfPresent(Path workspaceRoot, Path codingRoot,
+                                                  List<QuestionDescriptor> questions,
+                                                  Map<String, QuestionDescriptor> byId) {
+        Path odIndex = workspaceRoot.resolve("training-center/config/od-questions.json");
+        if (!Files.isRegularFile(odIndex)) {
+            return; // OD catalog is optional
+        }
+        JsonNode entries = readArray(odIndex, "OD catalog");
+        for (JsonNode entry : entries) {
+            String id = requiredText(entry, "id", "OD question");
+            String language = requiredText(entry, "language", id).toLowerCase(Locale.ROOT);
+            if (!language.equals("java") && !language.equals("python")) {
+                throw new IllegalArgumentException("Unknown coding language: " + language + " for " + id);
+            }
+            String contentPath = requiredText(entry, "content_path", id);
+            String sourcePath = requiredText(entry, "source_path", id);
             add(questions, byId, new QuestionDescriptor(
                     id,
                     Track.CODING,

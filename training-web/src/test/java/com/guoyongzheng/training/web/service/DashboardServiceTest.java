@@ -16,8 +16,8 @@ class DashboardServiceTest {
     void summarizesUnifiedTrainingCatalog() {
         DashboardService.CatalogSummaryResponse summary = service.catalogSummary();
 
-        assertThat(summary.totalQuestions()).isEqualTo(208);
-        assertThat(summary.trackCounts()).containsEntry("CODING", 120L);
+        assertThat(summary.totalQuestions()).isEqualTo(300);
+        assertThat(summary.trackCounts()).containsEntry("CODING", 212L);
         assertThat(summary.trackCounts()).containsEntry("ORAL", 80L);
         assertThat(summary.trackCounts()).containsEntry("PROJECT", 8L);
     }

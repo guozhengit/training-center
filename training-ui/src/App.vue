@@ -84,6 +84,7 @@ onMounted(() => {
         :active-session="training.activeSession.value"
         :submit-forms="training.submitForms.value"
         :judge-results="training.judgeResults.value"
+        :judge-progress="training.judgeProgress.value"
         :training-busy="training.trainingBusy.value"
         :score-dimensions="training.scoreDimensions"
         @judge="training.judgeAttempt"

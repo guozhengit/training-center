@@ -11,6 +11,7 @@ export function useTraining(dashboard) {
   const activeSession = ref(restoreSession())
   const submitForms = ref({})
   const judgeResults = ref({})
+  const judgeProgress = ref(null)
 
   function restoreSession() {
     try {
@@ -162,28 +163,62 @@ export function useTraining(dashboard) {
     }
   }
 
-  async function judgeAttempt(attempt) {
+  function judgeAttempt(attempt) {
     trainingBusy.value = true
     trainingMessage.value = ''
     dashboard.error.value = ''
-    try {
-      const result = await fetchJson(`/api/training/attempts/${attempt.id}/judge`, {
-        method: 'POST',
-        body: '{}'
-      })
-      judgeResults.value = { ...judgeResults.value, [attempt.id]: result }
-      activeSession.value = result.session
-      initializeSubmitForms(result.session)
-      if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
-      await dashboard.loadStats()
-      await dashboard.loadHistory()
-      trainingMessage.value = result.status === 'PASSED'
-        ? `${attempt.questionId} 判题通过，已自动完成本题`
-        : `${attempt.questionId} 判题未通过，保留当前题目以便修改后重跑`
-    } catch (exception) {
-      dashboard.error.value = exception.message || '自动判题失败'
-    } finally {
+    judgeProgress.value = { stage: 'CONNECTING', message: '连接判题服务…' }
+
+    const source = new EventSource(`/api/training/attempts/${attempt.id}/judge-stream`)
+
+    source.addEventListener('progress', (event) => {
+      try {
+        judgeProgress.value = JSON.parse(event.data)
+      } catch { /* malformed event, ignore */ }
+    })
+
+    source.addEventListener('result', async (event) => {
+      source.close()
+      judgeProgress.value = null
+      try {
+        const result = JSON.parse(event.data)
+        judgeResults.value = { ...judgeResults.value, [attempt.id]: result }
+        activeSession.value = result.session
+        initializeSubmitForms(result.session)
+        if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
+        await dashboard.loadStats()
+        await dashboard.loadHistory()
+        trainingMessage.value = result.status === 'PASSED'
+          ? `${attempt.questionId} 判题通过，已自动完成本题`
+          : `${attempt.questionId} 判题未通过，保留当前题目以便修改后重跑`
+      } catch (exception) {
+        dashboard.error.value = '解析判题结果失败'
+      } finally {
+        trainingBusy.value = false
+      }
+    })
+
+    source.addEventListener('error', (event) => {
+      source.close()
+      judgeProgress.value = null
       trainingBusy.value = false
+      if (event.data) {
+        try {
+          const err = JSON.parse(event.data)
+          dashboard.error.value = err.message || '自动判题失败'
+        } catch {
+          dashboard.error.value = '自动判题失败'
+        }
+      } else {
+        dashboard.error.value = '判题连接中断'
+      }
+    })
+
+    source.onerror = () => {
+      source.close()
+      judgeProgress.value = null
+      trainingBusy.value = false
+      dashboard.error.value = dashboard.error.value || '判题连接异常'
     }
   }
 
@@ -255,7 +290,7 @@ export function useTraining(dashboard) {
   }
 
   return {
-    trainingBusy, trainingMessage, activeSession, submitForms, judgeResults,
+    trainingBusy, trainingMessage, activeSession, submitForms, judgeResults, judgeProgress,
     sessionForm, trainingTracks, scoreDimensions, activeSessionProgress,
     createTrainingSession, submitAttempt, judgeAttempt, openSandbox,
     loadSessionFromHistory, createSessionFromQuestionIds,

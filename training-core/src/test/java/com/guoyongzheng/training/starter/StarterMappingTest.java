@@ -687,7 +687,7 @@ final class StarterTestSupport {
     }
 
     private static void validateMappingShape(MappingRow row) {
-        if (!row.questionId().matches("(?:B|A|I)\\d{3}")) {
+        if (!row.questionId().matches("(?:B|A|I|OD)\\d{3}")) {
             throw new IllegalArgumentException("Malformed mapping id: " + row.questionId());
         }
         String expectedPrefix = "training-center/starters/";
@@ -718,7 +718,7 @@ final class StarterTestSupport {
     }
 
     private static void validateCatalogShape(CatalogRow row) {
-        if (!row.questionId().matches("(?:B|A|I)\\d{3}")) {
+        if (!row.questionId().matches("(?:B|A|I|OD)\\d{3}")) {
             throw new IllegalArgumentException("Malformed catalog id: " + row.questionId());
         }
         if ("java".equals(row.language())) {

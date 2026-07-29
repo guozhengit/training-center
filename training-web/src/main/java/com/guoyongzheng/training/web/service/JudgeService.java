@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Handles automatic judge execution: sandbox provisioning, Maven/Pytest invocation,
@@ -51,6 +52,7 @@ public class JudgeService {
     private final TrainingDatabaseProvider databaseProvider;
     private final TrainingProperties trainingProperties;
     private final ObjectMapper objectMapper;
+    private final JudgeMetrics judgeMetrics;
     private final AttemptRepository attemptRepository = new AttemptRepository();
     private final JudgementRepository judgementRepository = new JudgementRepository();
     private final ReviewRepository reviewRepository = new ReviewRepository();
@@ -59,13 +61,21 @@ public class JudgeService {
 
     public JudgeService(TrainingDatabaseProvider databaseProvider,
                         TrainingProperties trainingProperties,
-                        ObjectMapper objectMapper) {
+                        ObjectMapper objectMapper,
+                        JudgeMetrics judgeMetrics) {
         this.databaseProvider = databaseProvider;
         this.trainingProperties = trainingProperties;
         this.objectMapper = objectMapper;
+        this.judgeMetrics = judgeMetrics;
     }
 
     public TrainingSessionService.JudgeAttemptResponse judgeAttempt(String attemptId) {
+        return judgeAttemptWithProgress(attemptId, event -> { });
+    }
+
+    public TrainingSessionService.JudgeAttemptResponse judgeAttemptWithProgress(
+            String attemptId, Consumer<JudgeProgressEvent> progress) {
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "校验答题状态"));
         Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
         AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
@@ -77,16 +87,21 @@ public class JudgeService {
             throw new IllegalArgumentException("Auto judge only supports CODING attempts: " + attemptId);
         }
 
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_PREPARING, "准备沙箱环境"));
         StarterMapping mapping = starterMapping(workspace, question.id());
         SandboxService sandboxService = sandboxService(workspace);
         SandboxManifest manifest = ensureSandbox(database, sandboxService, attempt, mapping);
         Path sandboxPath = sandboxRoot(workspace).resolve(attempt.sessionId()).resolve(attempt.id())
                 .toAbsolutePath()
                 .normalize();
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_READY, "沙箱就绪"));
+
         String judgementId = "web-judgement-" + UUID.randomUUID();
         Instant startedAt = clock.instant();
         appendRunningJudgement(database, judgementId, attempt.id(), startedAt);
 
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.JUDGE_RUNNING,
+                mapping.runnerKind() == RunnerKind.MAVEN ? "Maven 编译并执行测试" : "Pytest 执行测试"));
         JudgeRunner runner = mapping.runnerKind() == RunnerKind.MAVEN
                 ? new MavenJudgeRunner(new LocalProcessRunner(), sandboxService)
                 : new PytestJudgeRunner(new LocalProcessRunner(), sandboxService);
@@ -97,8 +112,9 @@ public class JudgeService {
                 judgeEnvironment(mapping.runnerKind())));
         Instant finishedAt = clock.instant();
 
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.PERSISTING, "写入判题结果"));
         try {
-            return database.inWriteTransaction(connection -> {
+            TrainingSessionService.JudgeAttemptResponse response = database.inWriteTransaction(connection -> {
                 judgementRepository.recordResult(
                         connection,
                         judgementId,
@@ -149,9 +165,22 @@ public class JudgeService {
                         sessionCompleted,
                         readSession(connection, attempt.sessionId()));
             });
+            progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.COMPLETED,
+                    result.status() == JudgementStatus.PASSED ? "判题通过" : "判题未通过"));
+            Duration elapsed = Duration.between(startedAt, finishedAt);
+            if (result.status() == JudgementStatus.PASSED) {
+                judgeMetrics.recordPassed(elapsed);
+            } else {
+                judgeMetrics.recordFailed(elapsed);
+            }
+            return response;
         } catch (IllegalArgumentException | IllegalStateException exception) {
+            judgeMetrics.recordError();
+            progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.FAILED, exception.getMessage()));
             throw exception;
         } catch (Exception exception) {
+            judgeMetrics.recordError();
+            progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.FAILED, "写入结果失败"));
             throw new IllegalStateException("Cannot persist judge result: " + attemptId, exception);
         }
     }
@@ -304,10 +333,22 @@ public class JudgeService {
 
     private StarterMapping starterMapping(Path workspace, String questionId) {
         Path mappingPath = workspace.resolve("training-center/config/starter-mapping.json");
+        Path odMappingPath = workspace.resolve("training-center/config/od-starter-mapping.json");
+        StarterMapping result = findInMappingFile(mappingPath, questionId);
+        if (result == null && Files.exists(odMappingPath)) {
+            result = findInMappingFile(odMappingPath, questionId);
+        }
+        if (result == null) {
+            throw new IllegalArgumentException("Missing starter mapping for question: " + questionId);
+        }
+        return result;
+    }
+
+    private StarterMapping findInMappingFile(Path mappingPath, String questionId) {
         try {
             JsonNode root = objectMapper.readTree(mappingPath.toFile());
             if (!root.isArray()) {
-                throw new IllegalArgumentException("starter-mapping.json must be an array");
+                throw new IllegalArgumentException(mappingPath.getFileName() + " must be an array");
             }
             for (JsonNode item : root) {
                 if (questionId.equals(item.path("question_id").asText())) {
@@ -321,7 +362,7 @@ public class JudgeService {
                             testSelector(runnerKind, sandboxSourcePath, item.path("test_selector").asText()));
                 }
             }
-            throw new IllegalArgumentException("Missing starter mapping for question: " + questionId);
+            return null;
         } catch (IOException exception) {
             throw new IllegalStateException("Cannot read starter mapping: " + mappingPath, exception);
         }

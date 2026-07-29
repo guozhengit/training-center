@@ -9,6 +9,7 @@ defineProps({
   activeSession: Object,
   submitForms: Object,
   judgeResults: Object,
+  judgeProgress: Object,
   trainingBusy: Boolean,
   scoreDimensions: Array
 })
@@ -111,6 +112,13 @@ function scoreTotal(form) {
         <button :disabled="trainingBusy" type="button" @click="$emit('judge', attempt)">
           {{ trainingBusy ? '判题中...' : '运行自动判题' }}
         </button>
+
+        <div v-if="judgeProgress" class="judge-progress">
+          <div class="judge-progress-bar">
+            <div class="judge-progress-fill" :data-stage="judgeProgress.stage"></div>
+          </div>
+          <span class="judge-progress-text">{{ judgeProgress.message }}</span>
+        </div>
 
         <div v-if="judgeResults[attempt.id]" class="judge-result">
           <strong>判题结果：{{ judgeResults[attempt.id].status }}</strong>

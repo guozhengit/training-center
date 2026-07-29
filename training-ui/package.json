@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@codemirror/lang-java": "^6.0.2",
@@ -20,5 +22,10 @@
     "vite": "^6.4.3",
     "vue": "3.5.13",
     "vue-i18n": "^9.14.5"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.1",
+    "vitest": "^4.1.10"
   }
 }

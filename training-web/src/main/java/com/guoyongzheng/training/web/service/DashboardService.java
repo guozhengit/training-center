@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,11 +23,12 @@ import java.util.Map;
 
 @Service
 public class DashboardService {
-    private static final int MAX_QUESTION_LIMIT = 200;
+    private static final int MAX_QUESTION_LIMIT = 300;
 
     private final WorkspaceLocator workspaceLocator;
     private final CatalogCache catalogCache;
     private final ObjectMapper objectMapper;
+    private volatile Map<String, QuestionContentResponse> contentCache;
 
     public DashboardService(WorkspaceLocator workspaceLocator, CatalogCache catalogCache, ObjectMapper objectMapper) {
         this.workspaceLocator = workspaceLocator;
@@ -108,17 +110,39 @@ public class DashboardService {
     }
 
     public QuestionContentResponse questionContent(String questionId) {
+        Map<String, QuestionContentResponse> cache = contentCache;
+        if (cache == null) {
+            synchronized (this) {
+                cache = contentCache;
+                if (cache == null) {
+                    cache = preloadContent();
+                    contentCache = cache;
+                }
+            }
+        }
+        QuestionContentResponse response = cache.get(questionId);
+        if (response == null) {
+            throw new IllegalArgumentException("Question not found: " + questionId);
+        }
+        return response;
+    }
+
+    public synchronized void invalidateContentCache() {
+        contentCache = null;
+    }
+
+    private Map<String, QuestionContentResponse> preloadContent() {
         Path workspace = workspaceLocator.locate();
         TrainingCatalog catalog = catalogCache.get();
         List<QuestionDescriptor> all = catalog.find(null);
-        QuestionDescriptor question = all.stream()
-                .filter(q -> q.id().equals(questionId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Question not found: " + questionId));
-
-        String description = readContentFile(workspace, question.sourceRef());
-        String starterCode = readContentFile(workspace, question.starterRef());
-        return new QuestionContentResponse(question.id(), question.title(), description, starterCode);
+        Map<String, QuestionContentResponse> map = new HashMap<>(all.size());
+        for (QuestionDescriptor question : all) {
+            String description = readContentFile(workspace, question.sourceRef());
+            String starterCode = readContentFile(workspace, question.starterRef());
+            map.put(question.id(),
+                    new QuestionContentResponse(question.id(), question.title(), description, starterCode));
+        }
+        return Map.copyOf(map);
     }
 
     private static String readContentFile(Path workspace, String relativePath) {

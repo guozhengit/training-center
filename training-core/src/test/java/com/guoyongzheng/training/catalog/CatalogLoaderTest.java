@@ -28,14 +28,14 @@ class CatalogLoaderTest {
 
         List<QuestionDescriptor> all = catalog.find(new QuestionFilter(null, null, null, null, null));
 
-        assertThat(all).hasSize(208);
+        assertThat(all).hasSize(300);
         assertThat(all.subList(0, 120).stream().map(QuestionDescriptor::id))
                 .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("output/coding-ai-exam/catalog/questions.json"), null));
         assertThat(all.subList(120, 200).stream().map(QuestionDescriptor::id))
                 .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("training-center/config/oral-questions.json"), "questions"));
         assertThat(all.subList(200, 208).stream().map(QuestionDescriptor::id))
                 .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("training-center/config/project-cases.json"), "cases"));
-        assertThat(all.stream().filter(question -> question.track() == Track.CODING)).hasSize(120);
+        assertThat(all.stream().filter(question -> question.track() == Track.CODING)).hasSize(212);
         assertThat(catalog.find(new QuestionFilter(Track.ORAL, null, null, null, null))).hasSize(80);
         assertThat(catalog.find(new QuestionFilter(Track.PROJECT, null, null, null, null))).hasSize(8);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> all.add(all.get(0)));

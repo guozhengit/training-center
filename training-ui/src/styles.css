@@ -488,6 +488,52 @@ h3 {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+.judge-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  background: #fffbeb;
+}
+
+.judge-progress-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.judge-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #f59e0b;
+  transition: width 0.4s ease;
+  animation: progress-pulse 1.2s ease-in-out infinite;
+}
+
+.judge-progress-fill[data-stage="CONNECTING"] { width: 10%; }
+.judge-progress-fill[data-stage="VALIDATING"] { width: 20%; }
+.judge-progress-fill[data-stage="SANDBOX_PREPARING"] { width: 40%; }
+.judge-progress-fill[data-stage="SANDBOX_READY"] { width: 55%; }
+.judge-progress-fill[data-stage="JUDGE_RUNNING"] { width: 75%; }
+.judge-progress-fill[data-stage="PERSISTING"] { width: 90%; }
+.judge-progress-fill[data-stage="COMPLETED"] { width: 100%; background: #22c55e; animation: none; }
+.judge-progress-fill[data-stage="FAILED"] { width: 100%; background: #ef4444; animation: none; }
+
+@keyframes progress-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.judge-progress-text {
+  font-size: 13px;
+  color: #92400e;
+  white-space: nowrap;
+}
+
 .judge-result {
   display: grid;
   gap: 8px;

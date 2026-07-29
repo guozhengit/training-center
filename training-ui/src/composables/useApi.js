@@ -2,9 +2,10 @@ import { ref } from 'vue'
 
 export function useApi() {
   async function fetchJson(path, options = {}) {
+    const { headers: customHeaders, ...rest } = options
     const response = await fetch(path, {
-      headers: { 'Content-Type': 'application/json', ...(options.headers ?? {}) },
-      ...options
+      ...rest,
+      headers: { 'Content-Type': 'application/json', ...(customHeaders ?? {}) }
     })
     if (!response.ok) {
       const body = await response.json().catch(() => ({}))
