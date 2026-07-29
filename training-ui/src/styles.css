@@ -787,6 +787,30 @@ select {
   background: #fff;
 }
 
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-bar select {
+  padding: 6px 10px;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--surface, #f8fafc);
+  color: var(--text, #1e293b);
+  cursor: pointer;
+}
+
+.filter-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+}
+
 .question-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

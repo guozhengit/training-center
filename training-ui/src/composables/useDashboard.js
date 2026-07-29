@@ -14,6 +14,10 @@ export function useDashboard() {
   const history = ref(null)
   const questions = ref([])
   const selectedTrack = ref('ALL')
+  const selectedGroup = ref('')
+  const selectedTopic = ref('')
+  const selectedDifficulty = ref('')
+  const availableFilters = ref({ groups: [], topics: [], difficulties: [] })
 
   const tracks = [
     { value: 'ALL', label: '全部' },
@@ -55,9 +59,22 @@ export function useDashboard() {
   }
 
   async function loadQuestions() {
-    const query = selectedTrack.value === 'ALL' ? '' : `?track=${selectedTrack.value}&limit=80`
-    const data = await fetchJson(`/api/questions${query}`)
+    const params = new URLSearchParams()
+    if (selectedTrack.value !== 'ALL') params.set('track', selectedTrack.value)
+    if (selectedGroup.value) params.set('group', selectedGroup.value)
+    if (selectedTopic.value) params.set('topic', selectedTopic.value)
+    if (selectedDifficulty.value) params.set('difficulty', selectedDifficulty.value)
+    params.set('limit', '300')
+    const data = await fetchJson(`/api/questions?${params.toString()}`)
     questions.value = data.questions ?? []
+  }
+
+  async function loadFilters() {
+    const params = new URLSearchParams()
+    if (selectedTrack.value !== 'ALL') params.set('track', selectedTrack.value)
+    try {
+      availableFilters.value = await fetchJson(`/api/questions/filters?${params.toString()}`)
+    } catch { /* non-critical */ }
   }
 
   async function loadStats() {
@@ -111,7 +128,8 @@ export function useDashboard() {
   return {
     loading, error, errors, errorList, dismissError,
     health, catalog, matrix, stats, history, questions, selectedTrack,
+    selectedGroup, selectedTopic, selectedDifficulty, availableFilters,
     tracks, trackCards, matrixCards, matrixReady,
-    loadQuestions, loadStats, loadHistory, loadDashboard
+    loadQuestions, loadFilters, loadStats, loadHistory, loadDashboard
   }
 }

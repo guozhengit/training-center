@@ -61,16 +61,36 @@ public class DashboardService {
     }
 
     public QuestionListResponse questions(String trackValue, int requestedLimit) {
+        return questions(trackValue, null, null, null, requestedLimit);
+    }
+
+    public QuestionListResponse questions(String trackValue, String group, String topic, String difficulty, int requestedLimit) {
         Path workspace = workspaceLocator.locate();
         Track track = parseTrack(trackValue);
         int limit = Math.max(1, Math.min(requestedLimit, MAX_QUESTION_LIMIT));
+        String groupFilter = (group == null || group.isBlank()) ? null : group;
+        String topicFilter = (topic == null || topic.isBlank()) ? null : topic;
+        String difficultyFilter = (difficulty == null || difficulty.isBlank()) ? null : difficulty;
         List<QuestionCard> cards = catalogCache.get()
-                .find(new QuestionFilter(track, null, null, null, null))
+                .find(new QuestionFilter(track, groupFilter, topicFilter, difficultyFilter, null))
                 .stream()
                 .limit(limit)
                 .map(QuestionCard::from)
                 .toList();
         return new QuestionListResponse(track == null ? "ALL" : track.name(), limit, cards.size(), cards);
+    }
+
+    public FiltersResponse availableFilters(String trackValue) {
+        Track track = parseTrack(trackValue);
+        List<QuestionDescriptor> all = catalogCache.get()
+                .find(new QuestionFilter(track, null, null, null, null));
+        List<String> groups = all.stream().map(QuestionDescriptor::groupName)
+                .distinct().sorted().toList();
+        List<String> topics = all.stream().map(QuestionDescriptor::topic)
+                .distinct().sorted().toList();
+        List<String> difficulties = all.stream().map(QuestionDescriptor::difficulty)
+                .distinct().sorted().toList();
+        return new FiltersResponse(groups, topics, difficulties);
     }
 
     public MatrixReportResponse matrixReport() {
@@ -233,6 +253,9 @@ public class DashboardService {
             boolean catalogAvailable,
             boolean matrixReportAvailable,
             Instant checkedAt) {
+    }
+
+    public record FiltersResponse(List<String> groups, List<String> topics, List<String> difficulties) {
     }
 
     public record CatalogSummaryResponse(

@@ -30,12 +30,22 @@ public class DashboardController {
         return dashboardService.catalogSummary();
     }
 
-    @Operation(summary = "List questions", description = "Returns questions filtered by track with a configurable limit.")
+    @Operation(summary = "List questions", description = "Returns questions filtered by track, group, topic, difficulty with a configurable limit.")
     @GetMapping("/questions")
     public DashboardService.QuestionListResponse questions(
             @RequestParam(name = "track", required = false) String track,
+            @RequestParam(name = "group", required = false) String group,
+            @RequestParam(name = "topic", required = false) String topic,
+            @RequestParam(name = "difficulty", required = false) String difficulty,
             @RequestParam(name = "limit", defaultValue = "40") int limit) {
-        return dashboardService.questions(track, limit);
+        return dashboardService.questions(track, group, topic, difficulty, limit);
+    }
+
+    @Operation(summary = "Available filters", description = "Returns distinct group, topic, and difficulty values for filtering.")
+    @GetMapping("/questions/filters")
+    public DashboardService.FiltersResponse filters(
+            @RequestParam(name = "track", required = false) String track) {
+        return dashboardService.availableFilters(track);
     }
 
     @Operation(summary = "Matrix report", description = "Returns the starter verification matrix report.")

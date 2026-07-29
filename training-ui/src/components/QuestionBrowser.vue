@@ -2,10 +2,14 @@
 defineProps({
   questions: Array,
   tracks: Array,
-  selectedTrack: String
+  selectedTrack: String,
+  selectedGroup: String,
+  selectedTopic: String,
+  selectedDifficulty: String,
+  availableFilters: Object
 })
 
-defineEmits(['update:selectedTrack', 'load'])
+defineEmits(['update:selectedTrack', 'update:selectedGroup', 'update:selectedTopic', 'update:selectedDifficulty', 'load'])
 </script>
 
 <template>
@@ -22,11 +26,27 @@ defineEmits(['update:selectedTrack', 'load'])
       </select>
     </div>
 
+    <div class="filter-bar">
+      <select :value="selectedGroup" @change="$emit('update:selectedGroup', $event.target.value); $emit('load')">
+        <option value="">全部分组</option>
+        <option v-for="g in (availableFilters?.groups ?? [])" :key="g" :value="g">{{ g }}</option>
+      </select>
+      <select :value="selectedTopic" @change="$emit('update:selectedTopic', $event.target.value); $emit('load')">
+        <option value="">全部分类</option>
+        <option v-for="t in (availableFilters?.topics ?? [])" :key="t" :value="t">{{ t }}</option>
+      </select>
+      <select :value="selectedDifficulty" @change="$emit('update:selectedDifficulty', $event.target.value); $emit('load')">
+        <option value="">全部难度</option>
+        <option v-for="d in (availableFilters?.difficulties ?? [])" :key="d" :value="d">{{ d }}</option>
+      </select>
+      <span class="filter-count">{{ questions?.length ?? 0 }} 题</span>
+    </div>
+
     <div class="question-list">
       <article v-for="question in questions" :key="question.id" class="question-card">
         <div class="question-head">
           <span class="question-id">{{ question.id }}</span>
-          <span class="question-track">{{ question.track }}</span>
+          <span class="question-track">{{ question.groupName }}</span>
         </div>
         <h3>{{ question.title }}</h3>
         <p>{{ question.topic }}</p>

@@ -125,8 +125,15 @@ onMounted(() => {
         :questions="dashboard.questions.value"
         :tracks="dashboard.tracks"
         :selected-track="dashboard.selectedTrack.value"
-        @update:selected-track="dashboard.selectedTrack.value = $event"
-        @load="dashboard.loadQuestions"
+        :selected-group="dashboard.selectedGroup.value"
+        :selected-topic="dashboard.selectedTopic.value"
+        :selected-difficulty="dashboard.selectedDifficulty.value"
+        :available-filters="dashboard.availableFilters.value"
+        @update:selected-track="dashboard.selectedTrack.value = $event; dashboard.selectedGroup.value = ''; dashboard.selectedTopic.value = ''; dashboard.selectedDifficulty.value = ''"
+        @update:selected-group="dashboard.selectedGroup.value = $event"
+        @update:selected-topic="dashboard.selectedTopic.value = $event"
+        @update:selected-difficulty="dashboard.selectedDifficulty.value = $event"
+        @load="dashboard.loadQuestions(); dashboard.loadFilters()"
       />
     </template>
   </main>
