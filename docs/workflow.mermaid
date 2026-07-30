@@ -1,0 +1,35 @@
+---
+title: 训练会话生命周期
+---
+flowchart LR
+    A[创建会话<br/>POST /sessions] --> B{选择赛道}
+    B -->|CODING| C[加载题目<br/>CodeMirror 编辑]
+    B -->|ORAL| D[录音口述<br/>MediaRecorder]
+    B -->|PROJECT| E[项目阐述<br/>录音 + 评分]
+
+    C --> F[提交代码<br/>POST /attempts]
+    D --> G[自评提交<br/>verdict + 用时]
+    E --> G
+
+    F --> H{判题方式}
+    H -->|自动| I[SandboxService<br/>编译 + 运行测试]
+    H -->|手动| J[等待自评]
+
+    I --> K[SSE 流式推送<br/>判题进度]
+    K --> L{结果}
+    L -->|PASSED| M[记录通过<br/>更新统计]
+    L -->|FAILED| N[记录失败<br/>可查看提示]
+
+    J --> M
+    G --> M
+
+    M --> O[Dashboard 统计<br/>通过率 / 历史]
+    N --> O
+
+    subgraph 限时模式
+        P[useCountdown<br/>三星60min / 其他40min] --> F
+    end
+
+    subgraph 提示系统
+        Q[StarterHintService<br/>渐进式提示] --> C
+    end

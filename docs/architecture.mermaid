@@ -1,0 +1,61 @@
+---
+title: Training Center 系统架构
+---
+flowchart TB
+    subgraph Client["浏览器 (Vue 3 + Vite :5173)"]
+        UI[ActiveSession.vue<br/>训练界面]
+        Dash[Dashboard.vue<br/>数据看板]
+        CM[CodeMirror 6<br/>代码编辑器]
+        Timer[useCountdown<br/>限时训练]
+    end
+
+    subgraph Backend["Spring Boot 后端 :8080"]
+        Ctrl[TrainingController<br/>REST API + SSE]
+        Sess[TrainingSessionService<br/>会话管理]
+        Judge[JudgeService<br/>自动判题]
+        DashSvc[DashboardService<br/>统计与内容]
+        Sandbox[SandboxService<br/>代码沙箱]
+    end
+
+    subgraph Core["training-core 领域层"]
+        Catalog[CatalogLoader<br/>题库加载 300题]
+        Domain[QuestionDescriptor<br/>题目元数据]
+        DB[(SQLite<br/>训练记录)]
+    end
+
+    subgraph Storage["文件系统 (工作区)"]
+        Config[config/<br/>od-questions.json<br/>oral-questions.json<br/>project-cases.json]
+        Answers[coding-ai-exam/<br/>参考答案 + JUnit 测试]
+        Interview[interview/<br/>口述/项目题源]
+        Runtime[training-runtime/<br/>沙箱 / 导出 / 日志]
+    end
+
+    subgraph JudgeTools["判题工具链"]
+        JDK[JDK 17]
+        MVN[Maven 3.9]
+        PY[Python + pytest]
+    end
+
+    UI -->|"/api/training/*"| Ctrl
+    Dash -->|"/api/dashboard/*"| Ctrl
+    CM --> UI
+    Timer --> UI
+
+    Ctrl --> Sess
+    Ctrl --> Judge
+    Ctrl --> DashSvc
+
+    Sess --> DB
+    Sess --> Catalog
+    Judge --> Sandbox
+    Judge -->|"SSE 流式进度"| Ctrl
+    DashSvc --> Catalog
+    DashSvc --> Answers
+
+    Catalog --> Config
+    Catalog --> Domain
+    Sandbox --> Runtime
+    Sandbox --> JDK
+    Sandbox --> MVN
+    Sandbox --> PY
+    Judge --> Answers
