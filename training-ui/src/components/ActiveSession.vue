@@ -3,8 +3,11 @@ import { reactive } from 'vue'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
 import { useCountdown } from '../composables/useCountdown'
+import { useApi } from '../composables/useApi'
 import { renderMarkdownCollapsible } from '../composables/useMarkdown'
 import CodeEditor from './CodeEditor.vue'
+
+const { fetchJson } = useApi()
 
 defineProps({
   activeSession: Object,
@@ -33,9 +36,7 @@ async function loadQuestionContent(attempt) {
     return
   }
   try {
-    const response = await fetch(`/api/questions/${qid}/content`)
-    if (!response.ok) throw new Error('Failed to load')
-    const data = await response.json()
+    const data = await fetchJson(`/api/questions/${qid}/content`)
     contentStore[qid] = { description: data.description, starterCode: data.starterCode, loaded: true, showDesc: true }
     // Pre-fill code editor with starter code if empty
     if (!codeStore[attempt.id]) {
