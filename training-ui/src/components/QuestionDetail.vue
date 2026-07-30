@@ -23,7 +23,7 @@ watch(() => props.question, async (q) => {
   error.value = ''
   content.value = null
   try {
-    content.value = await fetchJson(`/api/dashboard/questions/${q.id}/content`)
+    content.value = await fetchJson(`/api/questions/${q.id}/content`)
   } catch (e) {
     error.value = e.message || '加载题目内容失败'
   } finally {
