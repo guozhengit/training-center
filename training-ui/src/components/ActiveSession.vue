@@ -176,7 +176,7 @@ function scoreTotal(form) {
         </div>
       </div>
 
-      <div v-else class="attempt-form">
+      <div v-else-if="submitForms[attempt.id]" class="attempt-form">
         <div class="recorder-box">
           <div class="recorder-timer">
             <span class="timer-display">{{ recorder.formatElapsed(recorder.getTimer(attempt.id).elapsed) }}</span>

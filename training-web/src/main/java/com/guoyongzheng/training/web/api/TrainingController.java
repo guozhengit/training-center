@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import jakarta.annotation.PreDestroy;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Tag(name = "Training", description = "Session lifecycle, attempt submission, and judging")
 @RestController
@@ -43,6 +46,19 @@ public class TrainingController {
         this.sessionQueryService = sessionQueryService;
         this.judgeService = judgeService;
         this.starterHintService = starterHintService;
+    }
+
+    @PreDestroy
+    void shutdownJudgeExecutor() {
+        judgeExecutor.shutdown();
+        try {
+            if (!judgeExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                judgeExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            judgeExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Operation(summary = "Training statistics", description = "Aggregated attempt counts and pass rates.")

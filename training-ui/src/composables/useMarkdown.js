@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/common'
 import 'highlight.js/styles/github.css'
 
@@ -20,5 +21,5 @@ marked.setOptions({
  */
 export function renderMarkdown(md) {
   if (!md) return ''
-  return marked.parse(md)
+  return DOMPurify.sanitize(marked.parse(md))
 }

@@ -17,6 +17,7 @@
     "@vitejs/plugin-vue": "5.2.1",
     "chart.js": "^4.5.1",
     "codemirror": "^6.0.2",
+    "dompurify": "^3.4.12",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.7",
     "vite": "^6.4.3",

@@ -169,20 +169,50 @@ public class DashboardService {
         if (relativePath == null || relativePath.isBlank()) {
             return "";
         }
-        // sourceRef is relative to output/coding-ai-exam/, starterRef is relative to workspace root
-        Path candidate = workspace.resolve(relativePath).toAbsolutePath().normalize();
+        // Handle heading fragments: "path/to/file.md### Heading Text"
+        String filePath = relativePath;
+        String heading = null;
+        int mdHash = relativePath.indexOf(".md#");
+        if (mdHash >= 0) {
+            filePath = relativePath.substring(0, mdHash + 3); // include ".md"
+            heading = relativePath.substring(mdHash + 4);     // after ".md#"
+        }
+        Path candidate = workspace.resolve(filePath).toAbsolutePath().normalize();
         if (!Files.isRegularFile(candidate)) {
-            // try under output/coding-ai-exam/ for sourceRef-style paths
-            candidate = workspace.resolve("output/coding-ai-exam").resolve(relativePath).toAbsolutePath().normalize();
+            candidate = workspace.resolve("output/coding-ai-exam").resolve(filePath).toAbsolutePath().normalize();
         }
         if (!Files.isRegularFile(candidate)) {
             return "";
         }
         try {
-            return Files.readString(candidate, StandardCharsets.UTF_8);
+            String content = Files.readString(candidate, StandardCharsets.UTF_8);
+            if (heading != null && !heading.isBlank()) {
+                return extractSection(content, heading);
+            }
+            return content;
         } catch (IOException exception) {
             return "";
         }
+    }
+
+    /** Extract a markdown section from a heading line until the next same-level heading. */
+    private static String extractSection(String content, String heading) {
+        int start = content.indexOf(heading);
+        if (start < 0) {
+            return "";
+        }
+        // Determine heading level (count leading #)
+        String trimmedHeading = heading.stripLeading();
+        int level = 0;
+        while (level < trimmedHeading.length() && trimmedHeading.charAt(level) == '#') {
+            level++;
+        }
+        String nextPrefix = "\n" + "#".repeat(level) + " ";
+        int end = content.indexOf(nextPrefix, start + heading.length());
+        if (end < 0) {
+            return content.substring(start).strip();
+        }
+        return content.substring(start, end).strip();
     }
 
     private static Path matrixReportPath(Path workspace) {
