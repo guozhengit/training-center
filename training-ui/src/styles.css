@@ -376,12 +376,25 @@ h3 {
 }
 
 .question-desc-panel {
-  max-height: 360px;
+  position: relative;
+  max-height: 220px;
   overflow-y: auto;
   padding: 16px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: #f8fafc;
+}
+
+.question-desc-panel::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 28px;
+  background: linear-gradient(transparent, #f8fafc);
+  pointer-events: none;
 }
 
 .question-desc-text {
@@ -1153,14 +1166,87 @@ select {
 }
 
 .btn-timer-sm {
-  padding: 4px 10px;
+  padding: 6px 14px;
   border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #fff;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .btn-timer-sm:hover {
   background: #f1f5f9;
+}
+
+.btn-timer-pause {
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.btn-timer-pause:hover {
+  background: #fffbeb;
+}
+
+.btn-timer-resume {
+  border-color: #22c55e;
+  color: #15803d;
+}
+
+.btn-timer-resume:hover {
+  background: #f0fdf4;
+}
+
+.btn-timer-reset {
+  border-color: #94a3b8;
+  color: #475569;
+}
+
+/* Collapsible question sections */
+.q-section {
+  margin: 0.5em 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.q-section summary {
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  border-radius: 8px;
+  user-select: none;
+  list-style: none;
+}
+
+.q-section summary::before {
+  content: '▸ ';
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.q-section[open] summary::before {
+  content: '▾ ';
+}
+
+.q-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.q-section[open] summary {
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+}
+
+.q-section > :not(summary) {
+  padding: 0 12px;
+}
+
+.q-section > p:last-child,
+.q-section > ul:last-child,
+.q-section > ol:last-child {
+  padding-bottom: 10px;
 }

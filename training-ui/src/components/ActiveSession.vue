@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
 import { useCountdown } from '../composables/useCountdown'
-import { renderMarkdown } from '../composables/useMarkdown'
+import { renderMarkdownCollapsible } from '../composables/useMarkdown'
 import CodeEditor from './CodeEditor.vue'
 
 defineProps({
@@ -91,7 +91,7 @@ function scoreTotal(form) {
             {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
           </button>
           <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
-            <div class="question-desc-text markdown-body" v-html="renderMarkdown(contentStore[attempt.questionId].description)"></div>
+            <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].description)"></div>
           </div>
         </div>
 
@@ -107,9 +107,9 @@ function scoreTotal(form) {
             <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">时间到!</span>
             <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">剩余不足5分钟</span>
             <span v-else class="countdown-label">{{ attempt.difficulty === '三星' ? '200分题 / 60min' : '100分题 / 40min' }}</span>
-            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm" @click="countdown.pause(attempt.id)">暂停</button>
-            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm" @click="countdown.resume(attempt.id)">继续</button>
-            <button type="button" class="btn-timer-sm" @click="countdown.reset(attempt.id)">重置</button>
+            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">⏸ 暂停</button>
+            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">▶ 继续</button>
+            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">↺ 重置</button>
           </template>
         </div>
 
