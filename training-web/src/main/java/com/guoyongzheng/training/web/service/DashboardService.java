@@ -279,7 +279,8 @@ public class DashboardService {
             String difficulty,
             String language,
             String sourceRef,
-            String starterRef) {
+            String starterRef,
+            String priority) {
         static QuestionCard from(QuestionDescriptor question) {
             return new QuestionCard(
                     question.id(),
@@ -290,7 +291,8 @@ public class DashboardService {
                     question.difficulty(),
                     question.language(),
                     question.sourceRef(),
-                    question.starterRef());
+                    question.starterRef(),
+                    question.priority());
         }
     }
 

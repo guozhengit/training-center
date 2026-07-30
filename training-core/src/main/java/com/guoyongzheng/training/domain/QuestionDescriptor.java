@@ -12,7 +12,15 @@ public record QuestionDescriptor(
         String difficulty,
         String language,
         String sourceRef,
-        String starterRef) {
+        String starterRef,
+        String priority) {
+
+    /** Backward-compatible constructor without priority. */
+    public QuestionDescriptor(String id, Track track, String groupName, String title,
+                              String topic, String difficulty, String language,
+                              String sourceRef, String starterRef) {
+        this(id, track, groupName, title, topic, difficulty, language, sourceRef, starterRef, null);
+    }
 
     public QuestionDescriptor {
         id = requireText(id, "id");
@@ -24,6 +32,7 @@ public record QuestionDescriptor(
         language = requireText(language, "language");
         sourceRef = requireText(sourceRef, "sourceRef");
         starterRef = starterRef == null ? null : requireText(starterRef, "starterRef");
+        // priority is optional — null for non-OD questions
     }
 
     private static String requireText(String value, String name) {

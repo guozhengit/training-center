@@ -5,11 +5,12 @@
     "order": 1,
     "title": "字符串分割转换",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD001.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD001Problem001.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD001Problem001Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD001Problem001Test.java",
+    "priority": "green"
   },
   {
     "id": "OD002",
@@ -17,11 +18,12 @@
     "order": 2,
     "title": "字符串摘要",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD002.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD002Problem002.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD002Problem002Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD002Problem002Test.java",
+    "priority": "green"
   },
   {
     "id": "OD003",
@@ -29,11 +31,12 @@
     "order": 3,
     "title": "提取字符串中的最长合法简单数学表达式",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "表达式求值",
     "language": "java",
     "content_path": "content/od/OD003.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD003Problem003.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD003Problem003Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD003Problem003Test.java",
+    "priority": "green"
   },
   {
     "id": "OD004",
@@ -41,11 +44,12 @@
     "order": 4,
     "title": "最长的密码",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "子串/子序列",
     "language": "java",
     "content_path": "content/od/OD004.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD004Problem004.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD004Problem004Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD004Problem004Test.java",
+    "priority": "green"
   },
   {
     "id": "OD005",
@@ -53,11 +57,12 @@
     "order": 5,
     "title": "相对开音节",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD005.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD005Problem005.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD005Problem005Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD005Problem005Test.java",
+    "priority": "green"
   },
   {
     "id": "OD006",
@@ -65,11 +70,12 @@
     "order": 6,
     "title": "增强的strstr",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串匹配",
     "language": "java",
     "content_path": "content/od/OD006.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD006strstr.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD006strstrTest.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD006strstrTest.java",
+    "priority": "red"
   },
   {
     "id": "OD007",
@@ -77,11 +83,12 @@
     "order": 7,
     "title": "敏感字段加密",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "编解码",
     "language": "java",
     "content_path": "content/od/OD007.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD007Problem007.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD007Problem007Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD007Problem007Test.java",
+    "priority": "red"
   },
   {
     "id": "OD008",
@@ -89,11 +96,12 @@
     "order": 8,
     "title": "最左侧冗余覆盖子串",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "子串/子序列",
     "language": "java",
     "content_path": "content/od/OD008.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD008Problem008.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD008Problem008Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD008Problem008Test.java",
+    "priority": "red"
   },
   {
     "id": "OD009",
@@ -101,11 +109,12 @@
     "order": 9,
     "title": ")压缩日志查询",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD009.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD009Problem009.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD009Problem009Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD009Problem009Test.java",
+    "priority": "red"
   },
   {
     "id": "OD010",
@@ -113,11 +122,12 @@
     "order": 10,
     "title": "特殊的加密算法",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "编解码",
     "language": "java",
     "content_path": "content/od/OD010.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD010Problem010.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD010Problem010Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD010Problem010Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD011",
@@ -125,11 +135,12 @@
     "order": 11,
     "title": "文本统计分析",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD011.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD011Problem011.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD011Problem011Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD011Problem011Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD012",
@@ -137,11 +148,12 @@
     "order": 12,
     "title": "字符串解密",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "编解码",
     "language": "java",
     "content_path": "content/od/OD012.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD012Problem012.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD012Problem012Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD012Problem012Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD013",
@@ -149,11 +161,12 @@
     "order": 13,
     "title": "计算误码率",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD013.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD013Problem013.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD013Problem013Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD013Problem013Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD014",
@@ -161,11 +174,12 @@
     "order": 14,
     "title": "字母组合过滤组合字符串",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD014.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD014Problem014.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD014Problem014Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD014Problem014Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD015",
@@ -173,11 +187,12 @@
     "order": 15,
     "title": "国际移动用户识别码匹配",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串匹配",
     "language": "java",
     "content_path": "content/od/OD015.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD015Problem015.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD015Problem015Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD015Problem015Test.java",
+    "priority": "red"
   },
   {
     "id": "OD016",
@@ -185,11 +200,12 @@
     "order": 16,
     "title": "，整理版本号",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD016.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD016Problem016.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD016Problem016Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD016Problem016Test.java",
+    "priority": "red"
   },
   {
     "id": "OD017",
@@ -197,11 +213,12 @@
     "order": 17,
     "title": "模拟数据序列化传输",
     "difficulty": "二星",
-    "topic": "字符串处理",
+    "topic": "字符串",
     "language": "java",
     "content_path": "content/od/OD017.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD017Problem017.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD017Problem017Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD017Problem017Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD018",
@@ -209,11 +226,12 @@
     "order": 18,
     "title": "字符串计数匹配",
     "difficulty": "一星",
-    "topic": "字符串处理",
+    "topic": "字符串匹配",
     "language": "java",
     "content_path": "content/od/OD018.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD018Problem018.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD018Problem018Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD018Problem018Test.java",
+    "priority": "red"
   },
   {
     "id": "OD019",
@@ -221,11 +239,12 @@
     "order": 19,
     "title": "手机App防沉迷系统",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD019.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD019App.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD019AppTest.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD019AppTest.java",
+    "priority": "red"
   },
   {
     "id": "OD020",
@@ -233,11 +252,12 @@
     "order": 20,
     "title": "考勤信息",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD020.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD020Problem020.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD020Problem020Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD020Problem020Test.java",
+    "priority": "red"
   },
   {
     "id": "OD021",
@@ -245,11 +265,12 @@
     "order": 21,
     "title": "虚拟理财游戏",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD021.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD021Problem021.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD021Problem021Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD021Problem021Test.java",
+    "priority": "red"
   },
   {
     "id": "OD022",
@@ -257,11 +278,12 @@
     "order": 22,
     "title": "乘坐保密电梯",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD022.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD022Problem022.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD022Problem022Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD022Problem022Test.java",
+    "priority": "red"
   },
   {
     "id": "OD023",
@@ -269,11 +291,12 @@
     "order": 23,
     "title": "完美走位",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD023.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD023Problem023.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD023Problem023Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD023Problem023Test.java",
+    "priority": "red"
   },
   {
     "id": "OD024",
@@ -281,11 +304,12 @@
     "order": 24,
     "title": "异常的打卡记录",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD024.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD024Problem024.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD024Problem024Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD024Problem024Test.java",
+    "priority": "red"
   },
   {
     "id": "OD025",
@@ -293,11 +317,12 @@
     "order": 25,
     "title": "网上商城优惠活动",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD025.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD025Problem025.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD025Problem025Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD025Problem025Test.java",
+    "priority": "red"
   },
   {
     "id": "OD026",
@@ -305,11 +330,12 @@
     "order": 26,
     "title": "路灯照明问题",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD026.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD026Problem026.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD026Problem026Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD026Problem026Test.java",
+    "priority": "red"
   },
   {
     "id": "OD027",
@@ -317,11 +343,12 @@
     "order": 27,
     "title": "最大利润贪心的商人",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD027.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD027Problem027.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD027Problem027Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD027Problem027Test.java",
+    "priority": "red"
   },
   {
     "id": "OD028",
@@ -329,11 +356,12 @@
     "order": 28,
     "title": "流浪地球",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD028.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD028Problem028.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD028Problem028Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD028Problem028Test.java",
+    "priority": "red"
   },
   {
     "id": "OD029",
@@ -341,11 +369,12 @@
     "order": 29,
     "title": "猜数字",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD029.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD029Problem029.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD029Problem029Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD029Problem029Test.java",
+    "priority": "red"
   },
   {
     "id": "OD030",
@@ -353,11 +382,12 @@
     "order": 30,
     "title": "处理器问题",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD030.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD030Problem030.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD030Problem030Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD030Problem030Test.java",
+    "priority": "red"
   },
   {
     "id": "OD031",
@@ -365,11 +395,12 @@
     "order": 31,
     "title": "智能驾驶",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD031.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD031Problem031.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD031Problem031Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD031Problem031Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD032",
@@ -377,11 +408,12 @@
     "order": 32,
     "title": "员工派遣",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD032.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD032Problem032.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD032Problem032Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD032Problem032Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD033",
@@ -389,11 +421,12 @@
     "order": 33,
     "title": "开放日活动、取出尽量少的球",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD033.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD033Problem033.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD033Problem033Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD033Problem033Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD034",
@@ -401,11 +434,12 @@
     "order": 34,
     "title": "田忌赛马",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD034.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD034Problem034.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD034Problem034Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD034Problem034Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD035",
@@ -413,11 +447,12 @@
     "order": 35,
     "title": "篮球游戏",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD035.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD035Problem035.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD035Problem035Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD035Problem035Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD036",
@@ -425,11 +460,12 @@
     "order": 36,
     "title": "贪心歌手",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD036.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD036Problem036.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD036Problem036Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD036Problem036Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD037",
@@ -437,11 +473,12 @@
     "order": 37,
     "title": "高效的任务规划",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD037.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD037Problem037.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD037Problem037Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD037Problem037Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD038",
@@ -449,11 +486,12 @@
     "order": 38,
     "title": "采购订单",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD038.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD038Problem038.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD038Problem038Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD038Problem038Test.java",
+    "priority": "red"
   },
   {
     "id": "OD039",
@@ -461,11 +499,12 @@
     "order": 39,
     "title": "停车场收入统计",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD039.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD039Problem039.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD039Problem039Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD039Problem039Test.java",
+    "priority": "red"
   },
   {
     "id": "OD040",
@@ -473,11 +512,12 @@
     "order": 40,
     "title": "敌情监控",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD040.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD040Problem040.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD040Problem040Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD040Problem040Test.java",
+    "priority": "red"
   },
   {
     "id": "OD041",
@@ -485,11 +525,12 @@
     "order": 41,
     "title": "面试叫号系统",
     "difficulty": "一星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD041.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD041Problem041.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD041Problem041Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD041Problem041Test.java",
+    "priority": "red"
   },
   {
     "id": "OD042",
@@ -497,11 +538,12 @@
     "order": 42,
     "title": "水库溃坝填补",
     "difficulty": "二星",
-    "topic": "模拟与贪心",
+    "topic": "贪心/模拟",
     "language": "java",
     "content_path": "content/od/OD042.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD042Problem042.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD042Problem042Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD042Problem042Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD043",
@@ -513,7 +555,8 @@
     "language": "java",
     "content_path": "content/od/OD043.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD043Problem043.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD043Problem043Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD043Problem043Test.java",
+    "priority": "red"
   },
   {
     "id": "OD044",
@@ -525,7 +568,8 @@
     "language": "java",
     "content_path": "content/od/OD044.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD044Problem044.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD044Problem044Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD044Problem044Test.java",
+    "priority": "green"
   },
   {
     "id": "OD045",
@@ -537,7 +581,8 @@
     "language": "java",
     "content_path": "content/od/OD045.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD045Problem045.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD045Problem045Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD045Problem045Test.java",
+    "priority": "red"
   },
   {
     "id": "OD046",
@@ -549,7 +594,8 @@
     "language": "java",
     "content_path": "content/od/OD046.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD046Problem046.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD046Problem046Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD046Problem046Test.java",
+    "priority": "red"
   },
   {
     "id": "OD047",
@@ -561,7 +607,8 @@
     "language": "java",
     "content_path": "content/od/OD047.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD047Problem047.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD047Problem047Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD047Problem047Test.java",
+    "priority": "red"
   },
   {
     "id": "OD048",
@@ -573,7 +620,8 @@
     "language": "java",
     "content_path": "content/od/OD048.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD048Problem048.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD048Problem048Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD048Problem048Test.java",
+    "priority": "red"
   },
   {
     "id": "OD049",
@@ -581,11 +629,12 @@
     "order": 49,
     "title": "开心消消乐",
     "difficulty": "一星",
-    "topic": "栈与队列",
+    "topic": "栈/队列",
     "language": "java",
     "content_path": "content/od/OD049.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD049Problem049.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD049Problem049Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD049Problem049Test.java",
+    "priority": "red"
   },
   {
     "id": "OD050",
@@ -593,11 +642,12 @@
     "order": 50,
     "title": "代码编辑器",
     "difficulty": "一星",
-    "topic": "栈与队列",
+    "topic": "栈/队列",
     "language": "java",
     "content_path": "content/od/OD050.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD050Problem050.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD050Problem050Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD050Problem050Test.java",
+    "priority": "red"
   },
   {
     "id": "OD051",
@@ -605,11 +655,12 @@
     "order": 51,
     "title": "最小调整顺序次数、特异性双端队列",
     "difficulty": "一星",
-    "topic": "栈与队列",
+    "topic": "单调队列",
     "language": "java",
     "content_path": "content/od/OD051.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD051Problem051.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD051Problem051Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD051Problem051Test.java",
+    "priority": "green"
   },
   {
     "id": "OD052",
@@ -617,11 +668,12 @@
     "order": 52,
     "title": "模拟消息队列",
     "difficulty": "一星",
-    "topic": "栈与队列",
+    "topic": "栈/队列",
     "language": "java",
     "content_path": "content/od/OD052.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD052Problem052.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD052Problem052Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD052Problem052Test.java",
+    "priority": "red"
   },
   {
     "id": "OD053",
@@ -629,11 +681,12 @@
     "order": 53,
     "title": "斗地主之顺子",
     "difficulty": "一星",
-    "topic": "栈与队列",
+    "topic": "栈/队列",
     "language": "java",
     "content_path": "content/od/OD053.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD053Problem053.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD053Problem053Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD053Problem053Test.java",
+    "priority": "green"
   },
   {
     "id": "OD054",
@@ -641,11 +694,12 @@
     "order": 54,
     "title": "恢复数字序列",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD054.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD054Problem054.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD054Problem054Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD054Problem054Test.java",
+    "priority": "red"
   },
   {
     "id": "OD055",
@@ -653,11 +707,12 @@
     "order": 55,
     "title": "补种未成活胡杨",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD055.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD055Problem055.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD055Problem055Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD055Problem055Test.java",
+    "priority": "red"
   },
   {
     "id": "OD056",
@@ -665,11 +720,12 @@
     "order": 56,
     "title": "最长的顺子",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD056.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD056Problem056.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD056Problem056Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD056Problem056Test.java",
+    "priority": "green"
   },
   {
     "id": "OD057",
@@ -677,11 +733,12 @@
     "order": 57,
     "title": "符合要求的元组的个数",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD057.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD057Problem057.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD057Problem057Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD057Problem057Test.java",
+    "priority": "red"
   },
   {
     "id": "OD058",
@@ -689,11 +746,12 @@
     "order": 58,
     "title": "计算最接近的数",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD058.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD058Problem058.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD058Problem058Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD058Problem058Test.java",
+    "priority": "red"
   },
   {
     "id": "OD059",
@@ -701,11 +759,12 @@
     "order": 59,
     "title": "跳房子I",
     "difficulty": "一星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD059.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD059Problem059.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD059Problem059Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD059Problem059Test.java",
+    "priority": "red"
   },
   {
     "id": "OD060",
@@ -713,11 +772,12 @@
     "order": 60,
     "title": "优雅子数组",
     "difficulty": "二星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD060.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD060Problem060.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD060Problem060Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD060Problem060Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD061",
@@ -725,11 +785,12 @@
     "order": 61,
     "title": "区间交集",
     "difficulty": "二星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD061.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD061Problem061.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD061Problem061Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD061Problem061Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD062",
@@ -737,11 +798,12 @@
     "order": 62,
     "title": "统计差异值大于相似值二元组个数",
     "difficulty": "二星",
-    "topic": "数组/双指针/滑窗",
+    "topic": "数组/双指针",
     "language": "java",
     "content_path": "content/od/OD062.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD062Problem062.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD062Problem062Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD062Problem062Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD063",
@@ -749,11 +811,12 @@
     "order": 63,
     "title": "螺旋数字矩阵",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD063.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD063Problem063.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD063Problem063Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD063Problem063Test.java",
+    "priority": "red"
   },
   {
     "id": "OD064",
@@ -761,11 +824,12 @@
     "order": 64,
     "title": "机器人",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD064.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD064Problem064.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD064Problem064Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD064Problem064Test.java",
+    "priority": "red"
   },
   {
     "id": "OD065",
@@ -773,11 +837,12 @@
     "order": 65,
     "title": "查找单入口空闲区域",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "连通性/DFS",
     "language": "java",
     "content_path": "content/od/OD065.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD065Problem065.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD065Problem065Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD065Problem065Test.java",
+    "priority": "red"
   },
   {
     "id": "OD066",
@@ -785,11 +850,12 @@
     "order": 66,
     "title": "矩阵扩散",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD066.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD066Problem066.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD066Problem066Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD066Problem066Test.java",
+    "priority": "red"
   },
   {
     "id": "OD067",
@@ -797,11 +863,12 @@
     "order": 67,
     "title": "端口合并",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD067.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD067Problem067.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD067Problem067Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD067Problem067Test.java",
+    "priority": "red"
   },
   {
     "id": "OD068",
@@ -809,11 +876,12 @@
     "order": 68,
     "title": "Wonderland",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD068.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD068Wonderland.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD068WonderlandTest.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD068WonderlandTest.java",
+    "priority": "yellow"
   },
   {
     "id": "OD069",
@@ -821,11 +889,12 @@
     "order": 69,
     "title": "寻找最优的路测线路",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD069.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD069Problem069.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD069Problem069Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD069Problem069Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD070",
@@ -833,11 +902,12 @@
     "order": 70,
     "title": "寻找最大价值的矿堆",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "堆/优先队列",
     "language": "java",
     "content_path": "content/od/OD070.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD070Problem070.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD070Problem070Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD070Problem070Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD071",
@@ -845,11 +915,12 @@
     "order": 71,
     "title": "快递投放问题",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD071.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD071Problem071.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD071Problem071Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD071Problem071Test.java",
+    "priority": "green"
   },
   {
     "id": "OD072",
@@ -857,11 +928,12 @@
     "order": 72,
     "title": "产品模块算法检验",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD072.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD072Problem072.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD072Problem072Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD072Problem072Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD073",
@@ -869,11 +941,12 @@
     "order": 73,
     "title": "故障树诊断",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD073.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD073Problem073.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD073Problem073Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD073Problem073Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD074",
@@ -881,11 +954,12 @@
     "order": 74,
     "title": "项目排期最少交付时间",
     "difficulty": "二星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD074.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD074Problem074.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD074Problem074Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD074Problem074Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD075",
@@ -893,11 +967,12 @@
     "order": 75,
     "title": "新版游戏分组",
     "difficulty": "一星",
-    "topic": "BFS/DFS/图论",
+    "topic": "图论/搜索",
     "language": "java",
     "content_path": "content/od/OD075.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD075Problem075.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD075Problem075Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD075Problem075Test.java",
+    "priority": "red"
   },
   {
     "id": "OD076",
@@ -909,7 +984,8 @@
     "language": "java",
     "content_path": "content/od/OD076.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD076Problem076.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD076Problem076Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD076Problem076Test.java",
+    "priority": "green"
   },
   {
     "id": "OD077",
@@ -921,7 +997,8 @@
     "language": "java",
     "content_path": "content/od/OD077.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD077Problem077.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD077Problem077Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD077Problem077Test.java",
+    "priority": "green"
   },
   {
     "id": "OD078",
@@ -933,7 +1010,8 @@
     "language": "java",
     "content_path": "content/od/OD078.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD078Problem078.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD078Problem078Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD078Problem078Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD079",
@@ -945,7 +1023,8 @@
     "language": "java",
     "content_path": "content/od/OD079.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD079Problem079.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD079Problem079Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD079Problem079Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD080",
@@ -957,7 +1036,8 @@
     "language": "java",
     "content_path": "content/od/OD080.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD080Problem080.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD080Problem080Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD080Problem080Test.java",
+    "priority": "red"
   },
   {
     "id": "OD081",
@@ -965,11 +1045,12 @@
     "order": 81,
     "title": "资金投资",
     "difficulty": "一星",
-    "topic": "动态规划",
+    "topic": "DP/贪心",
     "language": "java",
     "content_path": "content/od/OD081.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD081Problem081.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD081Problem081Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD081Problem081Test.java",
+    "priority": "red"
   },
   {
     "id": "OD082",
@@ -977,11 +1058,12 @@
     "order": 82,
     "title": "整数编码",
     "difficulty": "一星",
-    "topic": "哈希与Map",
+    "topic": "哈希/Map",
     "language": "java",
     "content_path": "content/od/OD082.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD082Problem082.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD082Problem082Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD082Problem082Test.java",
+    "priority": "red"
   },
   {
     "id": "OD083",
@@ -989,11 +1071,12 @@
     "order": 83,
     "title": "出错的或电路",
     "difficulty": "二星",
-    "topic": "二分与区间",
+    "topic": "二分查找",
     "language": "java",
     "content_path": "content/od/OD083.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD083Problem083.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD083Problem083Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD083Problem083Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD084",
@@ -1001,11 +1084,12 @@
     "order": 84,
     "title": "最佳植树距离",
     "difficulty": "二星",
-    "topic": "二分与区间",
+    "topic": "二分查找",
     "language": "java",
     "content_path": "content/od/OD084.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD084Problem084.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD084Problem084Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD084Problem084Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD085",
@@ -1013,11 +1097,12 @@
     "order": 85,
     "title": "根据IP查找城市",
     "difficulty": "二星",
-    "topic": "二分与区间",
+    "topic": "二分查找",
     "language": "java",
     "content_path": "content/od/OD085.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD085Problem085.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD085Problem085Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD085Problem085Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD086",
@@ -1025,11 +1110,12 @@
     "order": 86,
     "title": "构成正方形的数量",
     "difficulty": "一星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD086.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD086Problem086.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD086Problem086Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD086Problem086Test.java",
+    "priority": "red"
   },
   {
     "id": "OD087",
@@ -1037,11 +1123,12 @@
     "order": 87,
     "title": "对称美学",
     "difficulty": "一星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD087.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD087Problem087.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD087Problem087Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD087Problem087Test.java",
+    "priority": "red"
   },
   {
     "id": "OD088",
@@ -1049,11 +1136,12 @@
     "order": 88,
     "title": "组装新的数组",
     "difficulty": "二星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD088.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD088Problem088.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD088Problem088Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD088Problem088Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD089",
@@ -1061,11 +1149,12 @@
     "order": 89,
     "title": "分弹珠游戏",
     "difficulty": "一星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD089.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD089Problem089.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD089Problem089Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD089Problem089Test.java",
+    "priority": "red"
   },
   {
     "id": "OD090",
@@ -1073,11 +1162,12 @@
     "order": 90,
     "title": "找到它",
     "difficulty": "二星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD090.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD090Problem090.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD090Problem090Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD090Problem090Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD091",
@@ -1085,11 +1175,12 @@
     "order": 91,
     "title": "最小外接凸多边形",
     "difficulty": "二星",
-    "topic": "数学与逻辑",
+    "topic": "数学/逻辑",
     "language": "java",
     "content_path": "content/od/OD091.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD091Problem091.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD091Problem091Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD091Problem091Test.java",
+    "priority": "yellow"
   },
   {
     "id": "OD092",
@@ -1101,6 +1192,7 @@
     "language": "java",
     "content_path": "content/od/OD092.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD092Problem092.java",
-    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD092Problem092Test.java"
+    "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD092Problem092Test.java",
+    "priority": "green"
   }
 ]

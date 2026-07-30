@@ -93,6 +93,7 @@ public final class CatalogLoader {
             }
             String contentPath = requiredText(entry, "content_path", id);
             String sourcePath = requiredText(entry, "source_path", id);
+            String priority = entry.has("priority") ? entry.get("priority").asText() : null;
             add(questions, byId, new QuestionDescriptor(
                     id,
                     Track.CODING,
@@ -102,7 +103,8 @@ public final class CatalogLoader {
                     requiredText(entry, "difficulty", id),
                     language,
                     contentPath,
-                    "training-center/starters/" + sourcePath));
+                    "training-center/starters/" + sourcePath,
+                    priority));
         }
     }
 

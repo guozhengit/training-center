@@ -2,6 +2,7 @@
 import { reactive } from 'vue'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
+import { useCountdown } from '../composables/useCountdown'
 import { renderMarkdown } from '../composables/useMarkdown'
 import CodeEditor from './CodeEditor.vue'
 
@@ -18,6 +19,7 @@ defineEmits(['judge', 'submit', 'open-sandbox'])
 
 const recorder = useRecorder()
 const hint = useHint()
+const countdown = useCountdown()
 
 // Question content store: { [questionId]: { description, starterCode, loaded, showDesc } }
 const contentStore = reactive({})
@@ -91,6 +93,24 @@ function scoreTotal(form) {
           <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
             <div class="question-desc-text markdown-body" v-html="renderMarkdown(contentStore[attempt.questionId].description)"></div>
           </div>
+        </div>
+
+        <!-- Countdown timer -->
+        <div class="countdown-bar" :class="{ 'countdown-warning': countdown.isWarning(attempt.id), 'countdown-expired': countdown.getTimer(attempt.id).expired }">
+          <template v-if="!countdown.getTimer(attempt.id).running && countdown.getTimer(attempt.id).remaining === 0 && !countdown.getTimer(attempt.id).expired">
+            <button type="button" class="btn-timer-start" @click="countdown.start(attempt.id, attempt.difficulty)">
+              开始限时（{{ attempt.difficulty === '三星' ? '60' : '40' }}min）
+            </button>
+          </template>
+          <template v-else>
+            <span class="countdown-display">{{ countdown.formatRemaining(countdown.getTimer(attempt.id).remaining) }}</span>
+            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">时间到!</span>
+            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">剩余不足5分钟</span>
+            <span v-else class="countdown-label">{{ attempt.difficulty === '三星' ? '200分题 / 60min' : '100分题 / 40min' }}</span>
+            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm" @click="countdown.pause(attempt.id)">暂停</button>
+            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm" @click="countdown.resume(attempt.id)">继续</button>
+            <button type="button" class="btn-timer-sm" @click="countdown.reset(attempt.id)">重置</button>
+          </template>
         </div>
 
         <!-- Code editor -->

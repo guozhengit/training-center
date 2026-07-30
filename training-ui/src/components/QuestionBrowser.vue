@@ -46,6 +46,7 @@ defineEmits(['update:selectedTrack', 'update:selectedGroup', 'update:selectedTop
       <article v-for="question in questions" :key="question.id" class="question-card">
         <div class="question-head">
           <span class="question-id">{{ question.id }}</span>
+          <span v-if="question.priority" class="priority-dot" :class="'priority-' + question.priority" :title="question.priority === 'green' ? '高频必刷' : question.priority === 'yellow' ? '中频推荐' : '低频补充'"></span>
           <span class="question-track">{{ question.groupName }}</span>
         </div>
         <h3>{{ question.title }}</h3>
