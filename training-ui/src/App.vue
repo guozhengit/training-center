@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setLocale, availableLocales } from './i18n'
 import { useDashboard } from './composables/useDashboard'
@@ -15,12 +15,20 @@ import HistoryPanel from './components/HistoryPanel.vue'
 import HistoryDrawer from './components/HistoryDrawer.vue'
 import MatrixReport from './components/MatrixReport.vue'
 import QuestionBrowser from './components/QuestionBrowser.vue'
+import QuestionDetail from './components/QuestionDetail.vue'
 
 const { t, locale } = useI18n()
 const dashboard = useDashboard()
 const training = useTraining(dashboard)
 const history = useHistory(dashboard, training)
 const exporter = useExport(dashboard, history, training)
+
+const selectedQuestion = ref(null)
+
+function startQuestionTraining(question) {
+  selectedQuestion.value = null
+  training.createSessionFromQuestionIds(question.track, [question.id])
+}
 
 onMounted(() => {
   dashboard.loadDashboard()
@@ -134,6 +142,13 @@ onMounted(() => {
         @update:selected-topic="dashboard.selectedTopic.value = $event"
         @update:selected-difficulty="dashboard.selectedDifficulty.value = $event"
         @load="dashboard.loadQuestions(); dashboard.loadFilters()"
+        @select="selectedQuestion = $event"
+      />
+
+      <QuestionDetail
+        :question="selectedQuestion"
+        @close="selectedQuestion = null"
+        @start="startQuestionTraining"
       />
     </template>
   </main>

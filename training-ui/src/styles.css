@@ -1265,3 +1265,141 @@ select {
 .q-section > ol:last-child {
   padding-bottom: 10px;
 }
+
+/* Clickable question card */
+.question-card-clickable {
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.question-card-clickable:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Question detail drawer */
+.question-detail-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.qd-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qd-title-row h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.qd-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 16px;
+  box-shadow: none;
+  line-height: 1;
+}
+
+.qd-close:hover {
+  background: #cbd5e1;
+}
+
+.qd-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.qd-meta span {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eef3f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.qd-priority.priority-green { background: #dcfce7; color: #166534; }
+.qd-priority.priority-yellow { background: #fef9c3; color: #854d0e; }
+.qd-priority.priority-red { background: #fee2e2; color: #991b1b; }
+
+.qd-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.qd-starter h3 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.qd-starter pre {
+  margin: 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: #1e293b;
+  overflow-x: auto;
+}
+
+.qd-starter code {
+  color: #e2e8f0;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.qd-footer {
+  display: flex;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.qd-start-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.qd-start-btn:hover {
+  opacity: 0.9;
+}
+
+.qd-cancel-btn {
+  padding: 12px 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.qd-cancel-btn:hover {
+  background: #f8fafc;
+}

@@ -9,7 +9,7 @@ defineProps({
   availableFilters: Object
 })
 
-defineEmits(['update:selectedTrack', 'update:selectedGroup', 'update:selectedTopic', 'update:selectedDifficulty', 'load'])
+defineEmits(['update:selectedTrack', 'update:selectedGroup', 'update:selectedTopic', 'update:selectedDifficulty', 'load', 'select'])
 </script>
 
 <template>
@@ -43,7 +43,7 @@ defineEmits(['update:selectedTrack', 'update:selectedGroup', 'update:selectedTop
     </div>
 
     <div class="question-list">
-      <article v-for="question in questions" :key="question.id" class="question-card">
+      <article v-for="question in questions" :key="question.id" class="question-card question-card-clickable" title="点击查看详情" @click="$emit('select', question)">
         <div class="question-head">
           <span class="question-id">{{ question.id }}</span>
           <span v-if="question.priority" class="priority-dot" :class="'priority-' + question.priority" :title="question.priority === 'green' ? '高频必刷' : question.priority === 'yellow' ? '中频推荐' : '低频补充'"></span>
