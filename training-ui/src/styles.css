@@ -1209,6 +1209,7 @@ select {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   background: #fff;
+  color: #334155;
 }
 
 .q-section summary {
@@ -1224,7 +1225,7 @@ select {
 
 .q-section summary::before {
   content: '▸ ';
-  color: #94a3b8;
+  color: #64748b;
   font-size: 11px;
 }
 
@@ -1243,6 +1244,20 @@ select {
 
 .q-section > :not(summary) {
   padding: 0 12px;
+  color: #334155;
+}
+
+.q-section p,
+.q-section li {
+  color: #334155;
+}
+
+.q-section strong {
+  color: #0f172a;
+}
+
+.q-section code {
+  color: #0f172a;
 }
 
 .q-section > p:last-child,
