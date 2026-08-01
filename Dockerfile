@@ -90,6 +90,16 @@ RUN mkdir -p output/training-runtime/database \
              output/training-runtime/logs \
     && chown -R training:training output/training-runtime
 
+# 预热判题 Maven 依赖缓存到 training 用户 .m2
+# 冷缓存首次判题需下载 JUnit/spring-boot parent 等, 耗时超过 90s 判题超时;
+# 这里用参考答案项目真实执行一次 mvn test: 既预置缓存, 又自检题库可编译通过
+# (构建期失败则暴露题库损坏, 而不是运行期才暴露)
+RUN mkdir -p /home/training/.m2 \
+    && chown -R training:training /home/training/.m2 \
+    && cd /workspace/output/coding-ai-exam/java \
+    && su training -c "HOME=/home/training /opt/maven/bin/mvn -B -ntp -q -Dmaven.repo.local=/home/training/.m2/repository test" \
+    && rm -rf /workspace/output/coding-ai-exam/java/target
+
 # 应用版本, 与 pom.xml 保持一致, 升级时通过 --build-arg TRAINING_VERSION=... 覆盖
 ARG TRAINING_VERSION=1.0.0-SNAPSHOT
 
