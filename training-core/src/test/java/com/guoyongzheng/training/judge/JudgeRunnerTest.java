@@ -45,7 +45,7 @@ class JudgeRunnerTest {
                 .judge(fixture.request());
 
         assertThat(process.request.get().command())
-                .containsExactly("mvn.cmd", "-q", "-Dtest=exam.SelectedTest", "test");
+                .containsExactly("mvn.cmd", "-o", "-q", "-Dtest=exam.SelectedTest", "test");
         assertThat(process.request.get().workingDirectory())
                 .isEqualTo(fixture.attempt.resolve("work/java").toAbsolutePath().normalize());
         assertThat(process.request.get().maxStdoutBytes()).isEqualTo(64 * 1024);

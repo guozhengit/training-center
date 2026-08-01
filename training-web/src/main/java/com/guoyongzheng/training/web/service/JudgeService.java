@@ -196,10 +196,11 @@ public class JudgeService {
         Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
         AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
-        if (attempt.sandboxPath() == null || attempt.sandboxPath().isBlank()) {
-            throw new IllegalArgumentException("Attempt has no sandbox path: " + attemptId);
-        }
-        Path sandboxPath = Path.of(attempt.sandboxPath()).toAbsolutePath().normalize();
+        requireCodingAttempt(database, attempt);
+        ensureSandboxIfNeeded(workspace, database, attempt);
+        Path sandboxPath = Path.of(requireSandboxPath(readAttempt(database, attemptId), attemptId))
+                .toAbsolutePath()
+                .normalize();
         Path allowedRoot = sandboxRoot(workspace).toAbsolutePath().normalize();
         if (!sandboxPath.startsWith(allowedRoot)) {
             throw new IllegalArgumentException("Sandbox path is outside Web judge root: " + attemptId);
@@ -227,10 +228,11 @@ public class JudgeService {
         Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
         AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
-        if (attempt.sandboxPath() == null || attempt.sandboxPath().isBlank()) {
-            throw new IllegalArgumentException("Attempt has no sandbox path: " + attemptId);
-        }
-        Path sandboxPath = Path.of(attempt.sandboxPath()).toAbsolutePath().normalize();
+        requireCodingAttempt(database, attempt);
+        ensureSandboxIfNeeded(workspace, database, attempt);
+        Path sandboxPath = Path.of(requireSandboxPath(readAttempt(database, attemptId), attemptId))
+                .toAbsolutePath()
+                .normalize();
         Path allowedRoot = sandboxRoot(workspace).toAbsolutePath().normalize();
         if (!sandboxPath.startsWith(allowedRoot)) {
             throw new IllegalArgumentException("Sandbox path is outside Web judge root: " + attemptId);
@@ -391,6 +393,38 @@ public class JudgeService {
         } catch (IOException exception) {
             throw new IllegalStateException("Cannot create sandbox for attempt: " + attempt.id(), exception);
         }
+    }
+
+    // --- 沙箱懒预建: write-source / open-sandbox 首次调用时自动创建沙箱, 无需先白跑一次判题 ---
+
+    private void requireCodingAttempt(TrainingDatabase database, AttemptRepository.Attempt attempt) {
+        QuestionDescriptor question = readQuestion(database, attempt.questionId());
+        if (question.track() != Track.CODING) {
+            throw new IllegalArgumentException(
+                    "Sandbox source editing only supports CODING attempts: " + attempt.id());
+        }
+    }
+
+    private void ensureSandboxIfNeeded(Path workspace, TrainingDatabase database,
+                                       AttemptRepository.Attempt attempt) {
+        if (attempt.sandboxPath() != null && !attempt.sandboxPath().isBlank()) {
+            return;
+        }
+        ensureSandboxForAttempt(workspace, database, attempt);
+    }
+
+    private SandboxManifest ensureSandboxForAttempt(Path workspace, TrainingDatabase database,
+                                                    AttemptRepository.Attempt attempt) {
+        StarterMapping mapping = starterMapping(workspace, attempt.questionId());
+        SandboxService service = sandboxService(workspace);
+        return ensureSandbox(database, service, attempt, mapping);
+    }
+
+    private static String requireSandboxPath(AttemptRepository.Attempt attempt, String attemptId) {
+        if (attempt.sandboxPath() == null || attempt.sandboxPath().isBlank()) {
+            throw new IllegalStateException("Sandbox was not provisioned for attempt: " + attemptId);
+        }
+        return attempt.sandboxPath();
     }
 
     private void appendRunningJudgement(TrainingDatabase database, String judgementId, String attemptId,

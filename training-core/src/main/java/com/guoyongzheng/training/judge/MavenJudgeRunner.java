@@ -47,6 +47,9 @@ public final class MavenJudgeRunner implements JudgeRunner {
             ProcessResult process = processRunner.run(new ProcessRequest(
                     List.of(
                             MVN_EXECUTABLE,
+                            // 离线模式: 镜像构建时已预热 .m2 缓存, 保证判题确定性,
+                            // 缺依赖立即报错而非卡网络下载 (本地 .m2 也是满的)
+                            "-o",
                             "-q",
                             "-Dtest=" + prepared.selector(),
                             "test"),
