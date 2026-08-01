@@ -22,12 +22,6 @@ public interface JudgeRunner {
     JudgementResult judge(JudgeRequest request);
 }
 
-@FunctionalInterface
-interface SandboxCompletionCheck {
-
-    boolean isComplete(Path attemptDirectory) throws IOException;
-}
-
 final class JudgeSupport {
 
     static final int OUTPUT_CAP = 64 * 1024;

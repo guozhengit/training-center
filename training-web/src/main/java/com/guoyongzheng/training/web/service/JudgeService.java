@@ -24,6 +24,8 @@ import com.guoyongzheng.training.sandbox.SandboxManifest;
 import com.guoyongzheng.training.sandbox.SandboxPolicy;
 import com.guoyongzheng.training.sandbox.SandboxService;
 import com.guoyongzheng.training.web.config.TrainingProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -49,6 +51,8 @@ import java.util.function.Consumer;
  */
 @Service
 public class JudgeService {
+    private static final Logger log = LoggerFactory.getLogger(JudgeService.class);
+
     private final TrainingDatabaseProvider databaseProvider;
     private final TrainingProperties trainingProperties;
     private final ObjectMapper objectMapper;
@@ -75,6 +79,7 @@ public class JudgeService {
 
     public TrainingSessionService.JudgeAttemptResponse judgeAttemptWithProgress(
             String attemptId, Consumer<JudgeProgressEvent> progress) {
+        log.info("[Judge] start attemptId={}", attemptId);
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "校验答题状态"));
         Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
@@ -96,6 +101,8 @@ public class JudgeService {
                 .normalize();
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_READY, "沙箱就绪"));
 
+        cleanBuildArtifacts(sandboxPath);
+
         String judgementId = "web-judgement-" + UUID.randomUUID();
         Instant startedAt = clock.instant();
         appendRunningJudgement(database, judgementId, attempt.id(), startedAt);
@@ -103,8 +110,8 @@ public class JudgeService {
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.JUDGE_RUNNING,
                 mapping.runnerKind() == RunnerKind.MAVEN ? "Maven 编译并执行测试" : "Pytest 执行测试"));
         JudgeRunner runner = mapping.runnerKind() == RunnerKind.MAVEN
-                ? new MavenJudgeRunner(new LocalProcessRunner(), sandboxService)
-                : new PytestJudgeRunner(new LocalProcessRunner(), sandboxService);
+                ? new MavenJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady)
+                : new PytestJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady);
         JudgementResult result = runner.judge(new JudgeRequest(
                 sandboxPath,
                 manifest,
@@ -214,7 +221,75 @@ public class JudgeService {
         }
     }
 
+    public void writeSource(String attemptId, String sourceCode) {
+        log.info("[WriteSource] attemptId={}, codeLength={}", attemptId,
+                sourceCode == null ? 0 : sourceCode.length());
+        Path workspace = databaseProvider.workspace();
+        TrainingDatabase database = databaseProvider.readyDatabase();
+        AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
+        if (attempt.sandboxPath() == null || attempt.sandboxPath().isBlank()) {
+            throw new IllegalArgumentException("Attempt has no sandbox path: " + attemptId);
+        }
+        Path sandboxPath = Path.of(attempt.sandboxPath()).toAbsolutePath().normalize();
+        Path allowedRoot = sandboxRoot(workspace).toAbsolutePath().normalize();
+        if (!sandboxPath.startsWith(allowedRoot)) {
+            throw new IllegalArgumentException("Sandbox path is outside Web judge root: " + attemptId);
+        }
+        Path manifestPath = sandboxPath.resolve("manifest.json");
+        if (!Files.isRegularFile(manifestPath)) {
+            throw new IllegalStateException("Sandbox manifest missing: " + attemptId);
+        }
+        try {
+            SandboxManifest manifest = objectMapper.readValue(manifestPath.toFile(), SandboxManifest.class);
+            Path sourceFile = sandboxPath.resolve(manifest.workPath())
+                    .resolve(manifest.sandboxSourcePath())
+                    .toAbsolutePath().normalize();
+            if (!sourceFile.startsWith(sandboxPath)) {
+                throw new IllegalArgumentException("Source path escapes sandbox: " + attemptId);
+            }
+            Files.createDirectories(sourceFile.getParent());
+            Files.writeString(sourceFile, sourceCode);
+            log.info("[WriteSource] written to {}", sourceFile);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Cannot write source to sandbox: " + attemptId, exception);
+        }
+    }
+
     // --- internal helpers ---
+
+    private void cleanBuildArtifacts(Path sandboxPath) {
+        Path work = sandboxPath.resolve("work");
+        if (!Files.isDirectory(work)) return;
+        log.debug("[Judge] cleaning build artifacts in {}", work);
+        deleteRecursively(work.resolve("java/target"));
+        deleteRecursively(work.resolve("python/__pycache__"));
+        deleteRecursively(work.resolve("python/.pytest_cache"));
+    }
+
+    private static void deleteRecursively(Path directory) {
+        if (!Files.isDirectory(directory)) return;
+        try (var walk = Files.walk(directory)) {
+            walk.sorted(java.util.Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try { Files.deleteIfExists(path); } catch (IOException ignored) { }
+                    });
+        } catch (IOException ignored) { }
+    }
+
+    private boolean isSandboxStructurallyReady(Path attemptDirectory) {
+        try {
+            Path manifest = attemptDirectory.resolve("manifest.json");
+            Path state = attemptDirectory.resolve(".state");
+            Path work = attemptDirectory.resolve("work");
+            if (!Files.isRegularFile(manifest) || !Files.isRegularFile(state) || !Files.isDirectory(work)) {
+                return false;
+            }
+            String stateContent = Files.readString(state);
+            return stateContent.startsWith("COMPLETE:");
+        } catch (IOException exception) {
+            return false;
+        }
+    }
 
     private AttemptRepository.Attempt readAttempt(TrainingDatabase database, String attemptId) {
         try (Connection connection = database.openConnection()) {

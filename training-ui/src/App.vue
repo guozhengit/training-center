@@ -24,10 +24,16 @@ const history = useHistory(dashboard, training)
 const exporter = useExport(dashboard, history, training)
 
 const selectedQuestion = ref(null)
+const startingQuestion = ref(false)
 
-function startQuestionTraining(question) {
-  selectedQuestion.value = null
-  training.createSessionFromQuestionIds(question.track, [question.id])
+async function startQuestionTraining(question) {
+  startingQuestion.value = true
+  try {
+    await training.createSessionFromQuestionIds(question.track, [question.id])
+    selectedQuestion.value = null
+  } finally {
+    startingQuestion.value = false
+  }
 }
 
 onMounted(() => {
@@ -147,6 +153,7 @@ onMounted(() => {
 
       <QuestionDetail
         :question="selectedQuestion"
+        :starting="startingQuestion"
         @close="selectedQuestion = null"
         @start="startQuestionTraining"
       />

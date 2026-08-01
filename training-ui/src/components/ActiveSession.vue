@@ -42,6 +42,9 @@ async function loadQuestionContent(attempt) {
     if (!codeStore[attempt.id]) {
       codeStore[attempt.id] = data.starterCode || ''
     }
+    if (data.starterCode) {
+      hint.setSource(attempt.id, data.starterCode)
+    }
   } catch {
     contentStore[qid] = { description: '（题目内容加载失败）', starterCode: '', loaded: true, showDesc: true }
   }
@@ -130,7 +133,7 @@ function scoreTotal(form) {
         <div class="finished-row" v-if="attempt.sandboxPath">
           <span>沙箱：{{ attempt.sandboxPath }}</span>
         </div>
-        <button :disabled="trainingBusy" type="button" @click="$emit('judge', attempt)">
+        <button :disabled="trainingBusy" type="button" @click="$emit('judge', attempt, getCode(attempt.id))">
           {{ trainingBusy ? '判题中...' : '运行自动判题' }}
         </button>
 

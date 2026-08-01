@@ -1,7 +1,8 @@
-import { computed, ref } from 'vue'
+import { computed, ref, getCurrentScope, onScopeDispose } from 'vue'
 import { useApi } from './useApi'
 
 const SESSION_STORAGE_KEY = 'training:activeSession'
+const JUDGE_TIMEOUT_MS = 125_000
 
 export function useTraining(dashboard) {
   const { fetchJson } = useApi()
@@ -12,6 +13,26 @@ export function useTraining(dashboard) {
   const submitForms = ref({})
   const judgeResults = ref({})
   const judgeProgress = ref(null)
+
+  let activeEventSource = null
+  let judgeTimeoutId = null
+
+  function closeJudgeStream() {
+    if (judgeTimeoutId) {
+      clearTimeout(judgeTimeoutId)
+      judgeTimeoutId = null
+    }
+    if (activeEventSource) {
+      activeEventSource.close()
+      activeEventSource = null
+    }
+  }
+
+  function abortJudge() {
+    closeJudgeStream()
+    judgeProgress.value = null
+    trainingBusy.value = false
+  }
 
   function restoreSession() {
     try {
@@ -163,13 +184,41 @@ export function useTraining(dashboard) {
     }
   }
 
-  function judgeAttempt(attempt) {
+  async function judgeAttempt(attempt, sourceCode) {
+    closeJudgeStream()
+
     trainingBusy.value = true
     trainingMessage.value = ''
     dashboard.error.value = ''
+    judgeProgress.value = { stage: 'CONNECTING', message: '同步代码到沙箱…' }
+
+    if (sourceCode) {
+      try {
+        await fetchJson(`/api/training/attempts/${attempt.id}/write-source`, {
+          method: 'POST',
+          body: JSON.stringify({ sourceCode })
+        })
+      } catch (exception) {
+        trainingBusy.value = false
+        judgeProgress.value = null
+        dashboard.error.value = exception.message || '写入代码到沙箱失败'
+        return
+      }
+    }
+
     judgeProgress.value = { stage: 'CONNECTING', message: '连接判题服务…' }
 
     const source = new EventSource(`/api/training/attempts/${attempt.id}/judge-stream`)
+    activeEventSource = source
+
+    judgeTimeoutId = setTimeout(() => {
+      if (activeEventSource === source) {
+        closeJudgeStream()
+        judgeProgress.value = null
+        trainingBusy.value = false
+        dashboard.error.value = '判题超时，服务端未在规定时间内响应'
+      }
+    }, JUDGE_TIMEOUT_MS)
 
     source.addEventListener('progress', (event) => {
       try {
@@ -178,7 +227,7 @@ export function useTraining(dashboard) {
     })
 
     source.addEventListener('result', async (event) => {
-      source.close()
+      closeJudgeStream()
       judgeProgress.value = null
       try {
         const result = JSON.parse(event.data)
@@ -199,7 +248,7 @@ export function useTraining(dashboard) {
     })
 
     source.addEventListener('error', (event) => {
-      source.close()
+      closeJudgeStream()
       judgeProgress.value = null
       trainingBusy.value = false
       if (event.data) {
@@ -215,7 +264,8 @@ export function useTraining(dashboard) {
     })
 
     source.onerror = () => {
-      source.close()
+      if (activeEventSource !== source) return
+      closeJudgeStream()
       judgeProgress.value = null
       trainingBusy.value = false
       dashboard.error.value = dashboard.error.value || '判题连接异常'
@@ -276,7 +326,9 @@ export function useTraining(dashboard) {
       persistSession(session)
       await dashboard.loadStats()
       await dashboard.loadHistory()
-      trainingMessage.value = `已创建失败题重练：${session.attempts.length} 道题`
+      trainingMessage.value = session.attempts.length === 1
+        ? `已创建专项训练：${session.attempts[0].questionId}`
+        : `已创建定向训练：${session.attempts.length} 道题`
     } catch (exception) {
       dashboard.error.value = exception.message || '创建失败题重练失败'
     } finally {
@@ -289,12 +341,17 @@ export function useTraining(dashboard) {
     return new Date(value).toLocaleString('zh-CN', { hour12: false })
   }
 
+  if (getCurrentScope()) {
+    onScopeDispose(closeJudgeStream)
+  }
+
   return {
     trainingBusy, trainingMessage, activeSession, submitForms, judgeResults, judgeProgress,
     sessionForm, trainingTracks, scoreDimensions, activeSessionProgress,
     createTrainingSession, submitAttempt, judgeAttempt, openSandbox,
     loadSessionFromHistory, createSessionFromQuestionIds,
     scoreTotal, formatDate,
-    initSubmitForms: initializeSubmitForms
+    initSubmitForms: initializeSubmitForms,
+    abortJudge
   }
 }

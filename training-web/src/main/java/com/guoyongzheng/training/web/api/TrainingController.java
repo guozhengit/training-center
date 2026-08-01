@@ -21,8 +21,10 @@ import jakarta.annotation.PreDestroy;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Tag(name = "Training", description = "Session lifecycle, attempt submission, and judging")
 @RestController
@@ -32,11 +34,15 @@ public class TrainingController {
     private final SessionQueryService sessionQueryService;
     private final JudgeService judgeService;
     private final StarterHintService starterHintService;
-    private final ExecutorService judgeExecutor = Executors.newCachedThreadPool(runnable -> {
-        Thread thread = new Thread(runnable, "judge-sse");
-        thread.setDaemon(true);
-        return thread;
-    });
+    private final ExecutorService judgeExecutor = new ThreadPoolExecutor(
+            2, 4, 60, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(8),
+            runnable -> {
+                Thread thread = new Thread(runnable, "judge-sse");
+                thread.setDaemon(true);
+                return thread;
+            },
+            new ThreadPoolExecutor.CallerRunsPolicy());
 
     public TrainingController(TrainingSessionService trainingSessionService,
                               SessionQueryService sessionQueryService,
@@ -105,7 +111,19 @@ public class TrainingController {
     @GetMapping(value = "/attempts/{attemptId}/judge-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter judgeAttemptStream(@PathVariable("attemptId") String attemptId) {
         SseEmitter emitter = new SseEmitter(120_000L);
+        AtomicReference<Thread> workerThread = new AtomicReference<>();
+
+        emitter.onTimeout(() -> {
+            Thread worker = workerThread.get();
+            if (worker != null) worker.interrupt();
+        });
+        emitter.onCompletion(() -> {
+            Thread worker = workerThread.get();
+            if (worker != null) worker.interrupt();
+        });
+
         judgeExecutor.execute(() -> {
+            workerThread.set(Thread.currentThread());
             try {
                 TrainingSessionService.JudgeAttemptResponse result =
                         judgeService.judgeAttemptWithProgress(attemptId, event -> {
@@ -120,6 +138,7 @@ public class TrainingController {
                 emitter.send(SseEmitter.event().name("result").data(result));
                 emitter.complete();
             } catch (Exception exception) {
+                if (Thread.currentThread().isInterrupted()) return;
                 try {
                     emitter.send(SseEmitter.event()
                             .name("error")
@@ -130,6 +149,8 @@ public class TrainingController {
                     // client disconnected
                 }
                 emitter.completeWithError(exception);
+            } finally {
+                workerThread.set(null);
             }
         });
         return emitter;
@@ -141,6 +162,15 @@ public class TrainingController {
         return judgeService.openSandbox(attemptId);
     }
 
+    @Operation(summary = "Write source", description = "Writes the user's code to the sandbox source file before judging.")
+    @PostMapping("/attempts/{attemptId}/write-source")
+    public java.util.Map<String, String> writeSource(
+            @PathVariable("attemptId") String attemptId,
+            @RequestBody WriteSourceRequest request) {
+        judgeService.writeSource(attemptId, request.sourceCode());
+        return java.util.Map.of("status", "ok", "attemptId", attemptId);
+    }
+
     @Operation(summary = "Starter hint", description = "Returns starter source at a progressive hint level (0=signatures, 1=signatures+hints, 2=full).")
     @PostMapping("/attempts/{attemptId}/hint")
     public StarterHintService.HintResponse hint(
@@ -150,5 +180,8 @@ public class TrainingController {
     }
 
     public record HintRequest(String source, int level) {
+    }
+
+    public record WriteSourceRequest(String sourceCode) {
     }
 }

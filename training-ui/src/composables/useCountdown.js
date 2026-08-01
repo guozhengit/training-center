@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, getCurrentScope, onScopeDispose } from 'vue'
 
 /**
  * Countdown timer composable for timed training mode.
@@ -84,5 +84,20 @@ export function useCountdown() {
     return timer.running && timer.remaining <= 300 && timer.remaining > 0
   }
 
-  return { timers, getTimer, start, pause, resume, reset, formatRemaining, isWarning, timeLimitFor }
+  function cleanup() {
+    for (const attemptId of Object.keys(timers)) {
+      const timer = timers[attemptId]
+      if (timer.intervalId) {
+        clearInterval(timer.intervalId)
+        timer.intervalId = null
+      }
+      timer.running = false
+    }
+  }
+
+  if (getCurrentScope()) {
+    onScopeDispose(cleanup)
+  }
+
+  return { timers, getTimer, start, pause, resume, reset, formatRemaining, isWarning, timeLimitFor, cleanup }
 }

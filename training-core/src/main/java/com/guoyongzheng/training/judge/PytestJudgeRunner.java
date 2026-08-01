@@ -51,7 +51,7 @@ public final class PytestJudgeRunner implements JudgeRunner {
         this(processRunner, Objects.requireNonNull(sandboxService, "sandboxService")::isComplete);
     }
 
-    PytestJudgeRunner(
+    public PytestJudgeRunner(
             ProcessRunner processRunner,
             SandboxCompletionCheck completionCheck) {
         this.processRunner = Objects.requireNonNull(processRunner, "processRunner");

@@ -9,7 +9,8 @@ import picocli.CommandLine.Spec;
  * Entry point for the training-center CLI.
  *
  * <p>Provides offline access to environment diagnostics, catalog inspection,
- * and database migration without starting the web server.</p>
+ * database migration, and a minimal local training workflow without starting
+ * the web server.</p>
  */
 @Command(
         name = "training",
@@ -19,7 +20,12 @@ import picocli.CommandLine.Spec;
         subcommands = {
                 DoctorCommand.class,
                 CatalogCommand.class,
-                MigrateCommand.class
+                MigrateCommand.class,
+                StartCommand.class,
+                SubmitCommand.class,
+                JudgeCommand.class,
+                HistoryCommand.class,
+                ExportCommand.class
         }
 )
 public final class TrainingCli implements Runnable {

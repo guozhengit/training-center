@@ -6,8 +6,10 @@ node_modules/
 
 dist/
 **/dist/
+training-web/src/main/resources/static/
 
 .idea/
+.claude/
 *.iml
 
 *.log

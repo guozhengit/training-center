@@ -1,17 +1,22 @@
 import { marked } from 'marked'
+import { markedHighlight } from 'marked-highlight'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/common'
 import 'highlight.js/styles/github.css'
 
-marked.setOptions({
-  gfm: true,
-  breaks: true,
+marked.use(markedHighlight({
+  langPrefix: 'hljs language-',
   highlight(code, lang) {
     if (lang && hljs.getLanguage(lang)) {
       return hljs.highlight(code, { language: lang }).value
     }
     return hljs.highlightAuto(code).value
   }
+}))
+
+marked.setOptions({
+  gfm: true,
+  breaks: true
 })
 
 const SANITIZE_CONFIG = {

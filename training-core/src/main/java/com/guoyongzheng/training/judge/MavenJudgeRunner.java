@@ -30,7 +30,7 @@ public final class MavenJudgeRunner implements JudgeRunner {
         this(processRunner, Objects.requireNonNull(sandboxService, "sandboxService")::isComplete);
     }
 
-    MavenJudgeRunner(
+    public MavenJudgeRunner(
             ProcessRunner processRunner,
             SandboxCompletionCheck completionCheck) {
         this.processRunner = Objects.requireNonNull(processRunner, "processRunner");

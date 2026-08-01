@@ -20,6 +20,7 @@ public class TrainingDatabaseProvider {
     private final CatalogCache catalogCache;
 
     private Path migratedDatabasePath;
+    private TrainingDatabase cachedDatabase;
 
     public TrainingDatabaseProvider(WorkspaceLocator workspaceLocator, CatalogCache catalogCache) {
         this.workspaceLocator = workspaceLocator;
@@ -38,14 +39,15 @@ public class TrainingDatabaseProvider {
         if (!databasePath.equals(migratedDatabasePath)) {
             TrainingDatabase database = new TrainingDatabase(databasePath);
             database.migrate();
-            migratedDatabasePath = databasePath;
             try (Connection connection = database.openConnection()) {
                 syncQuestions(connection, catalogCache.get().find(null));
             } catch (SQLException exception) {
                 throw new IllegalStateException("Cannot sync question catalog to database", exception);
             }
+            migratedDatabasePath = databasePath;
+            cachedDatabase = database;
         }
-        return new TrainingDatabase(databasePath);
+        return cachedDatabase;
     }
 
     public List<QuestionDescriptor> loadCatalog() {
