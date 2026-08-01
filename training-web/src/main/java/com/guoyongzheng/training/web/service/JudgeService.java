@@ -409,9 +409,13 @@ public class JudgeService {
     private StarterMapping starterMapping(Path workspace, String questionId) {
         Path mappingPath = workspace.resolve("training-center/config/starter-mapping.json");
         Path odMappingPath = workspace.resolve("training-center/config/od-starter-mapping.json");
+        Path importedMappingPath = workspace.resolve("training-center/config/imported-starter-mapping.json");
         StarterMapping result = findInMappingFile(mappingPath, questionId);
         if (result == null && Files.exists(odMappingPath)) {
             result = findInMappingFile(odMappingPath, questionId);
+        }
+        if (result == null && Files.exists(importedMappingPath)) {
+            result = findInMappingFile(importedMappingPath, questionId);
         }
         if (result == null) {
             throw new IllegalArgumentException("Missing starter mapping for question: " + questionId);

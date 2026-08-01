@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-/** Loads the three read-only question indexes into one validated catalog. */
+/** Loads the read-only question indexes plus the optional imported index into one validated catalog. */
 public final class CatalogLoader {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final int CODING_COUNT = 120;
@@ -28,7 +28,8 @@ public final class CatalogLoader {
         return load(root,
                 root.resolve("output/coding-ai-exam/catalog/questions.json"),
                 root.resolve("training-center/config/oral-questions.json"),
-                root.resolve("training-center/config/project-cases.json"));
+                root.resolve("training-center/config/project-cases.json"),
+                root.resolve("training-center/config/imported-questions.json"));
     }
 
     /**
@@ -36,6 +37,14 @@ public final class CatalogLoader {
      * This overload makes corruption fixtures possible without granting those fixtures broader filesystem access.
      */
     public TrainingCatalog load(Path workspaceRoot, Path codingIndex, Path oralIndex, Path projectIndex) {
+        Path root = approvedWorkspaceRoot(workspaceRoot);
+        return load(root, codingIndex, oralIndex, projectIndex,
+                root.resolve("training-center/config/imported-questions.json"));
+    }
+
+    /** Loads explicit indexes including a caller-supplied imported index (used by tests). */
+    public TrainingCatalog load(Path workspaceRoot, Path codingIndex, Path oralIndex, Path projectIndex,
+                                Path importedIndex) {
         Path root = approvedWorkspaceRoot(workspaceRoot);
         Path codingRoot = requireDirectory(root.resolve("output/coding-ai-exam"), "coding catalog root");
         Path interviewRoot = requireDirectory(root.resolve("output/interview"), "interview source root");
@@ -46,6 +55,7 @@ public final class CatalogLoader {
         loadOral(readArrayMember(oralIndex, "questions"), root, interviewRoot, questions, byId);
         loadProjects(readArrayMember(projectIndex, "cases"), root, interviewRoot, questions, byId);
         loadOdQuestionsIfPresent(root, codingRoot, questions, byId);
+        loadImportedIfPresent(importedIndex, root, codingRoot, interviewRoot, questions, byId);
         return new ImmutableTrainingCatalog(questions, byId);
     }
 
@@ -53,27 +63,7 @@ public final class CatalogLoader {
                                    Map<String, QuestionDescriptor> byId) {
         requireCount(entries, CODING_COUNT, "coding");
         for (JsonNode entry : entries) {
-            String id = requiredText(entry, "id", "coding question");
-            String language = requiredText(entry, "language", id).toLowerCase(Locale.ROOT);
-            if (!language.equals("java") && !language.equals("python")) {
-                throw new IllegalArgumentException("Unknown coding language: " + language + " for " + id);
-            }
-            String contentPath = requiredText(entry, "content_path", id);
-            String sourcePath = requiredText(entry, "source_path", id);
-            String testPath = requiredText(entry, "test_path", id);
-            requireRegularFile(codingRoot, contentPath, id);
-            requireRegularFile(codingRoot, sourcePath, id);
-            requireRegularFile(codingRoot, testPath, id);
-            add(questions, byId, new QuestionDescriptor(
-                    id,
-                    Track.CODING,
-                    requiredText(entry, "group", id),
-                    requiredText(entry, "title", id),
-                    requiredText(entry, "topic", id),
-                    requiredText(entry, "difficulty", id),
-                    language,
-                    contentPath,
-                    "training-center/starters/" + sourcePath));
+            addCoding(entry, codingRoot, questions, byId, "coding question");
         }
     }
 
@@ -84,28 +74,37 @@ public final class CatalogLoader {
         if (!Files.isRegularFile(odIndex)) {
             return; // OD catalog is optional
         }
-        JsonNode entries = readArray(odIndex, "OD catalog");
-        for (JsonNode entry : entries) {
-            String id = requiredText(entry, "id", "OD question");
-            String language = requiredText(entry, "language", id).toLowerCase(Locale.ROOT);
-            if (!language.equals("java") && !language.equals("python")) {
-                throw new IllegalArgumentException("Unknown coding language: " + language + " for " + id);
-            }
-            String contentPath = requiredText(entry, "content_path", id);
-            String sourcePath = requiredText(entry, "source_path", id);
-            String priority = entry.has("priority") ? entry.get("priority").asText() : null;
-            add(questions, byId, new QuestionDescriptor(
-                    id,
-                    Track.CODING,
-                    requiredText(entry, "group", id),
-                    requiredText(entry, "title", id),
-                    requiredText(entry, "topic", id),
-                    requiredText(entry, "difficulty", id),
-                    language,
-                    contentPath,
-                    "training-center/starters/" + sourcePath,
-                    priority));
+        for (JsonNode entry : readArray(odIndex, "OD catalog")) {
+            addCoding(entry, codingRoot, questions, byId, "OD question");
         }
+    }
+
+    private static void addCoding(JsonNode entry, Path codingRoot, List<QuestionDescriptor> questions,
+                                  Map<String, QuestionDescriptor> byId, String recordName) {
+        String id = requiredText(entry, "id", recordName);
+        String language = requiredText(entry, "language", id).toLowerCase(Locale.ROOT);
+        if (!language.equals("java") && !language.equals("python")) {
+            throw new IllegalArgumentException("Unknown coding language: " + language + " for " + id);
+        }
+        String contentPath = requiredText(entry, "content_path", id);
+        String sourcePath = requiredText(entry, "source_path", id);
+        String testPath = requiredText(entry, "test_path", id);
+        requireRegularFile(codingRoot, contentPath, id);
+        requireRegularFile(codingRoot, sourcePath, id);
+        requireRegularFile(codingRoot, testPath, id);
+        String priority = entry.has("priority") && !entry.path("priority").asText().isBlank()
+                ? entry.get("priority").asText() : null;
+        add(questions, byId, new QuestionDescriptor(
+                id,
+                Track.CODING,
+                requiredText(entry, "group", id),
+                requiredText(entry, "title", id),
+                requiredText(entry, "topic", id),
+                requiredText(entry, "difficulty", id),
+                language,
+                contentPath,
+                "training-center/starters/" + sourcePath,
+                priority));
     }
 
     private static void loadOral(JsonNode entries, Path workspaceRoot, Path interviewRoot,
@@ -116,21 +115,29 @@ public final class CatalogLoader {
             String id = requiredText(entry, "id", "oral question");
             requireUniqueId(byId, id);
             requireExpectedId(id, "O", index + 1, "oral");
-            String sourcePath = requiredText(entry, "source_path", id);
-            Path source = requireRegularWorkspaceFile(workspaceRoot, interviewRoot, sourcePath, id);
-            String heading = requiredText(entry, "question_heading", id);
-            requireSingleHeading(source, heading, id);
-            add(questions, byId, new QuestionDescriptor(
-                    id,
-                    Track.ORAL,
-                    "oral",
-                    requiredText(entry, "title", id),
-                    requiredText(entry, "topic", id),
-                    "oral",
-                    "markdown",
-                    sourcePath + "#" + heading,
-                    null));
+            addOral(entry, workspaceRoot, interviewRoot, questions, byId, "oral question");
         }
+    }
+
+    private static void addOral(JsonNode entry, Path workspaceRoot, Path interviewRoot,
+                                List<QuestionDescriptor> questions, Map<String, QuestionDescriptor> byId,
+                                String recordName) {
+        String id = requiredText(entry, "id", recordName);
+        requireUniqueId(byId, id);
+        String sourcePath = requiredText(entry, "source_path", id);
+        Path source = requireRegularWorkspaceFile(workspaceRoot, interviewRoot, sourcePath, id);
+        String heading = requiredText(entry, "question_heading", id);
+        requireSingleHeading(source, heading, id);
+        add(questions, byId, new QuestionDescriptor(
+                id,
+                Track.ORAL,
+                "oral",
+                requiredText(entry, "title", id),
+                requiredText(entry, "topic", id),
+                "oral",
+                "markdown",
+                sourcePath + "#" + heading,
+                null));
     }
 
     private static void loadProjects(JsonNode entries, Path workspaceRoot, Path interviewRoot,
@@ -141,20 +148,50 @@ public final class CatalogLoader {
             String id = requiredText(entry, "id", "project case");
             requireUniqueId(byId, id);
             requireExpectedId(id, "P", index + 1, "project");
-            String sourcePath = requiredText(entry, "source_path", id);
-            Path source = requireRegularWorkspaceFile(workspaceRoot, interviewRoot, sourcePath, id);
-            String heading = requiredText(entry, "section_heading", id);
-            requireSingleHeading(source, heading, id);
-            add(questions, byId, new QuestionDescriptor(
-                    id,
-                    Track.PROJECT,
-                    requiredText(entry, "project_name", id),
-                    requiredText(entry, "title", id),
-                    requiredText(entry, "project_nature", id),
-                    "project",
-                    "markdown",
-                    sourcePath + "#" + heading,
-                    null));
+            addProject(entry, workspaceRoot, interviewRoot, questions, byId, "project case");
+        }
+    }
+
+    private static void addProject(JsonNode entry, Path workspaceRoot, Path interviewRoot,
+                                   List<QuestionDescriptor> questions, Map<String, QuestionDescriptor> byId,
+                                   String recordName) {
+        String id = requiredText(entry, "id", recordName);
+        requireUniqueId(byId, id);
+        String sourcePath = requiredText(entry, "source_path", id);
+        Path source = requireRegularWorkspaceFile(workspaceRoot, interviewRoot, sourcePath, id);
+        String heading = requiredText(entry, "section_heading", id);
+        requireSingleHeading(source, heading, id);
+        add(questions, byId, new QuestionDescriptor(
+                id,
+                Track.PROJECT,
+                requiredText(entry, "project_name", id),
+                requiredText(entry, "title", id),
+                requiredText(entry, "project_nature", id),
+                "project",
+                "markdown",
+                sourcePath + "#" + heading,
+                null));
+    }
+
+    /**
+     * Loads user-imported questions from {@code imported-questions.json} when present.
+     * Entries are discriminated by {@code type} (coding/oral/project) and, unlike the built-in
+     * indexes, are not subject to fixed record counts or sequential ID expectations.
+     */
+    private static void loadImportedIfPresent(Path importedIndex, Path workspaceRoot, Path codingRoot,
+                                              Path interviewRoot, List<QuestionDescriptor> questions,
+                                              Map<String, QuestionDescriptor> byId) {
+        if (!Files.isRegularFile(importedIndex)) {
+            return; // imported catalog is optional
+        }
+        for (JsonNode entry : readArray(importedIndex, "imported catalog")) {
+            String type = requiredText(entry, "type", "imported question").toLowerCase(Locale.ROOT);
+            switch (type) {
+                case "coding" -> addCoding(entry, codingRoot, questions, byId, "imported question");
+                case "oral" -> addOral(entry, workspaceRoot, interviewRoot, questions, byId, "imported question");
+                case "project" -> addProject(entry, workspaceRoot, interviewRoot, questions, byId, "imported question");
+                default -> throw new IllegalArgumentException("Unknown imported type: " + type);
+            }
         }
     }
 

@@ -25,7 +25,8 @@ import picocli.CommandLine.Spec;
                 SubmitCommand.class,
                 JudgeCommand.class,
                 HistoryCommand.class,
-                ExportCommand.class
+                ExportCommand.class,
+                ImportCommand.class
         }
 )
 public final class TrainingCli implements Runnable {
