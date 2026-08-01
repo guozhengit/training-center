@@ -13,6 +13,7 @@ import com.guoyongzheng.training.judge.JudgeRunner;
 import com.guoyongzheng.training.judge.JudgementResult;
 import com.guoyongzheng.training.judge.MavenJudgeRunner;
 import com.guoyongzheng.training.judge.PytestJudgeRunner;
+import com.guoyongzheng.training.judge.SourceValidator;
 import com.guoyongzheng.training.persistence.AttemptRepository;
 import com.guoyongzheng.training.persistence.JudgementRepository;
 import com.guoyongzheng.training.persistence.ReviewRepository;
@@ -249,6 +250,7 @@ public class JudgeService {
             if (!sourceFile.startsWith(sandboxPath)) {
                 throw new IllegalArgumentException("Source path escapes sandbox: " + attemptId);
             }
+            SourceValidator.requireValid(manifest.runnerKind(), Path.of(manifest.sandboxSourcePath()), sourceCode);
             Files.createDirectories(sourceFile.getParent());
             Files.writeString(sourceFile, sourceCode);
             log.info("[WriteSource] written to {}", sourceFile);

@@ -159,7 +159,24 @@ Compose 默认：
 - 重启策略：`unless-stopped`
 - `init: true`（PID 1 回收判题子进程）
 
-## 8. 常见问题
+## 8. Web 判题流程（API）
+
+端点为 `/api/training` 前缀。典型 CODING 题流程：
+
+1. **创建会话**（按 track 选择题目）：
+   `POST /api/training/sessions`，body `{"track":"CODING","count":1,"questionIds":["B001"]}`
+2. **写入作答源码**（首次调用会自动创建并填充沙箱，无需先跑一次判题）：
+   `POST /api/training/attempts/{attemptId}/write-source`，body `{"sourceCode":"..."}`
+   - Java 题会做轻量预校验：源码的 `package` 与顶层类型名必须匹配题目沙箱目标文件，不匹配立即返回 400
+3. **判题**（Maven 以离线模式 `-o` 运行测试，Python 走 pytest）：
+   `POST /api/training/attempts/{attemptId}/judge`
+4. **进度推送**（可选，SSE）：`GET /api/training/attempts/{attemptId}/judge-stream`
+
+辅助端点：
+
+- `POST /api/training/attempts/{attemptId}/open-sandbox`：返回沙箱目录（未建时自动创建；仅 Windows 会真正打开资源管理器）
+
+## 9. 常见问题
 
 ### Cannot locate workspace root
 
