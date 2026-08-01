@@ -49,12 +49,13 @@ export function renderMarkdown(md) {
 
 /**
  * Renders markdown with h2 sections wrapped in collapsible <details> elements.
- * The first `openCount` sections are expanded; the rest are collapsed.
+ * By default every section is expanded; pass a positive `openCount` to only
+ * expand that many leading sections.
  * @param {string} md - Raw markdown string
- * @param {number} openCount - Number of leading sections to keep open (default 2)
+ * @param {number|undefined} openCount - Number of leading sections to expand, or undefined to expand all
  * @returns {string} HTML string with collapsible sections
  */
-export function renderMarkdownCollapsible(md, openCount = 2) {
+export function renderMarkdownCollapsible(md, openCount) {
   if (!md) return ''
   const html = sanitize(marked.parse(md))
   const parts = html.split(/(?=<h2[\s>])/)
@@ -63,7 +64,7 @@ export function renderMarkdownCollapsible(md, openCount = 2) {
   return parts.map(part => {
     if (!part.startsWith('<h2')) return part
     sectionIndex++
-    const openAttr = sectionIndex <= openCount ? ' open' : ''
+    const openAttr = (openCount == null || sectionIndex <= openCount) ? ' open' : ''
     const headingMatch = part.match(/<h2[^>]*>(.*?)<\/h2>/)
     const summaryText = headingMatch ? headingMatch[1].replace(/<[^>]+>/g, '') : '详情'
     const rest = part.replace(/<h2[^>]*>.*?<\/h2>/, '')

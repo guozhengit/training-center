@@ -65,7 +65,7 @@ watch(() => props.question, async (q) => {
         <div v-if="loading" class="loading-box">加载题目内容中...</div>
         <div v-else-if="error" class="error-box">{{ error }}</div>
         <div v-else-if="content" class="qd-content">
-          <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(content.description, 3)"></div>
+          <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(content.description)"></div>
           <div v-if="content.starterCode" class="qd-starter">
             <h3>起始代码</h3>
             <pre><code>{{ content.starterCode }}</code></pre>

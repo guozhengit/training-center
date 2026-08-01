@@ -162,11 +162,26 @@ function rubricAnchor(track, key) {
       <div v-else-if="attempt.track === 'CODING'" class="coding-judge-box">
         <!-- Question content viewer -->
         <div class="question-content-section">
-          <button type="button" class="btn-toggle-desc" @click="loadQuestionContent(attempt)">
-            {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
-          </button>
+          <div class="oral-content-controls">
+            <button type="button" class="btn-toggle-desc" @click="loadQuestionContent(attempt)">
+              {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
+            </button>
+            <button
+              v-if="contentStore[attempt.questionId]?.loaded && contentStore[attempt.questionId].answer"
+              type="button"
+              class="btn-toggle-desc"
+              :class="{ 'btn-revealed': revealState[attempt.id] }"
+              @click="toggleReveal(attempt)"
+            >
+              {{ revealState[attempt.id] ? '收起答案解析' : '揭晓答案解析' }}
+            </button>
+          </div>
           <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
             <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].description)"></div>
+          </div>
+          <div v-if="revealState[attempt.id] && contentStore[attempt.questionId]?.loaded && contentStore[attempt.questionId].answer" class="reveal-panel">
+            <h4 class="reveal-heading">解题思路</h4>
+            <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].answer)"></div>
           </div>
         </div>
 

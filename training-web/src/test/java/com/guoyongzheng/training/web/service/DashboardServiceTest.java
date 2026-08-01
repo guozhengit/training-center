@@ -48,6 +48,23 @@ class DashboardServiceTest {
     }
 
     @Test
+    void odContentExposesSolutionApproachAsAnswer() {
+        DashboardService.QuestionContentResponse content = service.questionContent("OD001");
+
+        assertThat(content.answer()).isNotBlank();
+        assertThat(content.answer()).contains("大小写");
+        assertThat(content.answer()).doesNotContain("## 解题思路");
+    }
+
+    @Test
+    void codingContentWithoutSolutionApproachHasNullAnswer() {
+        DashboardService.QuestionContentResponse content = service.questionContent("B001");
+
+        assertThat(content.answer()).isNull();
+        assertThat(content.starterCode()).isNotBlank();
+    }
+
+    @Test
     void projectContentExposesStructuredSectionsAndEvidenceBoundary() {
         DashboardService.QuestionContentResponse content = service.questionContent("P001");
 

@@ -20,10 +20,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class DashboardService {
     private static final int MAX_QUESTION_LIMIT = 300;
+    private static final Pattern HEADING_PATTERN = Pattern.compile("^(#{1,6})\\s+(.+?)\\s*$");
 
     private final WorkspaceLocator workspaceLocator;
     private final CatalogCache catalogCache;
@@ -189,9 +192,42 @@ public class DashboardService {
                     QuestionContentExtractor.sectionContent(sections, question.evidenceEntry()),
                     QuestionContentExtractor.sectionContent(sections, question.factBoundary()));
         }
+        String approach = extractSolutionApproach(description);
         return new QuestionContentResponse(
                 question.id(), question.title(), description, starterCode,
-                null, null, null, List.of(), null, null);
+                approach, null, null, List.of(), null, null);
+    }
+
+    /** Extracts the "解题思路" section (any heading level) as the model answer for coding questions. */
+    private static String extractSolutionApproach(String markdown) {
+        if (markdown == null || markdown.isBlank()) {
+            return null;
+        }
+        String[] lines = markdown.split("\n", -1);
+        int start = -1;
+        int level = -1;
+        for (int index = 0; index < lines.length; index++) {
+            Matcher matcher = HEADING_PATTERN.matcher(lines[index].strip());
+            if (matcher.matches() && matcher.group(2).strip().contains("解题思路")) {
+                start = index;
+                level = matcher.group(1).length();
+                break;
+            }
+        }
+        if (start < 0) {
+            return null;
+        }
+        StringBuilder section = new StringBuilder();
+        for (int index = start + 1; index < lines.length; index++) {
+            String stripped = lines[index].strip();
+            Matcher matcher = HEADING_PATTERN.matcher(stripped);
+            if (matcher.matches() && matcher.group(1).length() <= level) {
+                break;
+            }
+            section.append(lines[index]).append('\n');
+        }
+        String content = section.toString().strip();
+        return content.isEmpty() ? null : content;
     }
 
     private static String readContentFile(Path workspace, String relativePath) {
