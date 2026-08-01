@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -288,7 +289,7 @@ public class JudgeService {
             if (!Files.isRegularFile(manifest) || !Files.isRegularFile(state) || !Files.isDirectory(work)) {
                 return false;
             }
-            String stateContent = Files.readString(state);
+            String stateContent = Files.readString(state, StandardCharsets.UTF_8);
             return stateContent.startsWith("COMPLETE:");
         } catch (IOException exception) {
             return false;

@@ -34,7 +34,7 @@ export function useExport(dashboard, historyComposable, training) {
         j?.status ?? '', j?.passedCount ?? '', j?.failedCount ?? '', a.sandboxPath ?? ''
       ]
     })
-    downloadText('training-history.csv', [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\n'), 'text/csv')
+    downloadText('training-history.csv', '\uFEFF' + [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\n'), 'text/csv')
   }
 
   function exportHistoryMarkdown() {
