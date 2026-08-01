@@ -1,0 +1,32 @@
+# ============================================================
+# Linux 服务器 Docker daemon 优化配置
+#
+# 安装方式 (在服务器上执行):
+#   sudo cp training-center/deploy/linux/docker-daemon.json /etc/docker/daemon.json
+#   sudo systemctl restart docker
+#
+# 内容说明:
+#   - registry-mirrors: 国内镜像加速 (拉取基础镜像/中间件更快)
+#   - log-driver/log-opts: 容器日志滚动 (单容器最大 10MB x 3 个文件)
+#   - builder.gc: BuildKit 缓存自动回收, 上限 20GB
+# ============================================================
+{
+  "registry-mirrors": [
+    "https://docker.m.daocloud.io",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://docker.1ms.run",
+    "https://hub-mirror.c.163.com"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "builder": {
+    "gc": {
+      "enabled": true,
+      "defaultKeepStorage": "20GB"
+    }
+  },
+  "experimental": false
+}

@@ -1,19 +1,24 @@
 services:
   training-center:
     build:
-      context: ..
+      # 工作区根目录 (jiupai, 需包含 output/coding-ai-exam + output/interview)
+      # compose 位于 deploy/, 上两级即工作区根目录
+      context: ../..
       dockerfile: training-center/Dockerfile
+    image: training-center:latest
     container_name: training-center
+    init: true
     ports:
       - "8080:8080"
     environment:
+      - TZ=Asia/Shanghai
       - TRAINING_WORKSPACE=/workspace
       - TRAINING_JDK_HOME=/opt/java/openjdk
       - TRAINING_MAVEN_HOME=/opt/maven
       - TRAINING_PYTHON=python3
       - SERVER_PORT=8080
       # JVM tuning for containers
-      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport
+      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport -Duser.timezone=Asia/Shanghai
     volumes:
       # Mutable runtime data (database, sandboxes, exports, logs)
       - training-runtime:/workspace/output/training-runtime

@@ -1,32 +1,44 @@
-# Build artifacts
+# ============================================================
+# .dockerignore (构建上下文根目录: 工作区根目录 jiupai)
+# 注意: 构建上下文必须是工作区根目录, 本文件必须放在这里,
+#       Docker 只在上下文根目录查找 .dockerignore。
+# ============================================================
+
+# ---- 通用排除 ----
 **/target/
 **/dist/
 **/node_modules/
+**/.git/
+**/.idea/
+**/.vscode/
+**/__pycache__/
+**/.pytest_cache/
+**/*.log
+**/.DS_Store
 
-# IDE
-.idea/
-*.iml
-.vscode/
-.settings/
-.classpath
-.project
+# ---- 工作区内与镜像构建无关的目录 ----
+.superpowers/
+.mimocode/
+.claude/
+tmp/
+demo/
+images/
+tools/
+docs/
+viewer.html
+index.html
 
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Git
-.git/
-.gitignore
-
-# Runtime (mutable, mounted as volume)
+# ---- output 下仅保留判题所需的 coding-ai-exam 与 interview, 其余全部排除 ----
 output/training-runtime/
+output/doc/
+output/pdf/
+output/resume/
 
-# Docs & misc
-*.md
-!training-center/README.md
-deploy/
-
-# Logs
-*.log
+# ---- training-center 内与运行时无关的目录 ----
+training-center/docs/
+training-center/scripts/
+training-center/.mimocode/
+# deploy 目录大部分无需进入构建上下文, 但保留构建加速配置
+training-center/deploy/*
+!training-center/deploy/maven/settings.xml
+!training-center/deploy/npm/.npmrc

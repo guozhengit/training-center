@@ -1,24 +1,46 @@
 # ============================================================
+# Training Center 应用镜像
+#
+# 构建上下文必须为工作区根目录 (jiupai 根目录), 需包含:
+#   - training-center/          (本仓库)
+#   - output/coding-ai-exam/    (只读题库, 判题资源)
+#
+# 运行时基础镜像 (JDK 17 + Maven + Python + pytest):
+#   - 镜像: training-center-base:17
+#   - 构建: docker build -f training-center/deploy/base/Dockerfile -t training-center-base:17 .
+#   - 可用 --build-arg BASE_IMAGE=... 覆盖
+# ============================================================
+
+# ---- 运行时基础镜像 (可从构建命令覆盖) ----
+ARG BASE_IMAGE=training-center-base:17
+
+# ============================================================
 # Stage 1: Build frontend
 # ============================================================
 FROM node:20-alpine AS frontend-build
 
 WORKDIR /app/training-ui
 COPY training-center/training-ui/package.json training-center/training-ui/package-lock.json ./
+COPY training-center/deploy/npm/.npmrc /root/.npmrc
 RUN npm ci --silent
 COPY training-center/training-ui/ ./
 RUN npx vite build
 
 # ============================================================
 # Stage 2: Build backend (fat JAR with frontend embedded)
+# 使用基础镜像做构建环境 (JDK + Maven 已就绪), 不再额外拉 eclipse-temurin
 # ============================================================
-FROM eclipse-temurin:17-jdk AS backend-build
+ARG BASE_IMAGE=training-center-base:17
+FROM ${BASE_IMAGE} AS backend-build
 
 WORKDIR /app
 COPY training-center/pom.xml ./
 COPY training-center/training-core/pom.xml training-core/
 COPY training-center/training-cli/pom.xml training-cli/
 COPY training-center/training-web/pom.xml training-web/
+
+# 阿里云 Maven 镜像, 加速依赖下载 (可替换为自己的 settings.xml)
+COPY training-center/deploy/maven/settings.xml /root/.m2/settings.xml
 
 # Download dependencies (cached layer)
 RUN --mount=type=cache,target=/root/.m2 \
@@ -35,29 +57,18 @@ RUN --mount=type=cache,target=/root/.m2 \
     mvn -B package -pl training-web -am -DskipTests -q
 
 # ============================================================
-# Stage 3: Runtime (JDK + Maven + Python for judging)
+# Stage 3: Runtime (基于 training-center-base 基础镜像)
 # ============================================================
-FROM eclipse-temurin:17-jdk AS runtime
+ARG BASE_IMAGE=training-center-base:17
+FROM ${BASE_IMAGE} AS runtime
 
 LABEL maintainer="guoyongzheng"
 LABEL description="Interview Training Center - coding/oral/project practice platform"
 
-# Install Maven + Python + pytest
-ARG MAVEN_VERSION=3.9.9
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-venv \
-        curl ca-certificates \
-    && pip3 install --no-cache-dir --break-system-packages pytest \
-    && curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
-        | tar -xz -C /opt \
-    && ln -s "/opt/apache-maven-${MAVEN_VERSION}" /opt/maven \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-ENV MAVEN_HOME=/opt/maven
-ENV PATH="${MAVEN_HOME}/bin:${PATH}"
-
-# Create app user (avoid running as root)
-RUN useradd -m -s /bin/bash training
+# 创建应用用户 (避免以 root 运行), 固定 uid 1000 便于 bind mount 属主设置
+# 基础镜像自带 uid 1000 的 ubuntu 用户, 先移除避免冲突
+RUN userdel -r ubuntu 2>/dev/null || true \
+    && useradd -m -s /bin/bash -u 1000 training
 
 # Workspace layout:
 #   /workspace/training-center/config/       ← read-only question indexes
@@ -70,6 +81,7 @@ WORKDIR /workspace
 COPY --chown=training:training training-center/config/ training-center/config/
 COPY --chown=training:training training-center/starters/ training-center/starters/
 COPY --chown=training:training output/coding-ai-exam/ output/coding-ai-exam/
+COPY --chown=training:training output/interview/ output/interview/
 
 # Create mutable runtime directories
 RUN mkdir -p output/training-runtime/database \
@@ -78,9 +90,12 @@ RUN mkdir -p output/training-runtime/database \
              output/training-runtime/logs \
     && chown -R training:training output/training-runtime
 
+# 应用版本, 与 pom.xml 保持一致, 升级时通过 --build-arg TRAINING_VERSION=... 覆盖
+ARG TRAINING_VERSION=1.0.0-SNAPSHOT
+
 # Copy the application JAR
 COPY --from=backend-build --chown=training:training \
-    /app/training-web/target/training-web-1.0.0-SNAPSHOT.jar /app/training-web.jar
+    /app/training-web/target/training-web-${TRAINING_VERSION}.jar /app/training-web.jar
 
 USER training
 

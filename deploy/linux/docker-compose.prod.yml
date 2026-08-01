@@ -1,0 +1,21 @@
+# ============================================================
+# 生产环境 override: 数据卷改用 bind mount (宿主机目录)
+#
+# 用法:
+#   docker compose \
+#     -f docker-compose.yml \
+#     -f deploy/linux/docker-compose.prod.yml \
+#     up -d
+#
+# 数据目录默认 /home/docker/training-data,
+# 可用环境变量 TRAINING_DATA_DIR 覆盖。
+# 备份只需 tar 该目录即可。
+# ============================================================
+services:
+  training-center:
+    volumes:
+      - ${TRAINING_DATA_DIR:-/home/docker/training-data}/training-runtime:/workspace/output/training-runtime
+
+volumes:
+  # 基础 compose 声明了命名卷, 生产环境改用 bind mount, 保留空声明避免 schema 警告
+  training-runtime: {}
