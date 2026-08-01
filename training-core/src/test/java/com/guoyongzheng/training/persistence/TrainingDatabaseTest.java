@@ -49,7 +49,7 @@ class TrainingDatabaseTest {
             assertThat(pragmaLong(connection, "foreign_keys")).isEqualTo(1);
             assertThat(pragmaText(connection, "journal_mode")).isEqualToIgnoringCase("wal");
             assertThat(pragmaLong(connection, "busy_timeout")).isEqualTo(10_000);
-            assertThat(pragmaLong(connection, "user_version")).isEqualTo(1);
+            assertThat(pragmaLong(connection, "user_version")).isEqualTo(2);
             assertThat(tableNames(connection)).contains(
                     "questions", "sessions", "attempts", "judgements",
                     "oral_scores", "review_queue", "plan_days", "plan_tasks",
@@ -452,7 +452,7 @@ class TrainingDatabaseTest {
         Path path = directory.resolve("training.db");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + path);
              Statement statement = connection.createStatement()) {
-            statement.execute("PRAGMA user_version = 2");
+            statement.execute("PRAGMA user_version = 3");
         }
         TrainingDatabase database = new TrainingDatabase(path);
 
@@ -478,7 +478,7 @@ class TrainingDatabaseTest {
         assertThat(database.lastBackup()).isEmpty();
         assertThat(backupFiles(directory)).isEmpty();
         try (Connection connection = database.openConnection()) {
-            assertThat(pragmaLong(connection, "user_version")).isEqualTo(1);
+            assertThat(pragmaLong(connection, "user_version")).isEqualTo(2);
         }
     }
 
@@ -488,7 +488,7 @@ class TrainingDatabaseTest {
         Path path = directory.resolve("training.db");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + path);
              Statement statement = connection.createStatement()) {
-            statement.execute("PRAGMA user_version = 1");
+            statement.execute("PRAGMA user_version = 2");
         }
         TrainingDatabase database = new TrainingDatabase(path);
 

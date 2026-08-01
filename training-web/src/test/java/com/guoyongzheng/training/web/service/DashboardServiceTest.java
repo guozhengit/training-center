@@ -34,4 +34,27 @@ class DashboardServiceTest {
         assertThat(report.starterExpectedFailures().passed()).isEqualTo(120);
         assertThat(report.referencePasses().passed()).isEqualTo(120);
     }
+
+    @Test
+    void oralContentExposesAnswerFollowUpsAndRecommendedSeconds() {
+        DashboardService.QuestionContentResponse content = service.questionContent("O001");
+
+        assertThat(content.recommendedSeconds()).isEqualTo(90);
+        assertThat(content.answer()).isNotBlank();
+        assertThat(content.answer()).contains("HashMap");
+        assertThat(content.followUps()).isNotBlank();
+        assertThat(content.sections()).isNotEmpty();
+        assertThat(content.sections().get(0).heading()).isEqualTo("完整口述稿");
+    }
+
+    @Test
+    void projectContentExposesStructuredSectionsAndEvidenceBoundary() {
+        DashboardService.QuestionContentResponse content = service.questionContent("P001");
+
+        assertThat(content.recommendedSeconds()).isEqualTo(120);
+        assertThat(content.sections()).hasSizeGreaterThanOrEqualTo(9);
+        assertThat(content.evidenceEntry()).isNotBlank();
+        assertThat(content.evidenceEntry()).contains("ContractServiceImpl");
+        assertThat(content.factBoundary()).isNotBlank();
+    }
 }

@@ -397,6 +397,66 @@ h3 {
   pointer-events: none;
 }
 
+.oral-content-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-revealed {
+  background: #047857;
+}
+
+.btn-revealed:hover {
+  background: #065f46;
+}
+
+.section-steps {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.evidence-section {
+  border-color: #34d399;
+  background: #ecfdf5;
+}
+
+.fact-section {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.reveal-panel {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px dashed #94a3b8;
+  border-radius: 12px;
+  background: #fffbeb;
+}
+
+.reveal-heading {
+  margin: 8px 0 0;
+  color: #1d4ed8;
+  font-size: 14px;
+}
+
+.reveal-heading.evidence-heading {
+  color: #047857;
+}
+
+.reveal-heading.fact-heading {
+  color: #b91c1c;
+}
+
+.rubric-anchor {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 .question-desc-text {
   word-break: break-word;
   font-family: "Noto Sans SC", "PingFang SC", sans-serif;
@@ -649,6 +709,32 @@ h3 {
   background: #fff;
 }
 
+.oral-score-mini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.oral-score-mini span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #065f46;
+  background: #d1fae5;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.notes-line {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #475569 !important;
+  background: #fff;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 .history-actions {
   display: flex;
   flex-wrap: wrap;
@@ -708,6 +794,47 @@ h3 {
   background: #e2e8f0;
   font-size: 12px;
   font-weight: 800;
+}
+
+.detail-block {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.detail-block h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #1d4ed8;
+}
+
+.oral-score-detail h4 {
+  color: #047857;
+}
+
+.detail-block .muted {
+  margin: 0;
+  color: #64748b;
+}
+
+.detail-block p {
+  color: #334155;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.improved-answer {
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .judgement-timeline {

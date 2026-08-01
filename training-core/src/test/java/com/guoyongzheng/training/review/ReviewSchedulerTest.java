@@ -64,6 +64,39 @@ class ReviewSchedulerTest {
         assertThatIllegalArgumentException().isThrownBy(() -> scheduler.schedule("O001", null, true, 11, false));
     }
 
+    @Test
+    void weakDimensionsPreventAdvancementEvenOnAnEightPointPass() {
+        ReviewScheduler scheduler = new ReviewScheduler(CLOCK);
+
+        assertThat(scheduler.schedule("O001", entry(7, 0, "PASSED"), true, 8, false, "factRestraint").intervalDays())
+                .isEqualTo(7);
+        assertThat(scheduler.schedule("O001", entry(7, 0, "PASSED"), true, 8, false, null).intervalDays())
+                .isEqualTo(14);
+        assertThat(scheduler.schedule("O001", entry(3, 0, "PASSED"), true, 6, false, "correctness").intervalDays())
+                .isEqualTo(3);
+    }
+
+    @Test
+    void focusDimensionsAreCarriedIntoTheScheduledEntry() {
+        ReviewEntry scheduled = new ReviewScheduler(CLOCK)
+                .schedule("O001", entry(7, 0, "PASSED"), true, 8, false, "structure,tradeoff");
+
+        assertThat(scheduled.focusDimensions()).isEqualTo("structure,tradeoff");
+        assertThat(scheduled.lastResult()).isEqualTo("PASSED");
+        assertThat(scheduled.intervalDays()).isEqualTo(7);
+    }
+
+    @Test
+    void criticalFailureOverridesAnOtherwisePassingOralTotalAndResetsToOneDay() {
+        ReviewEntry scheduled = new ReviewScheduler(CLOCK)
+                .schedule("O001", entry(7, 0, "PASSED"), false, 6, false, "structure,tradeoff,factRestraint", true);
+
+        assertThat(scheduled.lastResult()).isEqualTo("FAILED");
+        assertThat(scheduled.intervalDays()).isEqualTo(1);
+        assertThat(scheduled.wrongCount()).isEqualTo(1);
+        assertThat(scheduled.focusDimensions()).isEqualTo("structure,tradeoff,factRestraint");
+    }
+
     private static ReviewEntry entry(int intervalDays, int wrongCount, String lastResult) {
         return new ReviewEntry("B001", wrongCount, 7, lastResult, NOW.minusSeconds(60), NOW, intervalDays);
     }

@@ -5,8 +5,10 @@ import com.guoyongzheng.training.domain.QuestionDescriptor;
 import com.guoyongzheng.training.domain.SessionStatus;
 import com.guoyongzheng.training.domain.Track;
 import com.guoyongzheng.training.persistence.AttemptRepository;
+import com.guoyongzheng.training.persistence.ReviewRepository;
 import com.guoyongzheng.training.persistence.SessionRepository;
 import com.guoyongzheng.training.persistence.TrainingDatabase;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -190,6 +193,87 @@ class TrainingSessionServiceTest {
         int filtered = SessionQueries.scalarInt(connection,
                 "SELECT COUNT(*) FROM questions WHERE track = ?", "CODING");
         assertThat(filtered).isEqualTo(2);
+    }
+
+    @Test
+    void fabricatingFactsForcesRetryAndRecordsReviewFocus() throws Exception {
+        seedOralSessionAndAttempt("subm-fact", "att-fact");
+        TrainingSessionService service = new TrainingSessionService(
+                new TestTrainingDatabaseProvider(database), new ObjectMapper());
+
+        TrainingSessionService.SubmitAttemptResponse response = service.submitAttempt(
+                "att-fact",
+                new TrainingSessionService.SubmitAttemptRequest(
+                        "PASSED", 120, true, "复盘备注", "改进答案",
+                        new TrainingSessionService.OralScoreRequest(2, 1, 2, 1, 0)));
+
+        assertThat(response.verdict()).isEqualTo("FAILED");
+        assertThat(response.oralTotal()).isEqualTo(6);
+        assertThat(response.focusDimensions()).contains("factRestraint");
+        assertThat(response.focusDimensions()).contains("structure");
+
+        ReviewRepository.ReviewEntry review = new ReviewRepository()
+                .findReview(connection, "O001").orElseThrow();
+        assertThat(review.lastResult()).isEqualTo("FAILED");
+        assertThat(review.intervalDays()).isEqualTo(1);
+        assertThat(review.focusDimensions()).contains("factRestraint");
+    }
+
+    @Test
+    void cleanOralPassWithoutWeakDimensionsAdvancesReview() throws Exception {
+        seedOralSessionAndAttempt("subm-clean", "att-clean");
+        TrainingSessionService service = new TrainingSessionService(
+                new TestTrainingDatabaseProvider(database), new ObjectMapper());
+
+        TrainingSessionService.SubmitAttemptResponse response = service.submitAttempt(
+                "att-clean",
+                new TrainingSessionService.SubmitAttemptRequest(
+                        "PASSED", 90, false, null, null,
+                        new TrainingSessionService.OralScoreRequest(2, 2, 2, 2, 2)));
+
+        assertThat(response.verdict()).isEqualTo("PASSED");
+        assertThat(response.oralTotal()).isEqualTo(10);
+        assertThat(response.focusDimensions()).isNull();
+
+        ReviewRepository.ReviewEntry review = new ReviewRepository()
+                .findReview(connection, "O001").orElseThrow();
+        assertThat(review.lastResult()).isEqualTo("PASSED");
+        assertThat(review.intervalDays()).isEqualTo(3);
+        assertThat(review.focusDimensions()).isNull();
+    }
+
+    @Test
+    void weakDimensionOnSixPointPassKeepsIntervalInsteadOfAdvancing() throws Exception {
+        seedOralSessionAndAttempt("subm-weak", "att-weak");
+        TrainingSessionService service = new TrainingSessionService(
+                new TestTrainingDatabaseProvider(database), new ObjectMapper());
+
+        TrainingSessionService.SubmitAttemptResponse response = service.submitAttempt(
+                "att-weak",
+                new TrainingSessionService.SubmitAttemptRequest(
+                        "PASSED", 100, false, null, null,
+                        new TrainingSessionService.OralScoreRequest(2, 2, 1, 1, 2)));
+
+        assertThat(response.verdict()).isEqualTo("PASSED");
+        assertThat(response.focusDimensions()).isEqualTo("projectEvidence,tradeoff");
+
+        ReviewRepository.ReviewEntry review = new ReviewRepository()
+                .findReview(connection, "O001").orElseThrow();
+        assertThat(review.intervalDays()).isEqualTo(1);
+        assertThat(review.focusDimensions()).isEqualTo("projectEvidence,tradeoff");
+    }
+
+    private void seedOralSessionAndAttempt(String sessionId, String attemptId) throws Exception {
+        SessionRepository sessionRepo = new SessionRepository();
+        AttemptRepository attemptRepo = new AttemptRepository();
+        Instant now = Instant.now();
+        sessionRepo.insert(connection, new SessionRepository.Session(
+                sessionId, "ORAL", 1L, now, null, null, SessionStatus.CREATED, "{}"));
+        sessionRepo.transition(connection, sessionId, SessionStatus.RUNNING, now);
+        attemptRepo.insert(connection, new AttemptRepository.Attempt(
+                attemptId, sessionId, "O001", now, null, null,
+                AttemptStatus.CREATED, null, false, null, null, null));
+        attemptRepo.transition(connection, attemptId, AttemptStatus.IN_PROGRESS, now);
     }
 
     private void seedQuestions(Connection conn) throws Exception {

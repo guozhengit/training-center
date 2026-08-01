@@ -133,17 +133,22 @@ public class TrainingSessionService {
                     throw new IllegalStateException("Attempt is not in progress: " + attemptId);
                 }
                 QuestionDescriptor question = SessionQueries.question(connection, attempt.questionId());
-                Integer oralTotal = request.oralScore() == null ? null : request.oralScore().total();
+                ReviewRepository.OralScore oralScore = request.oralScore() == null
+                        ? null : request.oralScore().toRepository(attemptId);
+                Integer oralTotal = oralScore == null ? null : oralScore.total();
+                // Interview discipline rule: fabricating metrics or overclaiming ownership
+                // (factRestraint = 0) forces a retry regardless of the other dimensions.
+                boolean factRestraintCritical = oralScore != null && oralScore.factRestraint() == 0;
                 boolean passed = oralTotal == null
                         ? "PASSED".equalsIgnoreCase(defaultText(request.verdict(), "FAILED"))
-                        : oralTotal >= 6;
+                        : oralTotal >= 6 && !factRestraintCritical;
                 String verdict = passed ? "PASSED" : "FAILED";
 
                 attemptRepository.transition(connection, attemptId, AttemptStatus.SUBMITTED, now);
                 updateAttemptSubmission(connection, attemptId, verdict, request.durationSeconds(),
                         Boolean.TRUE.equals(request.answerUnlocked()), request.notes(), request.improvedAnswer());
-                if (request.oralScore() != null) {
-                    reviewRepository.insertOralScore(connection, request.oralScore().toRepository(attemptId));
+                if (oralScore != null) {
+                    reviewRepository.insertOralScore(connection, oralScore);
                 }
                 attemptRepository.transition(connection, attemptId, AttemptStatus.FINISHED, now);
 
@@ -154,7 +159,9 @@ public class TrainingSessionService {
                         currentReview.orElse(null),
                         passed,
                         oralTotal,
-                        Boolean.TRUE.equals(request.answerUnlocked()));
+                        Boolean.TRUE.equals(request.answerUnlocked()),
+                        focusDimensions(oralScore),
+                        factRestraintCritical);
                 reviewRepository.saveReview(connection, nextReview);
 
                 boolean sessionCompleted = completeSessionIfReady(connection, attempt.sessionId(), now);
@@ -166,6 +173,7 @@ public class TrainingSessionService {
                         oralTotal,
                         nextReview.nextReviewAt(),
                         sessionCompleted,
+                        nextReview.focusDimensions(),
                         SessionQueries.readSession(connection, attempt.sessionId()));
             });
         } catch (IllegalArgumentException | IllegalStateException exception) {
@@ -265,7 +273,8 @@ public class TrainingSessionService {
                         result.getString("last_result"),
                         SessionQueries.instant(result.getString("last_attempt_at")),
                         SessionQueries.instant(result.getString("next_review_at")),
-                        result.getInt("interval_days"));
+                        result.getInt("interval_days"),
+                        result.getString("focus_dimensions"));
                 reviews.put(review.questionId(), review);
             }
             return reviews;
@@ -286,6 +295,30 @@ public class TrainingSessionService {
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Unknown track: " + value, exception);
         }
+    }
+
+    /** CSV of oral dimensions scored 0-1 (weak), or null when every dimension is strong. */
+    private static String focusDimensions(ReviewRepository.OralScore score) {
+        if (score == null) {
+            return null;
+        }
+        List<String> weak = new ArrayList<>();
+        if (score.correctness() <= 1) {
+            weak.add("correctness");
+        }
+        if (score.structure() <= 1) {
+            weak.add("structure");
+        }
+        if (score.projectEvidence() <= 1) {
+            weak.add("projectEvidence");
+        }
+        if (score.tradeoff() <= 1) {
+            weak.add("tradeoff");
+        }
+        if (score.factRestraint() <= 1) {
+            weak.add("factRestraint");
+        }
+        return weak.isEmpty() ? null : String.join(",", weak);
     }
 
     private static void nullableInt(PreparedStatement statement, int index, Integer value) throws SQLException {
@@ -383,7 +416,9 @@ public class TrainingSessionService {
             Instant submittedAt,
             Long durationSeconds,
             boolean answerUnlocked,
-            String sandboxPath) {
+            String sandboxPath,
+            String notes,
+            String improvedAnswer) {
     }
 
     public record SubmitAttemptResponse(
@@ -394,6 +429,7 @@ public class TrainingSessionService {
             Integer oralTotal,
             Instant nextReviewAt,
             boolean sessionCompleted,
+            String focusDimensions,
             TrainingSessionResponse session) {
     }
 
@@ -418,7 +454,17 @@ public class TrainingSessionService {
 
     public record AttemptHistoryCard(
             TrainingAttemptCard attempt,
-            List<JudgementCard> judgements) {
+            List<JudgementCard> judgements,
+            OralScoreView oralScore) {
+    }
+
+    public record OralScoreView(
+            int correctness,
+            int structure,
+            int projectEvidence,
+            int tradeoff,
+            int factRestraint,
+            int total) {
     }
 
     public record JudgementCard(

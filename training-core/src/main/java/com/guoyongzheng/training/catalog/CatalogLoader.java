@@ -137,7 +137,13 @@ public final class CatalogLoader {
                 "oral",
                 "markdown",
                 sourcePath + "#" + heading,
-                null));
+                null,
+                null,
+                optionalText(entry, "answer_locator", id),
+                optionalText(entry, "follow_up_locator", id),
+                null,
+                null,
+                optionalSeconds(entry, "recommended_seconds", id)));
     }
 
     private static void loadProjects(JsonNode entries, Path workspaceRoot, Path interviewRoot,
@@ -170,7 +176,13 @@ public final class CatalogLoader {
                 "project",
                 "markdown",
                 sourcePath + "#" + heading,
-                null));
+                null,
+                null,
+                null,
+                null,
+                optionalText(entry, "evidence_entry", id),
+                optionalText(entry, "fact_boundary", id),
+                optionalSeconds(entry, "recommended_seconds", id)));
     }
 
     /**
@@ -240,6 +252,19 @@ public final class CatalogLoader {
             throw new IllegalArgumentException("Missing " + field + " for " + record);
         }
         return value;
+    }
+
+    private static String optionalText(JsonNode entry, String field, String record) {
+        String value = entry.path(field).asText();
+        return value.isBlank() ? null : value;
+    }
+
+    private static Integer optionalSeconds(JsonNode entry, String field, String record) {
+        JsonNode node = entry.path(field);
+        if (!node.isNumber() || !node.canConvertToInt() || node.asInt() < 1) {
+            return null;
+        }
+        return node.asInt();
     }
 
     private static void requireExpectedId(String actual, String prefix, int number, String kind) {

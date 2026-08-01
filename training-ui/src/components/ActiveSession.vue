@@ -24,8 +24,10 @@ const recorder = useRecorder()
 const hint = useHint()
 const countdown = useCountdown()
 
-// Question content store: { [questionId]: { description, starterCode, loaded, showDesc } }
+// Question content store: { [questionId]: { description, starterCode, answer, followUps, sections, evidenceEntry, factBoundary, recommendedSeconds, loaded, showDesc } }
 const contentStore = reactive({})
+// Reference-answer reveal state per attempt: { [attemptId]: boolean }
+const revealState = reactive({})
 // Code editor store: { [attemptId]: code }
 const codeStore = reactive({})
 
@@ -37,7 +39,18 @@ async function loadQuestionContent(attempt) {
   }
   try {
     const data = await fetchJson(`/api/questions/${qid}/content`)
-    contentStore[qid] = { description: data.description, starterCode: data.starterCode, loaded: true, showDesc: true }
+    contentStore[qid] = {
+      description: data.description,
+      starterCode: data.starterCode,
+      answer: data.answer,
+      followUps: data.followUps,
+      sections: data.sections ?? [],
+      evidenceEntry: data.evidenceEntry,
+      factBoundary: data.factBoundary,
+      recommendedSeconds: data.recommendedSeconds,
+      loaded: true,
+      showDesc: true
+    }
     // Pre-fill code editor with starter code if empty
     if (!codeStore[attempt.id]) {
       codeStore[attempt.id] = data.starterCode || ''
@@ -46,7 +59,17 @@ async function loadQuestionContent(attempt) {
       hint.setSource(attempt.id, data.starterCode)
     }
   } catch {
-    contentStore[qid] = { description: '（题目内容加载失败）', starterCode: '', loaded: true, showDesc: true }
+    contentStore[qid] = {
+      description: '（题目内容加载失败）', starterCode: '', answer: '', followUps: '',
+      sections: [], evidenceEntry: '', factBoundary: '', loaded: true, showDesc: true
+    }
+  }
+}
+
+function toggleReveal(attempt) {
+  revealState[attempt.id] = !revealState[attempt.id]
+  if (revealState[attempt.id] && !contentStore[attempt.questionId]?.loaded) {
+    loadQuestionContent(attempt)
   }
 }
 
@@ -62,6 +85,54 @@ function scoreTotal(form) {
   if (!form) return 0
   return Number(form.correctness) + Number(form.structure) + Number(form.projectEvidence)
     + Number(form.tradeoff) + Number(form.factRestraint)
+}
+
+function recommendedSecondsFor(attempt) {
+  return contentStore[attempt.questionId]?.recommendedSeconds || null
+}
+
+function startTimer(attempt) {
+  const seconds = recommendedSecondsFor(attempt)
+  if (seconds) {
+    countdown.startWithSeconds(attempt.id, seconds)
+  } else {
+    countdown.start(attempt.id, attempt.difficulty)
+  }
+}
+
+function timeLabel(attempt) {
+  const seconds = recommendedSecondsFor(attempt)
+  if (seconds) return `推荐 ${seconds} 秒作答`
+  return attempt.difficulty === '三星' ? '60 min' : '40 min'
+}
+
+function sectionRole(qid, role) {
+  const content = contentStore[qid]
+  if (!content?.sections?.length) return ''
+  const target = role === 'evidence' ? content.evidenceEntry : content.factBoundary
+  const found = content.sections.find((s) => s.content === target)
+  return found ? found.heading : ''
+}
+
+const rubricAnchors = {
+  ORAL: {
+    correctness: '对照「完整口述稿」核对要点覆盖度',
+    structure: '是否先结论后展开（总-分-总）',
+    projectEvidence: '是否给出具体项目实例支撑',
+    tradeoff: '是否说明取舍与备选方案',
+    factRestraint: '是否虚构指标/所有权；打 0 分强制重练'
+  },
+  PROJECT: {
+    correctness: '是否覆盖案例核心结论',
+    structure: '是否按「结论-证据-取舍」结构化陈述',
+    projectEvidence: '逐条对照「可验证依据」章节',
+    tradeoff: '是否说明技术选型取舍理由',
+    factRestraint: '逐条对照「不支持声称警示」；打 0 分强制重练'
+  }
+}
+
+function rubricAnchor(track, key) {
+  return (rubricAnchors[track] ?? rubricAnchors.ORAL)[key] || ''
 }
 </script>
 
@@ -181,6 +252,72 @@ function scoreTotal(form) {
       </div>
 
       <div v-else-if="submitForms[attempt.id]" class="attempt-form">
+        <div class="question-content-section">
+          <div class="oral-content-controls">
+            <button type="button" class="btn-toggle-desc" @click="loadQuestionContent(attempt)">
+              {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
+            </button>
+            <button
+              type="button"
+              class="btn-toggle-desc"
+              :class="{ 'btn-revealed': revealState[attempt.id] }"
+              @click="toggleReveal(attempt)"
+            >
+              {{ revealState[attempt.id] ? '收起参考要点' : '揭晓参考要点' }}
+            </button>
+          </div>
+
+          <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
+            <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].description)"></div>
+            <div v-if="attempt.track === 'PROJECT' && contentStore[attempt.questionId].sections.length" class="section-steps">
+              <details
+                v-for="section in contentStore[attempt.questionId].sections"
+                :key="section.heading"
+                class="q-section"
+                :class="{
+                  'evidence-section': section.heading === sectionRole(attempt.questionId, 'evidence'),
+                  'fact-section': section.heading === sectionRole(attempt.questionId, 'fact')
+                }"
+              >
+                <summary>{{ section.heading }}</summary>
+                <div class="q-section-body markdown-body" v-html="renderMarkdownCollapsible(section.content)"></div>
+              </details>
+            </div>
+          </div>
+
+          <div v-if="revealState[attempt.id] && contentStore[attempt.questionId]?.loaded" class="reveal-panel">
+            <template v-if="attempt.track === 'ORAL'">
+              <h4 class="reveal-heading">完整口述稿</h4>
+              <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].answer)"></div>
+              <h4 v-if="contentStore[attempt.questionId].followUps" class="reveal-heading">继续追问</h4>
+              <div v-if="contentStore[attempt.questionId].followUps" class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].followUps)"></div>
+            </template>
+            <template v-else>
+              <h4 class="reveal-heading evidence-heading">可验证依据</h4>
+              <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].evidenceEntry)"></div>
+              <h4 class="reveal-heading fact-heading">不支持声称警示</h4>
+              <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].factBoundary)"></div>
+            </template>
+          </div>
+        </div>
+
+        <div class="countdown-bar" :class="{ 'countdown-warning': countdown.isWarning(attempt.id), 'countdown-expired': countdown.getTimer(attempt.id).expired }">
+          <template v-if="!countdown.getTimer(attempt.id).running && countdown.getTimer(attempt.id).remaining === 0 && !countdown.getTimer(attempt.id).expired">
+            <button type="button" class="btn-timer-start" @click="startTimer(attempt)">
+              开始限时（{{ timeLabel(attempt) }}）
+            </button>
+          </template>
+          <template v-else>
+            <span class="countdown-display">{{ countdown.formatRemaining(countdown.getTimer(attempt.id).remaining) }}</span>
+            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">时间到!</span>
+            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">即将超时</span>
+            <span v-else class="countdown-label">{{ timeLabel(attempt) }}</span>
+            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">⏸ 暂停</button>
+            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">▶ 继续</button>
+            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">↺ 重置</button>
+          </template>
+        </div>
+
         <div class="recorder-box">
           <div class="recorder-timer">
             <span class="timer-display">{{ recorder.formatElapsed(recorder.getTimer(attempt.id).elapsed) }}</span>
@@ -255,6 +392,7 @@ function scoreTotal(form) {
               <option :value="1">1</option>
               <option :value="2">2</option>
             </select>
+            <small class="rubric-anchor">{{ rubricAnchor(attempt.track, dimension.key) }}</small>
           </label>
           <strong>总分 {{ scoreTotal(submitForms[attempt.id]) }}/10</strong>
         </div>

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.Instant;
 import java.util.List;
 
@@ -132,6 +133,45 @@ class SessionQueryServiceTest {
         double avg = SessionQueries.scalarDouble(connection,
                 "SELECT AVG(duration_seconds) FROM attempts WHERE duration_seconds IS NOT NULL");
         assertThat(avg).isEqualTo(0.0);
+    }
+
+    @Test
+    void recentAttemptsIncludeNotesAndImprovedAnswer() throws Exception {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "UPDATE attempts SET notes = ?, improved_answer = ? WHERE id = 'att-1'")) {
+            statement.setString(1, "卡在并发解释");
+            statement.setString(2, "先结论后边界");
+            statement.executeUpdate();
+        }
+
+        TrainingSessionService.TrainingAttemptCard card = SessionQueries.recentAttempts(connection, 10).stream()
+                .filter(attempt -> attempt.id().equals("att-1"))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(card.notes()).isEqualTo("卡在并发解释");
+        assertThat(card.improvedAnswer()).isEqualTo("先结论后边界");
+    }
+
+    @Test
+    void historyAttachesOralScoreViewToOralAttempts() throws Exception {
+        new ReviewRepository().insertOralScore(connection,
+                new ReviewRepository.OralScore("att-3", 2, 1, 2, 1, 2));
+
+        SessionQueryService service = new SessionQueryService(new TestTrainingDatabaseProvider(database));
+        TrainingSessionService.AttemptHistoryCard oral = service.history(10).attempts().stream()
+                .filter(entry -> entry.attempt().id().equals("att-3"))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(oral.oralScore()).isNotNull();
+        assertThat(oral.oralScore().total()).isEqualTo(8);
+        assertThat(oral.oralScore().projectEvidence()).isEqualTo(2);
+        assertThat(service.history(10).attempts().stream()
+                .filter(entry -> entry.attempt().id().equals("att-1"))
+                .findFirst()
+                .orElseThrow()
+                .oralScore()).isNull();
     }
 
     private void seedData(Connection conn) throws Exception {

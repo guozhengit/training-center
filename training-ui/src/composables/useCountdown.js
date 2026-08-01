@@ -8,7 +8,8 @@ export function useCountdown() {
   // { [attemptId]: { total, remaining, running, expired, intervalId } }
   const timers = reactive({})
 
-  function timeLimitFor(difficulty) {
+  function timeLimitFor(difficulty, recommendedSeconds) {
+    if (recommendedSeconds && recommendedSeconds > 0) return recommendedSeconds
     return difficulty === '三星' ? 60 * 60 : 40 * 60
   }
 
@@ -19,10 +20,14 @@ export function useCountdown() {
     return timers[attemptId]
   }
 
-  function start(attemptId, difficulty) {
+  function start(attemptId, difficulty, recommendedSeconds) {
+    startWithSeconds(attemptId, timeLimitFor(difficulty, recommendedSeconds))
+  }
+
+  function startWithSeconds(attemptId, seconds) {
     const timer = getTimer(attemptId)
-    if (timer.running) return
-    const total = timeLimitFor(difficulty)
+    if (timer.running || !seconds || seconds <= 0) return
+    const total = Math.floor(seconds)
     timer.total = total
     timer.remaining = total
     timer.running = true
@@ -81,7 +86,10 @@ export function useCountdown() {
 
   function isWarning(attemptId) {
     const timer = getTimer(attemptId)
-    return timer.running && timer.remaining <= 300 && timer.remaining > 0
+    if (!timer.running || timer.remaining <= 0) return false
+    // Scale the warning window: 5 minutes for coding, ~20% for short oral/project prompts.
+    const threshold = Math.min(300, Math.max(10, Math.round(timer.total * 0.2)))
+    return timer.remaining <= threshold
   }
 
   function cleanup() {
@@ -99,5 +107,5 @@ export function useCountdown() {
     onScopeDispose(cleanup)
   }
 
-  return { timers, getTimer, start, pause, resume, reset, formatRemaining, isWarning, timeLimitFor, cleanup }
+  return { timers, getTimer, start, startWithSeconds, pause, resume, reset, formatRemaining, isWarning, timeLimitFor, cleanup }
 }

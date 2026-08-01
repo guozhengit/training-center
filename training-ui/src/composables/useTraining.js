@@ -121,6 +121,12 @@ export function useTraining(dashboard) {
     return Object.values(scorePayload(form)).reduce((sum, v) => sum + v, 0)
   }
 
+  function focusDimensionsLabel(csv) {
+    if (!csv) return ''
+    const labelByKey = Object.fromEntries(scoreDimensions.map((d) => [d.key, d.label]))
+    return csv.split(',').map((key) => labelByKey[key] || key).join('、')
+  }
+
   async function createTrainingSession() {
     trainingBusy.value = true
     trainingMessage.value = ''
@@ -174,9 +180,12 @@ export function useTraining(dashboard) {
       if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
       await dashboard.loadStats()
       await dashboard.loadHistory()
+      const focusSuffix = result.focusDimensions
+        ? `；复习重点：${focusDimensionsLabel(result.focusDimensions)}`
+        : ''
       trainingMessage.value = result.sessionCompleted
         ? '本组训练已完成，复习计划已更新'
-        : `已记录 ${attempt.questionId}，下次复习：${formatDate(result.nextReviewAt)}`
+        : `已记录 ${attempt.questionId}，下次复习：${formatDate(result.nextReviewAt)}${focusSuffix}`
     } catch (exception) {
       dashboard.error.value = exception.message || '提交训练结果失败'
     } finally {
@@ -350,7 +359,7 @@ export function useTraining(dashboard) {
     sessionForm, trainingTracks, scoreDimensions, activeSessionProgress,
     createTrainingSession, submitAttempt, judgeAttempt, openSandbox,
     loadSessionFromHistory, createSessionFromQuestionIds,
-    scoreTotal, formatDate,
+    scoreTotal, formatDate, focusDimensionsLabel,
     initSubmitForms: initializeSubmitForms,
     abortJudge
   }

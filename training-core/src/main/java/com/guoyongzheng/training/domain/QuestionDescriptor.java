@@ -13,13 +13,27 @@ public record QuestionDescriptor(
         String language,
         String sourceRef,
         String starterRef,
-        String priority) {
+        String priority,
+        String answerLocator,
+        String followUpLocator,
+        String evidenceEntry,
+        String factBoundary,
+        Integer recommendedSeconds) {
 
     /** Backward-compatible constructor without priority. */
     public QuestionDescriptor(String id, Track track, String groupName, String title,
                               String topic, String difficulty, String language,
                               String sourceRef, String starterRef) {
-        this(id, track, groupName, title, topic, difficulty, language, sourceRef, starterRef, null);
+        this(id, track, groupName, title, topic, difficulty, language, sourceRef, starterRef,
+                null, null, null, null, null, null);
+    }
+
+    /** Backward-compatible constructor with priority but no practice metadata. */
+    public QuestionDescriptor(String id, Track track, String groupName, String title,
+                              String topic, String difficulty, String language,
+                              String sourceRef, String starterRef, String priority) {
+        this(id, track, groupName, title, topic, difficulty, language, sourceRef, starterRef,
+                priority, null, null, null, null, null);
     }
 
     public QuestionDescriptor {
@@ -32,7 +46,10 @@ public record QuestionDescriptor(
         language = requireText(language, "language");
         sourceRef = requireText(sourceRef, "sourceRef");
         starterRef = starterRef == null ? null : requireText(starterRef, "starterRef");
-        // priority is optional — null for non-OD questions
+        priority = priority == null ? null : requireText(priority, "priority");
+        if (recommendedSeconds != null && recommendedSeconds < 1) {
+            throw new IllegalArgumentException("recommendedSeconds must be positive");
+        }
     }
 
     private static String requireText(String value, String name) {

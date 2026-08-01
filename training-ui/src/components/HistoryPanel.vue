@@ -81,6 +81,17 @@ defineEmits(['retrain', 'export-md', 'export-csv', 'detail', 'load-session', 'co
           <span>用时：{{ entry.attempt.durationSeconds ?? '-' }} 秒</span>
         </div>
 
+        <div v-if="entry.oralScore" class="oral-score-mini">
+          <span>口述分：{{ entry.oralScore.total }}/10</span>
+          <span>
+            准{{ entry.oralScore.correctness }} 结{{ entry.oralScore.structure }}
+            证{{ entry.oralScore.projectEvidence }} 取{{ entry.oralScore.tradeoff }}
+            界{{ entry.oralScore.factRestraint }}
+          </span>
+        </div>
+
+        <p v-if="entry.attempt.notes" class="notes-line">复盘：{{ entry.attempt.notes }}</p>
+
         <div v-if="latestJudgement(entry)" class="judge-mini">
           <strong>最近判题：{{ latestJudgement(entry).status }}</strong>
           <span>

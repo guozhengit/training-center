@@ -116,7 +116,9 @@ final class SessionQueries {
                 instant(result.getString("submitted_at")),
                 nullableLong(result, "duration_seconds"),
                 result.getBoolean("answer_unlocked"),
-                result.getString("sandbox_path"));
+                result.getString("sandbox_path"),
+                result.getString("notes"),
+                result.getString("improved_answer"));
     }
 
     static int scalarInt(Connection connection, String sql, String parameter) throws SQLException {

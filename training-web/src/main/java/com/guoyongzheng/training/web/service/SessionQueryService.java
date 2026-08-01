@@ -1,6 +1,7 @@
 package com.guoyongzheng.training.web.service;
 
 import com.guoyongzheng.training.persistence.JudgementRepository;
+import com.guoyongzheng.training.persistence.ReviewRepository;
 import com.guoyongzheng.training.persistence.TrainingDatabase;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class SessionQueryService {
     private final TrainingDatabaseProvider databaseProvider;
     private final JudgementRepository judgementRepository = new JudgementRepository();
+    private final ReviewRepository reviewRepository = new ReviewRepository();
     private final Clock clock = Clock.systemUTC();
 
     public SessionQueryService(TrainingDatabaseProvider databaseProvider) {
@@ -92,7 +94,19 @@ public class SessionQueryService {
                         judgement.stdoutExcerpt(),
                         judgement.stderrExcerpt()));
             }
-            history.add(new TrainingSessionService.AttemptHistoryCard(attempt, List.copyOf(judgements)));
+            TrainingSessionService.OralScoreView oralScore = null;
+            var score = reviewRepository.findOralScore(connection, attempt.id()).orElse(null);
+            if (score != null) {
+                oralScore = new TrainingSessionService.OralScoreView(
+                        score.correctness(),
+                        score.structure(),
+                        score.projectEvidence(),
+                        score.tradeoff(),
+                        score.factRestraint(),
+                        score.total());
+            }
+            history.add(new TrainingSessionService.AttemptHistoryCard(
+                    attempt, List.copyOf(judgements), oralScore));
         }
         return List.copyOf(history);
     }

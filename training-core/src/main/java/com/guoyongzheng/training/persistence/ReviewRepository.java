@@ -49,15 +49,16 @@ public final class ReviewRepository {
         try (PreparedStatement statement = connection.prepareStatement("""
                 INSERT INTO review_queue
                     (question_id, wrong_count, review_count, last_result,
-                     last_attempt_at, next_review_at, interval_days)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                     last_attempt_at, next_review_at, interval_days, focus_dimensions)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(question_id) DO UPDATE SET
                     wrong_count = excluded.wrong_count,
                     review_count = excluded.review_count,
                     last_result = excluded.last_result,
                     last_attempt_at = excluded.last_attempt_at,
                     next_review_at = excluded.next_review_at,
-                    interval_days = excluded.interval_days
+                    interval_days = excluded.interval_days,
+                    focus_dimensions = excluded.focus_dimensions
                 """)) {
             statement.setString(1, review.questionId());
             statement.setInt(2, review.wrongCount());
@@ -66,6 +67,7 @@ public final class ReviewRepository {
             statement.setString(5, utc(review.lastAttemptAt()));
             statement.setString(6, utc(review.nextReviewAt()));
             statement.setInt(7, review.intervalDays());
+            statement.setString(8, review.focusDimensions());
             statement.executeUpdate();
         }
     }
@@ -85,7 +87,8 @@ public final class ReviewRepository {
                         result.getString("last_result"),
                         instant(result.getString("last_attempt_at")),
                         instant(result.getString("next_review_at")),
-                        result.getInt("interval_days")));
+                        result.getInt("interval_days"),
+                        result.getString("focus_dimensions")));
             }
         }
     }
@@ -118,6 +121,14 @@ public final class ReviewRepository {
             String lastResult,
             Instant lastAttemptAt,
             Instant nextReviewAt,
-            int intervalDays) {
+            int intervalDays,
+            String focusDimensions) {
+
+        /** Backward-compatible constructor without focus emphasis. */
+        public ReviewEntry(String questionId, int wrongCount, int reviewCount, String lastResult,
+                           Instant lastAttemptAt, Instant nextReviewAt, int intervalDays) {
+            this(questionId, wrongCount, reviewCount, lastResult, lastAttemptAt, nextReviewAt,
+                    intervalDays, null);
+        }
     }
 }

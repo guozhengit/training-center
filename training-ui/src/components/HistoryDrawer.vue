@@ -31,6 +31,25 @@ defineEmits(['close'])
 
       <p v-if="detail.attempt.sandboxPath" class="sandbox-line">{{ detail.attempt.sandboxPath }}</p>
 
+      <div v-if="detail.oralScore" class="detail-block oral-score-detail">
+        <h4>口述评分：{{ detail.oralScore.total }}/10</h4>
+        <p class="muted">
+          准确性 {{ detail.oralScore.correctness }} / 结构化 {{ detail.oralScore.structure }}
+          / 项目证据 {{ detail.oralScore.projectEvidence }} / 取舍意识 {{ detail.oralScore.tradeoff }}
+          / 事实边界 {{ detail.oralScore.factRestraint }}
+        </p>
+      </div>
+
+      <div v-if="detail.attempt.notes" class="detail-block">
+        <h4>复盘备注</h4>
+        <p>{{ detail.attempt.notes }}</p>
+      </div>
+
+      <div v-if="detail.attempt.improvedAnswer" class="detail-block">
+        <h4>优化后的答案</h4>
+        <pre class="improved-answer">{{ detail.attempt.improvedAnswer }}</pre>
+      </div>
+
       <div v-if="detail.judgements.length" class="judgement-timeline">
         <article v-for="judgement in detail.judgements" :key="judgement.id" class="judgement-detail">
           <div class="question-head">

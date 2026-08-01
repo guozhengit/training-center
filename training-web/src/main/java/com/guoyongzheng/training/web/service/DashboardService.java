@@ -159,10 +159,39 @@ public class DashboardService {
         for (QuestionDescriptor question : all) {
             String description = readContentFile(workspace, question.sourceRef());
             String starterCode = readContentFile(workspace, question.starterRef());
-            map.put(question.id(),
-                    new QuestionContentResponse(question.id(), question.title(), description, starterCode));
+            map.put(question.id(), buildContent(question, description, starterCode));
         }
         return Map.copyOf(map);
+    }
+
+    /** Builds the structured practice payload for a single question. */
+    private static QuestionContentResponse buildContent(QuestionDescriptor question,
+                                                        String description, String starterCode) {
+        if (question.track() == Track.ORAL) {
+            List<ContentSection> sections = QuestionContentExtractor.splitBoldSections(description);
+            return new QuestionContentResponse(
+                    question.id(), question.title(), description, starterCode,
+                    QuestionContentExtractor.sectionContent(sections, "完整口述稿"),
+                    QuestionContentExtractor.sectionContent(sections, "继续追问"),
+                    question.recommendedSeconds(),
+                    sections,
+                    null,
+                    null);
+        }
+        if (question.track() == Track.PROJECT) {
+            List<ContentSection> sections = QuestionContentExtractor.splitNumberedSections(description);
+            return new QuestionContentResponse(
+                    question.id(), question.title(), description, starterCode,
+                    null,
+                    null,
+                    question.recommendedSeconds(),
+                    sections,
+                    QuestionContentExtractor.sectionContent(sections, question.evidenceEntry()),
+                    QuestionContentExtractor.sectionContent(sections, question.factBoundary()));
+        }
+        return new QuestionContentResponse(
+                question.id(), question.title(), description, starterCode,
+                null, null, null, List.of(), null, null);
     }
 
     private static String readContentFile(Path workspace, String relativePath) {
@@ -330,7 +359,16 @@ public class DashboardService {
             String questionId,
             String title,
             String description,
-            String starterCode) {
+            String starterCode,
+            String answer,
+            String followUps,
+            Integer recommendedSeconds,
+            List<ContentSection> sections,
+            String evidenceEntry,
+            String factBoundary) {
+    }
+
+    public record ContentSection(String heading, String content) {
     }
 
     public record MatrixReportResponse(
