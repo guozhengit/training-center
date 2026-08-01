@@ -1,5 +1,13 @@
 # Training Center Linux 服务器部署手册
 
+> **注意：本文档为「裸机手动部署」方案（服务器直接安装 JDK/Maven/Node），已过时。**
+> 新部署请优先使用 Docker 容器化方案，一条命令完成：
+>
+> - [Docker 容器化部署手册](docker-deployment-linux.md)
+> - 部署工具包：`deploy/linux/`（`deploy.sh` 一键部署）
+>
+> 本文档仅保留作为无 Docker 环境的备选方案。
+
 本文档面向服务器目录为 `/home/docker` 的部署场景。
 
 默认项目路径：

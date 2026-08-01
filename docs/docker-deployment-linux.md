@@ -62,6 +62,11 @@ ls output/interview
 
 `output/coding-ai-exam` 或 `output/interview` 缺失时，[catalog] 会出现 Missing source root 报错。
 
+> 两份数据的同步方式不同：
+>
+> - `training-center/` 在 git 内，`git pull` 即可拿到最新代码与 `config/` 索引（含导入索引）
+> - `output/` 不在 git 内，构建镜像时烘焙进镜像；本地改动需用 `deploy/sync-data.ps1` 推送到服务器
+
 ## 3. Docker daemon 优化（推荐先做）
 
 国内网络拉取镜像建议配置镜像加速，同时开启日志滚动防止磁盘被日志占满：
@@ -74,6 +79,15 @@ sudo systemctl restart docker
 包含：registry 镜像加速、容器日志滚动（单容器 10MB x 3）、BuildKit 缓存自动回收（上限 20GB）。
 
 ## 4. 一键部署
+
+先在本地开发机把题库与面试资料推送到服务器（`output/` 不在 git 内）：
+
+```powershell
+# 本地 Windows (OpenSSH 客户端, 需已配置免密登录)
+.\deploy\sync-data.ps1 -Server user@<服务器IP>
+```
+
+然后在服务器上执行：
 
 ```bash
 cd /home/docker
@@ -171,6 +185,36 @@ cd /home/docker
 ```
 
 脚本流程：`git pull` → 重建应用镜像 → 重建容器 → 健康检查。基础镜像未变时无需重建。
+
+### 8.1 题目导入后的部署（重要）
+
+`training import` 会把内容写到两个位置：
+
+| 内容 | 位置 | 同步方式 |
+|---|---|---|
+| 导入索引 | `training-center/config/imported-questions.json`（git 内） | `git pull` |
+| 题目内容 | `output/coding-ai-exam/`、`output/interview/imported/`（不在 git 内） | `sync-data.ps1` |
+
+因此导入题目后需要四步，缺一不可：
+
+```bash
+# 1. 本地: 提交并推送 config/ 改动（导入索引）
+git add training-center/config
+git commit -m "feat: import questions"
+git push
+
+# 2. 本地 Windows: 推送 output 数据（题目内容）
+.\deploy\sync-data.ps1 -Server user@<服务器IP>
+
+# 3. 服务器: 拉取代码
+cd /home/docker/training-center && git pull
+
+# 4. 服务器: 重建并重启（update.sh 已包含 git pull，步骤 3、4 可合并）
+./training-center/deploy/linux/update.sh
+```
+
+> 若只改了 `config/` 而忘记同步 `output/`，新题目的内容文件在容器内不存在，
+> 运行期会报 `Missing source path`。`deploy.sh` 检测到导入索引时会给出提示。
 
 ## 9. 数据备份与恢复
 

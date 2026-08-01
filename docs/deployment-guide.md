@@ -123,8 +123,13 @@ java -jar training-cli\target\training-cli-1.0.0-SNAPSHOT.jar --help
 
 当前可用命令：
 
-- `doctor`：检查本地环境。
+- `doctor`：检查本地环境（JDK/Maven/Python/题库/目录）。
 - `catalog`：加载并筛选题库。
+- `start`：创建 CLI 训练会话。
+- `submit` / `judge`：提交结果 / 记录判题结果。
+- `import`：批量导入题目（coding/oral/project，JSON 文件），支持 `--dry-run` 与 `--force`。
+- `history`：查看最近训练记录。
+- `export`：导出训练记录（Markdown / CSV）。
 - `migrate`：初始化或迁移 SQLite 数据库。
 
 ## 7. Docker Compose 部署
