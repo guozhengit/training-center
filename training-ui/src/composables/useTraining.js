@@ -3,7 +3,7 @@ import { useApi } from './useApi'
 import { translate } from '../i18n'
 
 const SESSION_STORAGE_KEY = 'training:activeSession'
-const JUDGE_TIMEOUT_MS = 125_000
+const JUDGE_TIMEOUT_MS = 155_000
 
 export function useTraining(dashboard) {
   const { fetchJson } = useApi()

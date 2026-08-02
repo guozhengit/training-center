@@ -14,7 +14,8 @@ public record TrainingProperties(
         String workspace,
         Path jdkHome,
         Path mavenHome,
-        String pythonExecutable) {
+        String pythonExecutable,
+        Integer sandboxRetentionHours) {
 
     public TrainingProperties {
         if (workspace == null) {
@@ -28,6 +29,9 @@ public record TrainingProperties(
         }
         if (pythonExecutable == null || pythonExecutable.isBlank()) {
             pythonExecutable = "python";
+        }
+        if (sandboxRetentionHours == null || sandboxRetentionHours <= 0) {
+            sandboxRetentionHours = 72;
         }
         jdkHome = jdkHome.toAbsolutePath().normalize();
         mavenHome = mavenHome.toAbsolutePath().normalize();

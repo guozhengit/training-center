@@ -496,6 +496,7 @@ public class TrainingSessionService {
             int exitCode,
             String stdoutExcerpt,
             String stderrExcerpt,
+            String compileHint,
             Instant nextReviewAt,
             boolean sessionCompleted,
             TrainingSessionResponse session) {

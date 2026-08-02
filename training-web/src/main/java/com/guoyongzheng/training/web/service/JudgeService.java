@@ -8,6 +8,7 @@ import com.guoyongzheng.training.domain.AttemptStatus;
 import com.guoyongzheng.training.domain.JudgementStatus;
 import com.guoyongzheng.training.domain.QuestionDescriptor;
 import com.guoyongzheng.training.domain.Track;
+import com.guoyongzheng.training.judge.CompileErrorDiagnostics;
 import com.guoyongzheng.training.judge.JudgeRequest;
 import com.guoyongzheng.training.judge.JudgeRunner;
 import com.guoyongzheng.training.judge.JudgementResult;
@@ -41,10 +42,13 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -55,6 +59,14 @@ import java.util.function.Consumer;
 public class JudgeService {
     private static final Logger log = LoggerFactory.getLogger(JudgeService.class);
 
+    /** Maximum judge process duration; must stay below the SSE and client timeouts. */
+    static final Duration JUDGE_TIMEOUT = Duration.ofSeconds(90);
+    /** Maximum concurrent judge executions to protect the local machine. */
+    static final int MAX_CONCURRENT_JUDGES = 2;
+    private static final Duration JUDGE_QUEUE_WAIT = Duration.ofMinutes(5);
+    private static final Duration STALE_JUDGEMENT_AGE = Duration.ofMinutes(2);
+    private static final Duration SANDBOX_HARD_CAP = Duration.ofDays(30);
+
     private final TrainingDatabaseProvider databaseProvider;
     private final TrainingProperties trainingProperties;
     private final ObjectMapper objectMapper;
@@ -64,6 +76,7 @@ public class JudgeService {
     private final ReviewRepository reviewRepository = new ReviewRepository();
     private final SessionRepository sessionRepository = new SessionRepository();
     private final Clock clock = Clock.systemUTC();
+    private final Semaphore judgeSlots = new Semaphore(MAX_CONCURRENT_JUDGES);
 
     public JudgeService(TrainingDatabaseProvider databaseProvider,
                         TrainingProperties trainingProperties,
@@ -83,7 +96,6 @@ public class JudgeService {
             String attemptId, Consumer<JudgeProgressEvent> progress) {
         log.info("[Judge] start attemptId={}", attemptId);
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "校验答题状态"));
-        Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
         AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
         if (attempt.status() != AttemptStatus.IN_PROGRESS) {
@@ -94,6 +106,33 @@ public class JudgeService {
             throw new IllegalArgumentException("Auto judge only supports CODING attempts: " + attemptId);
         }
 
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "等待可用判题席位"));
+        boolean slotHeld = false;
+        try {
+            if (!judgeSlots.tryAcquire(JUDGE_QUEUE_WAIT.toMillis(), TimeUnit.MILLISECONDS)) {
+                throw new IllegalStateException("判题队列繁忙，请稍后重试");
+            }
+            slotHeld = true;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("判题排队被中断", exception);
+        }
+        try {
+            return runJudge(attemptId, attempt, question, progress);
+        } finally {
+            if (slotHeld) {
+                judgeSlots.release();
+            }
+        }
+    }
+
+    private TrainingSessionService.JudgeAttemptResponse runJudge(
+            String attemptId,
+            AttemptRepository.Attempt attempt,
+            QuestionDescriptor question,
+            Consumer<JudgeProgressEvent> progress) {
+        Path workspace = databaseProvider.workspace();
+        TrainingDatabase database = databaseProvider.readyDatabase();
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_PREPARING, "准备沙箱环境"));
         StarterMapping mapping = starterMapping(workspace, question.id());
         SandboxService sandboxService = sandboxService(workspace);
@@ -117,9 +156,12 @@ public class JudgeService {
         JudgementResult result = runner.judge(new JudgeRequest(
                 sandboxPath,
                 manifest,
-                Duration.ofSeconds(90),
+                JUDGE_TIMEOUT,
                 judgeEnvironment(mapping.runnerKind())));
         Instant finishedAt = clock.instant();
+        String compileHint = result.status() != JudgementStatus.PASSED
+                ? CompileErrorDiagnostics.compileHint(result.stderr())
+                : null;
 
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.PERSISTING, "写入判题结果"));
         try {
@@ -170,6 +212,7 @@ public class JudgeService {
                         result.exitCode(),
                         excerpt(result.stdout()),
                         excerpt(result.stderr()),
+                        compileHint,
                         nextReviewAt,
                         sessionCompleted,
                         readSession(connection, attempt.sessionId()));
@@ -258,6 +301,103 @@ public class JudgeService {
         } catch (IOException exception) {
             throw new IllegalStateException("Cannot write source to sandbox: " + attemptId, exception);
         }
+    }
+
+    /**
+     * Recovers judgements left in RUNNING by a crash or forced shutdown,
+     * marking them ENVIRONMENT_ERROR so history no longer shows a dangling run.
+     */
+    public void recoverStaleJudgements() {
+        TrainingDatabase database = databaseProvider.readyDatabase();
+        Instant now = clock.instant();
+        Instant cutoff = now.minus(STALE_JUDGEMENT_AGE);
+        try {
+            int recovered = database.inWriteTransaction(connection ->
+                    judgementRepository.recoverStaleRunning(connection, cutoff, now));
+            if (recovered > 0) {
+                log.info("[JudgeRecovery] recovered {} stale RUNNING judgements", recovered);
+            }
+        } catch (Exception exception) {
+            log.warn("[JudgeRecovery] recovery failed", exception);
+        }
+    }
+
+    /**
+     * Removes stale sandbox directories that have outlived their retention
+     * period: terminal or orphaned attempts older than the configured retention
+     * window, or any sandbox older than the hard cap. In-progress attempts are
+     * kept because their source lives only in the sandbox between edits.
+     */
+    public void sweepStaleSandboxes() {
+        Path root = sandboxRoot(databaseProvider.workspace());
+        if (!Files.isDirectory(root)) {
+            return;
+        }
+        Duration retention = Duration.ofHours(retentionHours());
+        Instant now = clock.instant();
+        try (var sessions = Files.list(root)) {
+            for (Path sessionDir : sessions.filter(Files::isDirectory).toList()) {
+                sweepSessionSandboxes(sessionDir, retention, now);
+            }
+        } catch (IOException exception) {
+            log.warn("[SandboxSweep] sweep failed", exception);
+        }
+    }
+
+    private void sweepSessionSandboxes(Path sessionDir, Duration retention, Instant now) {
+        try (var attempts = Files.list(sessionDir)) {
+            for (Path attemptDir : attempts.filter(Files::isDirectory).toList()) {
+                String attemptId = attemptDir.getFileName().toString();
+                if (shouldDeleteSandbox(attemptId, attemptDir, retention, now)) {
+                    sandboxService(databaseProvider.workspace()).cleanup(attemptDir);
+                    log.info("[SandboxSweep] removed stale sandbox {}", attemptDir);
+                }
+            }
+        } catch (IOException exception) {
+            log.warn("[SandboxSweep] failed to sweep {}", sessionDir, exception);
+        }
+    }
+
+    private boolean shouldDeleteSandbox(
+            String attemptId, Path attemptDir, Duration retention, Instant now) {
+        Instant lastActivity = lastModified(attemptDir);
+        if (lastActivity == null) {
+            return false;
+        }
+        Duration age = Duration.between(lastActivity, now);
+        if (age.compareTo(SANDBOX_HARD_CAP) >= 0) {
+            return true;
+        }
+        if (age.compareTo(retention) < 0) {
+            return false;
+        }
+        Optional<AttemptStatus> status = attemptStatus(attemptId);
+        return status.isEmpty()
+                || status.get() == AttemptStatus.FINISHED
+                || status.get() == AttemptStatus.SKIPPED;
+    }
+
+    private Optional<AttemptStatus> attemptStatus(String attemptId) {
+        try (Connection connection = databaseProvider.readyDatabase().openConnection()) {
+            return attemptRepository.findById(connection, attemptId)
+                    .map(AttemptRepository.Attempt::status);
+        } catch (SQLException exception) {
+            log.warn("[SandboxSweep] cannot read attempt {}", attemptId, exception);
+            return Optional.empty();
+        }
+    }
+
+    private static Instant lastModified(Path attemptDir) {
+        try {
+            return Files.getLastModifiedTime(attemptDir).toInstant();
+        } catch (IOException exception) {
+            return null;
+        }
+    }
+
+    private int retentionHours() {
+        Integer configured = trainingProperties.sandboxRetentionHours();
+        return configured == null || configured <= 0 ? 72 : configured;
     }
 
     // --- internal helpers ---
@@ -499,6 +639,11 @@ public class JudgeService {
         String mavenBin = trainingProperties.mavenBin().toString();
         environment.put("PATH", jdkBin + java.io.File.pathSeparator + mavenBin
                 + (path == null || path.isBlank() ? "" : java.io.File.pathSeparator + path));
+        if (runnerKind == RunnerKind.MAVEN) {
+            // Cap the Maven/compiler JVM heap so a pathological source cannot
+            // exhaust the machine while it is being compiled.
+            environment.put("MAVEN_OPTS", "-Xmx512m -XX:+UseSerialGC");
+        }
         if (runnerKind == RunnerKind.PYTEST) {
             environment.put("PYTHONUTF8", "1");
             environment.put("PYTHONIOENCODING", "utf-8");

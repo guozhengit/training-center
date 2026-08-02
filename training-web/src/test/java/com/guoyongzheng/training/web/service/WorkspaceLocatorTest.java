@@ -12,7 +12,7 @@ class WorkspaceLocatorTest {
     void locatesCurrentRepositoryWorkspaceFromNestedModuleDirectory() {
         Path nested = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize();
 
-        WorkspaceLocator locator = new WorkspaceLocator(new TrainingProperties("", null, null, null));
+        WorkspaceLocator locator = new WorkspaceLocator(new TrainingProperties("", null, null, null, null));
         Path workspace = locator.locateFrom(nested);
 
         assertThat(workspace.resolve("training-center/config")).isDirectory();

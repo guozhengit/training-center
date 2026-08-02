@@ -832,6 +832,42 @@ class TrainingDatabaseTest {
     }
 
     @Test
+    void recoversOnlyStaleRunningJudgementsAtStartup(@TempDir Path directory) throws Exception {
+        TrainingDatabase database = migrated(directory.resolve("training.db"));
+        SessionRepository sessions = new SessionRepository();
+        AttemptRepository attempts = new AttemptRepository();
+        JudgementRepository judgements = new JudgementRepository();
+        Instant now = NOW.plusSeconds(3_600);
+
+        database.inTransaction(connection -> {
+            insertQuestion(connection, "q-1");
+            sessions.insert(connection, session("s-1"));
+            attempts.insert(connection, attempt("a-1", "s-1", "q-1"));
+            judgements.append(connection, "j-stale", "a-1", NOW, JudgementStatus.QUEUED);
+            judgements.transition(connection, "j-stale", JudgementStatus.RUNNING, NOW);
+            judgements.append(connection, "j-fresh", "a-1", now, JudgementStatus.QUEUED);
+            judgements.transition(connection, "j-fresh", JudgementStatus.RUNNING, now);
+            return null;
+        });
+
+        int recovered;
+        try (Connection connection = database.openConnection()) {
+            recovered = judgements.recoverStaleRunning(connection, now.minusSeconds(60), now);
+        }
+        assertThat(recovered).isEqualTo(1);
+
+        try (Connection connection = database.openConnection()) {
+            JudgementRepository.Judgement stale =
+                    judgements.findById(connection, "j-stale").orElseThrow();
+            assertThat(stale.status()).isEqualTo(JudgementStatus.ENVIRONMENT_ERROR);
+            assertThat(stale.finishedAt()).isEqualTo(now);
+            assertThat(stale.stderrExcerpt()).contains("recovered after restart");
+            assertThat(judgements.findById(connection, "j-fresh").orElseThrow().status())
+                    .isEqualTo(JudgementStatus.RUNNING);
+        }
+    }
+
+    @Test
     void storesOralReviewAndPlanRecordsWithinCallerTransaction(@TempDir Path directory) throws Exception {
         TrainingDatabase database = migrated(directory.resolve("training.db"));
         SessionRepository sessions = new SessionRepository();

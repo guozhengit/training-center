@@ -124,6 +124,30 @@ public final class JudgementRepository {
         }
     }
 
+    /**
+     * Marks judgements still in RUNNING that started before {@code olderThan}
+     * as ENVIRONMENT_ERROR. Used at startup to recover rows left dangling by a
+     * crash or forced shutdown; the single UPDATE keeps the database triggers
+     * satisfied (RUNNING -> terminal with result fields in the same statement).
+     *
+     * @return the number of recovered judgements
+     */
+    public int recoverStaleRunning(
+            Connection connection, Instant olderThan, Instant recoveredAt) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("""
+                UPDATE judgements
+                SET status = ?, finished_at = ?, stderr_excerpt = ?
+                WHERE status = ? AND started_at < ?
+                """)) {
+            statement.setString(1, JudgementStatus.ENVIRONMENT_ERROR.name());
+            statement.setString(2, utc(recoveredAt));
+            statement.setString(3, "interrupted before completion; recovered after restart");
+            statement.setString(4, JudgementStatus.RUNNING.name());
+            statement.setString(5, utc(olderThan));
+            return statement.executeUpdate();
+        }
+    }
+
     private static Judgement map(ResultSet result) throws SQLException {
         return new Judgement(
                 result.getString("id"),

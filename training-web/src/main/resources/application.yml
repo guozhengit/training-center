@@ -38,4 +38,5 @@ training:
   jdk-home: ${TRAINING_JDK_HOME:D:/jdk/jdk-17.0.12}
   maven-home: ${TRAINING_MAVEN_HOME:D:/Program Files (x86)/apache-maven-3.9.9}
   python-executable: ${TRAINING_PYTHON:python}
+  sandbox-retention-hours: ${TRAINING_SANDBOX_RETENTION_HOURS:72}
   api-key: ${TRAINING_API_KEY:}

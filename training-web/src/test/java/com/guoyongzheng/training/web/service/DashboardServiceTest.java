@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DashboardServiceTest {
     private final WorkspaceLocator workspaceLocator =
-            new WorkspaceLocator(new TrainingProperties("", null, null, null));
+            new WorkspaceLocator(new TrainingProperties("", null, null, null, null));
     private final DashboardService service = new DashboardService(
             workspaceLocator, new CatalogCache(workspaceLocator), new ObjectMapper());
 

@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Tag(name = "Training", description = "Session lifecycle, attempt submission, and judging")
 @RestController
@@ -110,20 +109,16 @@ public class TrainingController {
     @Operation(summary = "Judge attempt (SSE stream)", description = "Streams judge progress stages via Server-Sent Events, ending with the full result.")
     @GetMapping(value = "/attempts/{attemptId}/judge-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter judgeAttemptStream(@PathVariable("attemptId") String attemptId) {
-        SseEmitter emitter = new SseEmitter(120_000L);
-        AtomicReference<Thread> workerThread = new AtomicReference<>();
+        // Must stay comfortably above JudgeService.JUDGE_TIMEOUT (90s) plus sandbox
+        // preparation so the stream outlives the judge even when its timeout fires.
+        SseEmitter emitter = new SseEmitter(150_000L);
 
-        emitter.onTimeout(() -> {
-            Thread worker = workerThread.get();
-            if (worker != null) worker.interrupt();
-        });
-        emitter.onCompletion(() -> {
-            Thread worker = workerThread.get();
-            if (worker != null) worker.interrupt();
-        });
+        // Deliberately no onTimeout/onCompletion worker interrupt: killing the
+        // worker would abandon a running judge and leave a dangling RUNNING
+        // judgement. The judge is bounded by its own 90s timeout, so we let it
+        // finish and persist even if the client disconnects first.
 
         judgeExecutor.execute(() -> {
-            workerThread.set(Thread.currentThread());
             try {
                 TrainingSessionService.JudgeAttemptResponse result =
                         judgeService.judgeAttemptWithProgress(attemptId, event -> {
@@ -138,7 +133,6 @@ public class TrainingController {
                 emitter.send(SseEmitter.event().name("result").data(result));
                 emitter.complete();
             } catch (Exception exception) {
-                if (Thread.currentThread().isInterrupted()) return;
                 try {
                     emitter.send(SseEmitter.event()
                             .name("error")
@@ -149,8 +143,6 @@ public class TrainingController {
                     // client disconnected
                 }
                 emitter.completeWithError(exception);
-            } finally {
-                workerThread.set(null);
             }
         });
         return emitter;

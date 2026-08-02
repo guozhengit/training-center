@@ -239,6 +239,7 @@ function rubricAnchor(track, key) {
           </span>
           <span>{{ t('attempt.duration') }}：{{ judgeResults[attempt.id].durationMillis }} ms</span>
           <span>{{ t('attempt.sandbox') }}：{{ judgeResults[attempt.id].sandboxPath }}</span>
+          <p v-if="judgeResults[attempt.id].compileHint" class="judge-compile-hint">{{ judgeResults[attempt.id].compileHint }}</p>
           <pre v-if="judgeResults[attempt.id].stderrExcerpt">{{ judgeResults[attempt.id].stderrExcerpt }}</pre>
           <pre v-else-if="judgeResults[attempt.id].stdoutExcerpt">{{ judgeResults[attempt.id].stdoutExcerpt }}</pre>
         </div>
