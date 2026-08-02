@@ -70,6 +70,10 @@ watch(() => props.question, async (q) => {
             <h3>起始代码</h3>
             <pre><code>{{ content.starterCode }}</code></pre>
           </div>
+          <div v-if="content.referenceCode" class="qd-starter">
+            <h3>{{ question.language === 'python' ? 'Python' : 'Java' }} 答案示例</h3>
+            <pre><code>{{ content.referenceCode }}</code></pre>
+          </div>
         </div>
 
         <footer class="qd-footer">

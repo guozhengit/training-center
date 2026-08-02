@@ -57,6 +57,24 @@ class DashboardServiceTest {
     }
 
     @Test
+    void odContentExposesJavaReferenceCode() {
+        DashboardService.QuestionContentResponse content = service.questionContent("OD001");
+
+        assertThat(content.referenceCode()).isNotBlank();
+        assertThat(content.referenceCode()).contains("OD001Problem001");
+        assertThat(content.referenceCode()).contains("solve");
+    }
+
+    @Test
+    void nonCodingContentHasNoReferenceCode() {
+        DashboardService.QuestionContentResponse oral = service.questionContent("O001");
+        DashboardService.QuestionContentResponse project = service.questionContent("P001");
+
+        assertThat(oral.referenceCode()).isNull();
+        assertThat(project.referenceCode()).isNull();
+    }
+
+    @Test
     void codingContentWithoutSolutionApproachHasNullAnswer() {
         DashboardService.QuestionContentResponse content = service.questionContent("B001");
 

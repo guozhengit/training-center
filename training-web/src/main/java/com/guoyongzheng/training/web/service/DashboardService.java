@@ -162,18 +162,20 @@ public class DashboardService {
         for (QuestionDescriptor question : all) {
             String description = readContentFile(workspace, question.sourceRef());
             String starterCode = readContentFile(workspace, question.starterRef());
-            map.put(question.id(), buildContent(question, description, starterCode));
+            String referenceCode = referenceCode(workspace, question);
+            map.put(question.id(), buildContent(question, description, starterCode, referenceCode));
         }
         return Map.copyOf(map);
     }
 
     /** Builds the structured practice payload for a single question. */
     private static QuestionContentResponse buildContent(QuestionDescriptor question,
-                                                        String description, String starterCode) {
+                                                        String description, String starterCode, String referenceCode) {
         if (question.track() == Track.ORAL) {
             List<ContentSection> sections = QuestionContentExtractor.splitBoldSections(description);
             return new QuestionContentResponse(
                     question.id(), question.title(), description, starterCode,
+                    referenceCode,
                     QuestionContentExtractor.sectionContent(sections, "完整口述稿"),
                     QuestionContentExtractor.sectionContent(sections, "继续追问"),
                     question.recommendedSeconds(),
@@ -185,6 +187,7 @@ public class DashboardService {
             List<ContentSection> sections = QuestionContentExtractor.splitNumberedSections(description);
             return new QuestionContentResponse(
                     question.id(), question.title(), description, starterCode,
+                    referenceCode,
                     null,
                     null,
                     question.recommendedSeconds(),
@@ -195,7 +198,22 @@ public class DashboardService {
         String approach = extractSolutionApproach(description);
         return new QuestionContentResponse(
                 question.id(), question.title(), description, starterCode,
-                approach, null, null, List.of(), null, null);
+                referenceCode, approach, null, null, List.of(), null, null);
+    }
+
+    /** Locates the reference (official solution) source file for a coding question.
+     *  The starter path is stored as {@code training-center/starters/<source_path>}, so the
+     *  reference file is the same source path resolved under {@code output/coding-ai-exam}. */
+    private static String referenceCode(Path workspace, QuestionDescriptor question) {
+        if (question.track() != Track.CODING || question.starterRef() == null) {
+            return null;
+        }
+        String prefix = "training-center/starters/";
+        if (!question.starterRef().startsWith(prefix)) {
+            return null;
+        }
+        String sourcePath = question.starterRef().substring(prefix.length());
+        return readContentFile(workspace, sourcePath);
     }
 
     /** Extracts the "解题思路" section (any heading level) as the model answer for coding questions. */
@@ -396,6 +414,7 @@ public class DashboardService {
             String title,
             String description,
             String starterCode,
+            String referenceCode,
             String answer,
             String followUps,
             Integer recommendedSeconds,

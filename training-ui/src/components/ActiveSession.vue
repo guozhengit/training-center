@@ -24,7 +24,7 @@ const recorder = useRecorder()
 const hint = useHint()
 const countdown = useCountdown()
 
-// Question content store: { [questionId]: { description, starterCode, answer, followUps, sections, evidenceEntry, factBoundary, recommendedSeconds, loaded, showDesc } }
+// Question content store: { [questionId]: { description, starterCode, referenceCode, answer, followUps, sections, evidenceEntry, factBoundary, recommendedSeconds, loaded, showDesc } }
 const contentStore = reactive({})
 // Reference-answer reveal state per attempt: { [attemptId]: boolean }
 const revealState = reactive({})
@@ -42,6 +42,7 @@ async function loadQuestionContent(attempt) {
     contentStore[qid] = {
       description: data.description,
       starterCode: data.starterCode,
+      referenceCode: data.referenceCode,
       answer: data.answer,
       followUps: data.followUps,
       sections: data.sections ?? [],
@@ -60,7 +61,7 @@ async function loadQuestionContent(attempt) {
     }
   } catch {
     contentStore[qid] = {
-      description: '（题目内容加载失败）', starterCode: '', answer: '', followUps: '',
+      description: '（题目内容加载失败）', starterCode: '', referenceCode: '', answer: '', followUps: '',
       sections: [], evidenceEntry: '', factBoundary: '', loaded: true, showDesc: true
     }
   }
@@ -182,6 +183,12 @@ function rubricAnchor(track, key) {
           <div v-if="revealState[attempt.id] && contentStore[attempt.questionId]?.loaded && contentStore[attempt.questionId].answer" class="reveal-panel">
             <h4 class="reveal-heading">解题思路</h4>
             <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].answer)"></div>
+            <h4 v-if="contentStore[attempt.questionId].referenceCode" class="reveal-heading">
+              {{ attempt.language === 'python' ? 'Python' : 'Java' }} 答案示例
+            </h4>
+            <div v-if="contentStore[attempt.questionId].referenceCode" class="reference-code">
+              <pre><code>{{ contentStore[attempt.questionId].referenceCode }}</code></pre>
+            </div>
           </div>
         </div>
 
