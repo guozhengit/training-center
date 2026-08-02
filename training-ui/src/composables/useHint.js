@@ -1,4 +1,5 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { translate } from '../i18n'
 
 /**
  * Client-side progressive hint reveal for starter source code.
@@ -7,11 +8,11 @@ import { ref } from 'vue'
 export function useHint() {
   const hintState = ref({})
 
-  const LEVEL_LABELS = [
-    '仅签名',
-    '签名 + 提示',
-    '完整源码'
-  ]
+  const LEVEL_LABELS = computed(() => [
+    translate('hint.level0'),
+    translate('hint.level1'),
+    translate('hint.level2')
+  ])
 
   function getHint(attemptId) {
     if (!hintState.value[attemptId]) {

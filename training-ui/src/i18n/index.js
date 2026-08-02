@@ -16,6 +16,10 @@ export function setLocale(locale) {
   localStorage.setItem('training-locale', locale)
 }
 
+export function translate(key, params) {
+  return i18n.global.t(key, params)
+}
+
 export const availableLocales = [
   { value: 'zh', label: '中文' },
   { value: 'en', label: 'English' }

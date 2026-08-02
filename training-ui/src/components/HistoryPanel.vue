@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   historyFilters: Object,
   historyRows: Array,
@@ -15,53 +19,47 @@ defineEmits(['retrain', 'export-md', 'export-csv', 'detail', 'load-session', 'co
   <section class="panel history-panel">
     <div class="panel-title">
       <div>
-        <p class="eyebrow">Review History</p>
-        <h2>练习与判题复盘</h2>
+        <p class="eyebrow">{{ t('history.eyebrow') }}</p>
+        <h2>{{ t('history.title') }}</h2>
       </div>
       <div class="button-row">
         <button :disabled="trainingBusy || !failedRetrainCount" type="button" @click="$emit('retrain')">
-          重练当前失败题 {{ failedRetrainCount || '' }}
+          {{ t('history.retrain', { count: failedRetrainCount || '' }) }}
         </button>
         <button :disabled="!historyRows.length" type="button" @click="$emit('export-md')">
-          导出 Markdown
+          {{ t('history.exportMd') }}
         </button>
         <button :disabled="!historyRows.length" type="button" @click="$emit('export-csv')">
-          导出 CSV
+          {{ t('history.exportCsv') }}
         </button>
       </div>
     </div>
 
     <div class="history-filter">
       <label>
-        <span>类型</span>
+        <span>{{ t('history.type') }}</span>
         <select v-model="historyFilters.track">
-          <option value="ALL">全部</option>
-          <option value="CODING">机试题</option>
-          <option value="ORAL">口述题</option>
-          <option value="PROJECT">项目答辩</option>
+          <option value="ALL">{{ t('history.all') }}</option>
+          <option v-for="(label, value) in t('history.trackOptions')" :key="value" :value="value">{{ label }}</option>
         </select>
       </label>
       <label>
-        <span>状态</span>
+        <span>{{ t('history.status') }}</span>
         <select v-model="historyFilters.status">
-          <option value="ALL">全部</option>
-          <option value="IN_PROGRESS">进行中</option>
-          <option value="FINISHED">已完成</option>
-          <option value="SKIPPED">已跳过</option>
+          <option value="ALL">{{ t('history.all') }}</option>
+          <option v-for="(label, value) in t('history.statusOptions')" :key="value" :value="value">{{ label }}</option>
         </select>
       </label>
       <label>
-        <span>结果</span>
+        <span>{{ t('history.result') }}</span>
         <select v-model="historyFilters.verdict">
-          <option value="ALL">全部</option>
-          <option value="PASSED">通过</option>
-          <option value="FAILED">失败</option>
-          <option value="NONE">无结果</option>
+          <option value="ALL">{{ t('history.all') }}</option>
+          <option v-for="(label, value) in t('history.verdictOptions')" :key="value" :value="value">{{ label }}</option>
         </select>
       </label>
       <label class="check-label">
         <input v-model="historyFilters.failedOnly" type="checkbox" />
-        <span>只看失败/未通过</span>
+        <span>{{ t('history.failedOnly') }}</span>
       </label>
     </div>
 
@@ -74,47 +72,51 @@ defineEmits(['retrain', 'export-md', 'export-csv', 'detail', 'load-session', 'co
         <h3>{{ entry.attempt.title }}</h3>
         <p>{{ entry.attempt.topic }}</p>
         <div class="history-meta">
-          <span>状态：{{ entry.attempt.status }}</span>
-          <span>结果：{{ entry.attempt.verdict ?? '-' }}</span>
-          <span>开始：{{ formatDate(entry.attempt.startedAt) }}</span>
-          <span>提交：{{ formatDate(entry.attempt.submittedAt) }}</span>
-          <span>用时：{{ entry.attempt.durationSeconds ?? '-' }} 秒</span>
+          <span>{{ t('attempt.status') }}：{{ entry.attempt.status }}</span>
+          <span>{{ t('attempt.result') }}：{{ entry.attempt.verdict ?? '-' }}</span>
+          <span>{{ t('attempt.started') }}：{{ formatDate(entry.attempt.startedAt) }}</span>
+          <span>{{ t('attempt.submitted') }}：{{ formatDate(entry.attempt.submittedAt) }}</span>
+          <span>{{ t('attempt.duration') }}：{{ entry.attempt.durationSeconds ?? '-' }} {{ t('attempt.durationUnit') }}</span>
         </div>
 
         <div v-if="entry.oralScore" class="oral-score-mini">
-          <span>口述分：{{ entry.oralScore.total }}/10</span>
+          <span>{{ t('history.oralScore', { total: entry.oralScore.total }) }}</span>
           <span>
-            准{{ entry.oralScore.correctness }} 结{{ entry.oralScore.structure }}
-            证{{ entry.oralScore.projectEvidence }} 取{{ entry.oralScore.tradeoff }}
-            界{{ entry.oralScore.factRestraint }}
+            {{ t('history.dimAbbr', {
+              correctness: entry.oralScore.correctness,
+              structure: entry.oralScore.structure,
+              projectEvidence: entry.oralScore.projectEvidence,
+              tradeoff: entry.oralScore.tradeoff,
+              factRestraint: entry.oralScore.factRestraint
+            }) }}
           </span>
         </div>
 
-        <p v-if="entry.attempt.notes" class="notes-line">复盘：{{ entry.attempt.notes }}</p>
+        <p v-if="entry.attempt.notes" class="notes-line">{{ t('history.reviewNote', { notes: entry.attempt.notes }) }}</p>
 
         <div v-if="latestJudgement(entry)" class="judge-mini">
-          <strong>最近判题：{{ latestJudgement(entry).status }}</strong>
+          <strong>{{ t('history.latestJudge', { status: latestJudgement(entry).status }) }}</strong>
           <span>
-            Tests：{{ latestJudgement(entry).passedCount ?? '-' }}/{{ latestJudgement(entry).failedCount ?? '-' }}
+            {{ t('history.tests', { passed: latestJudgement(entry).passedCount ?? '-', failed: latestJudgement(entry).failedCount ?? '-' }) }}
           </span>
-          <span>耗时：{{ latestJudgement(entry).durationMillis ?? '-' }} ms</span>
-          <span>Exit：{{ latestJudgement(entry).exitCode ?? '-' }}</span>
+          <span>{{ t('history.durationMs', { ms: latestJudgement(entry).durationMillis ?? '-' }) }}</span>
+          <span>{{ t('history.exit', { code: latestJudgement(entry).exitCode ?? '-' }) }}</span>
         </div>
 
         <div class="history-actions">
-          <button type="button" @click="$emit('detail', entry)">查看详情</button>
-          <button :disabled="trainingBusy" type="button" @click="$emit('load-session', entry)">载入本组继续练</button>
+          <button type="button" @click="$emit('detail', entry)">{{ t('history.detail') }}</button>
+          <button :disabled="trainingBusy" type="button" @click="$emit('load-session', entry)">{{ t('history.loadSession') }}</button>
           <button v-if="entry.attempt.sandboxPath" :disabled="trainingBusy" type="button"
-            @click="$emit('copy-path', entry.attempt.sandboxPath)">复制路径</button>
+            @click="$emit('copy-path', entry.attempt.sandboxPath)">{{ t('history.copyPath') }}</button>
           <button v-if="entry.attempt.sandboxPath" :disabled="trainingBusy" type="button"
-            @click="$emit('copy-cd', entry.attempt.sandboxPath)">复制 cd 命令</button>
+            @click="$emit('copy-cd', entry.attempt.sandboxPath)">{{ t('history.copyCd') }}</button>
           <button v-if="entry.attempt.sandboxPath" :disabled="trainingBusy" type="button"
-            @click="$emit('open-sandbox', entry.attempt)">打开沙箱</button>
+            @click="$emit('open-sandbox', entry.attempt)">{{ t('history.openSandbox') }}</button>
         </div>
 
         <p v-if="entry.attempt.sandboxPath" class="sandbox-line">{{ entry.attempt.sandboxPath }}</p>
       </article>
     </div>
-    <p v-else class="muted">还没有训练历史；先开始一组训练，面板会自动记录。</p>
+    <p v-else class="muted">{{ t('history.empty') }}</p>
   </section>
 </template>

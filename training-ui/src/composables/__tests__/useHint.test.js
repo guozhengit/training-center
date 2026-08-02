@@ -95,8 +95,8 @@ describe('useHint', () => {
 
   it('LEVEL_LABELS has 3 entries', () => {
     const { LEVEL_LABELS } = useHint()
-    expect(LEVEL_LABELS).toHaveLength(3)
-    expect(LEVEL_LABELS[0]).toBe('仅签名')
-    expect(LEVEL_LABELS[2]).toBe('完整源码')
+    expect(LEVEL_LABELS.value).toHaveLength(3)
+    expect(LEVEL_LABELS.value[0]).toBe('仅签名')
+    expect(LEVEL_LABELS.value[2]).toBe('完整源码')
   })
 })

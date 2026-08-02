@@ -1,5 +1,6 @@
 <script setup>
 import { reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
 import { useCountdown } from '../composables/useCountdown'
@@ -7,6 +8,7 @@ import { useApi } from '../composables/useApi'
 import { renderMarkdownCollapsible } from '../composables/useMarkdown'
 import CodeEditor from './CodeEditor.vue'
 
+const { t } = useI18n()
 const { fetchJson } = useApi()
 
 defineProps({
@@ -37,6 +39,9 @@ async function loadQuestionContent(attempt) {
     contentStore[qid].showDesc = !contentStore[qid].showDesc
     return
   }
+  if (contentStore[qid]?.loading) return
+  if (!contentStore[qid]) contentStore[qid] = { loading: true }
+  else contentStore[qid].loading = true
   try {
     const data = await fetchJson(`/api/questions/${qid}/content`)
     contentStore[qid] = {
@@ -61,7 +66,7 @@ async function loadQuestionContent(attempt) {
     }
   } catch {
     contentStore[qid] = {
-      description: '（题目内容加载失败）', starterCode: '', referenceCode: '', answer: '', followUps: '',
+      description: t('attempt.loadFailed'), starterCode: '', referenceCode: '', answer: '', followUps: '',
       sections: [], evidenceEntry: '', factBoundary: '', loaded: true, showDesc: true
     }
   }
@@ -103,7 +108,10 @@ function startTimer(attempt) {
 
 function timeLabel(attempt) {
   const seconds = recommendedSecondsFor(attempt)
-  if (seconds) return `推荐 ${seconds} 秒作答`
+  if (seconds) {
+    const formatted = seconds >= 60 ? `${Math.round(seconds / 60)} min` : `${seconds} ${t('report.seconds')}`
+    return t('attempt.recommended', { time: formatted })
+  }
   return attempt.difficulty === '三星' ? '60 min' : '40 min'
 }
 
@@ -115,25 +123,11 @@ function sectionRole(qid, role) {
   return found ? found.heading : ''
 }
 
-const rubricAnchors = {
-  ORAL: {
-    correctness: '对照「完整口述稿」核对要点覆盖度',
-    structure: '是否先结论后展开（总-分-总）',
-    projectEvidence: '是否给出具体项目实例支撑',
-    tradeoff: '是否说明取舍与备选方案',
-    factRestraint: '是否虚构指标/所有权；打 0 分强制重练'
-  },
-  PROJECT: {
-    correctness: '是否覆盖案例核心结论',
-    structure: '是否按「结论-证据-取舍」结构化陈述',
-    projectEvidence: '逐条对照「可验证依据」章节',
-    tradeoff: '是否说明技术选型取舍理由',
-    factRestraint: '逐条对照「不支持声称警示」；打 0 分强制重练'
-  }
-}
+const RUBRIC_TRACKS = ['ORAL', 'PROJECT']
 
 function rubricAnchor(track, key) {
-  return (rubricAnchors[track] ?? rubricAnchors.ORAL)[key] || ''
+  const base = RUBRIC_TRACKS.includes(track) ? track : 'ORAL'
+  return t(`rubric.${base}.${key}`)
 }
 </script>
 
@@ -141,8 +135,8 @@ function rubricAnchor(track, key) {
   <div v-if="activeSession" class="active-session">
     <header>
       <div>
-        <h3>{{ activeSession.mode }} 训练</h3>
-        <p>Session：{{ activeSession.id }}</p>
+        <h3>{{ activeSession.mode }} {{ t('attempt.training') }}</h3>
+        <p>{{ t('attempt.session') }}：{{ activeSession.id }}</p>
       </div>
       <span class="question-track">{{ activeSession.status }}</span>
     </header>
@@ -156,8 +150,8 @@ function rubricAnchor(track, key) {
       <p>{{ attempt.topic }}</p>
 
       <div v-if="attempt.status === 'FINISHED'" class="finished-row">
-        <span>结果：{{ attempt.verdict }}</span>
-        <span>用时：{{ attempt.durationSeconds ?? '-' }} 秒</span>
+        <span>{{ t('attempt.result') }}：{{ attempt.verdict }}</span>
+        <span>{{ t('attempt.duration') }}：{{ attempt.durationSeconds ?? '-' }} {{ t('attempt.durationUnit') }}</span>
       </div>
 
       <div v-else-if="attempt.track === 'CODING'" class="coding-judge-box">
@@ -165,7 +159,7 @@ function rubricAnchor(track, key) {
         <div class="question-content-section">
           <div class="oral-content-controls">
             <button type="button" class="btn-toggle-desc" @click="loadQuestionContent(attempt)">
-              {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
+              {{ contentStore[attempt.questionId]?.showDesc ? t('attempt.hideDesc') : t('attempt.showDesc') }}
             </button>
             <button
               v-if="contentStore[attempt.questionId]?.loaded && contentStore[attempt.questionId].answer"
@@ -174,17 +168,17 @@ function rubricAnchor(track, key) {
               :class="{ 'btn-revealed': revealState[attempt.id] }"
               @click="toggleReveal(attempt)"
             >
-              {{ revealState[attempt.id] ? '收起答案解析' : '揭晓答案解析' }}
+              {{ revealState[attempt.id] ? t('attempt.hideAnswer') : t('attempt.revealAnswer') }}
             </button>
           </div>
           <div v-if="contentStore[attempt.questionId]?.showDesc" class="question-desc-panel">
             <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].description)"></div>
           </div>
           <div v-if="revealState[attempt.id] && contentStore[attempt.questionId]?.loaded && contentStore[attempt.questionId].answer" class="reveal-panel">
-            <h4 class="reveal-heading">解题思路</h4>
+            <h4 class="reveal-heading">{{ t('attempt.thinkApproach') }}</h4>
             <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].answer)"></div>
             <h4 v-if="contentStore[attempt.questionId].referenceCode" class="reveal-heading">
-              {{ attempt.language === 'python' ? 'Python' : 'Java' }} 答案示例
+              {{ t('attempt.answerExample', { lang: attempt.language === 'python' ? 'Python' : 'Java' }) }}
             </h4>
             <div v-if="contentStore[attempt.questionId].referenceCode" class="reference-code">
               <pre><code>{{ contentStore[attempt.questionId].referenceCode }}</code></pre>
@@ -195,24 +189,24 @@ function rubricAnchor(track, key) {
         <!-- Countdown timer -->
         <div class="countdown-bar" :class="{ 'countdown-warning': countdown.isWarning(attempt.id), 'countdown-expired': countdown.getTimer(attempt.id).expired }">
           <template v-if="!countdown.getTimer(attempt.id).running && countdown.getTimer(attempt.id).remaining === 0 && !countdown.getTimer(attempt.id).expired">
-            <button type="button" class="btn-timer-start" @click="countdown.start(attempt.id, attempt.difficulty)">
-              开始限时（{{ attempt.difficulty === '三星' ? '60' : '40' }}min）
+            <button type="button" class="btn-timer-start" @click="startTimer(attempt)">
+              {{ t('attempt.startTimer', { label: timeLabel(attempt) }) }}
             </button>
           </template>
           <template v-else>
             <span class="countdown-display">{{ countdown.formatRemaining(countdown.getTimer(attempt.id).remaining) }}</span>
-            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">时间到!</span>
-            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">剩余不足5分钟</span>
-            <span v-else class="countdown-label">{{ attempt.difficulty === '三星' ? '200分题 / 60min' : '100分题 / 40min' }}</span>
-            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">⏸ 暂停</button>
-            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">▶ 继续</button>
-            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">↺ 重置</button>
+            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">{{ t('attempt.expired') }}</span>
+            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">{{ t('attempt.warn5') }}</span>
+            <span v-else class="countdown-label">{{ timeLabel(attempt) }}</span>
+            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">{{ t('attempt.pause') }}</button>
+            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">{{ t('attempt.resume') }}</button>
+            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">{{ t('attempt.reset') }}</button>
           </template>
         </div>
 
         <!-- Code editor -->
         <div class="code-editor-section">
-          <label class="code-editor-label">代码编辑区（{{ attempt.language }}）</label>
+          <label class="code-editor-label">{{ t('attempt.codeLabel', { lang: attempt.language }) }}</label>
           <CodeEditor
             :model-value="getCode(attempt.id)"
             :language="attempt.language"
@@ -221,13 +215,13 @@ function rubricAnchor(track, key) {
         </div>
 
         <p class="muted">
-          自动判题会先创建隔离沙箱；如需修改代码，可在返回的 sandboxPath 中编辑后再次运行判题。
+          {{ t('attempt.sandboxHint') }}
         </p>
         <div class="finished-row" v-if="attempt.sandboxPath">
-          <span>沙箱：{{ attempt.sandboxPath }}</span>
+          <span>{{ t('attempt.sandbox') }}：{{ attempt.sandboxPath }}</span>
         </div>
         <button :disabled="trainingBusy" type="button" @click="$emit('judge', attempt, getCode(attempt.id))">
-          {{ trainingBusy ? '判题中...' : '运行自动判题' }}
+          {{ trainingBusy ? t('attempt.judging') : t('attempt.judge') }}
         </button>
 
         <div v-if="judgeProgress" class="judge-progress">
@@ -238,13 +232,13 @@ function rubricAnchor(track, key) {
         </div>
 
         <div v-if="judgeResults[attempt.id]" class="judge-result">
-          <strong>判题结果：{{ judgeResults[attempt.id].status }}</strong>
-          <span>Verdict：{{ judgeResults[attempt.id].verdict }}</span>
+          <strong>{{ t('attempt.judgeResult') }}：{{ judgeResults[attempt.id].status }}</strong>
+          <span>{{ t('attempt.verdict') }}：{{ judgeResults[attempt.id].verdict }}</span>
           <span>
-            Tests：{{ judgeResults[attempt.id].passedCount ?? '-' }}/{{ judgeResults[attempt.id].failedCount ?? '-' }}
+            {{ t('attempt.tests') }}：{{ judgeResults[attempt.id].passedCount ?? '-' }}/{{ judgeResults[attempt.id].failedCount ?? '-' }}
           </span>
-          <span>耗时：{{ judgeResults[attempt.id].durationMillis }} ms</span>
-          <span>Sandbox：{{ judgeResults[attempt.id].sandboxPath }}</span>
+          <span>{{ t('attempt.duration') }}：{{ judgeResults[attempt.id].durationMillis }} ms</span>
+          <span>{{ t('attempt.sandbox') }}：{{ judgeResults[attempt.id].sandboxPath }}</span>
           <pre v-if="judgeResults[attempt.id].stderrExcerpt">{{ judgeResults[attempt.id].stderrExcerpt }}</pre>
           <pre v-else-if="judgeResults[attempt.id].stdoutExcerpt">{{ judgeResults[attempt.id].stdoutExcerpt }}</pre>
         </div>
@@ -257,17 +251,17 @@ function rubricAnchor(track, key) {
               class="btn-hint"
               @click="hint.revealNext(attempt.id)"
             >
-              {{ hint.getHint(attempt.id).level < 0 ? '查看提示' : '更多提示' }}
+              {{ hint.getHint(attempt.id).level < 0 ? t('hint.show') : t('hint.more') }}
             </button>
             <span v-if="hint.getHint(attempt.id).level >= 0" class="hint-level">
-              {{ hint.LEVEL_LABELS[hint.getHint(attempt.id).level] }}
+              {{ t('hint.level' + hint.getHint(attempt.id).level) }}
             </span>
             <button
               v-if="hint.getHint(attempt.id).level >= 0"
               type="button"
               class="btn-reset"
               @click="hint.resetHint(attempt.id)"
-            >收起</button>
+            >{{ t('hint.collapse') }}</button>
           </div>
           <pre v-if="hint.getHint(attempt.id).content" class="hint-content">{{ hint.getHint(attempt.id).content }}</pre>
         </div>
@@ -277,7 +271,7 @@ function rubricAnchor(track, key) {
         <div class="question-content-section">
           <div class="oral-content-controls">
             <button type="button" class="btn-toggle-desc" @click="loadQuestionContent(attempt)">
-              {{ contentStore[attempt.questionId]?.showDesc ? '收起题目' : '查看题目' }}
+              {{ contentStore[attempt.questionId]?.showDesc ? t('attempt.hideDesc') : t('attempt.showDesc') }}
             </button>
             <button
               type="button"
@@ -285,7 +279,7 @@ function rubricAnchor(track, key) {
               :class="{ 'btn-revealed': revealState[attempt.id] }"
               @click="toggleReveal(attempt)"
             >
-              {{ revealState[attempt.id] ? '收起参考要点' : '揭晓参考要点' }}
+              {{ revealState[attempt.id] ? t('attempt.hidePoints') : t('attempt.revealPoints') }}
             </button>
           </div>
 
@@ -309,15 +303,15 @@ function rubricAnchor(track, key) {
 
           <div v-if="revealState[attempt.id] && contentStore[attempt.questionId]?.loaded" class="reveal-panel">
             <template v-if="attempt.track === 'ORAL'">
-              <h4 class="reveal-heading">完整口述稿</h4>
+              <h4 class="reveal-heading">{{ t('attempt.fullScript') }}</h4>
               <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].answer)"></div>
-              <h4 v-if="contentStore[attempt.questionId].followUps" class="reveal-heading">继续追问</h4>
+              <h4 v-if="contentStore[attempt.questionId].followUps" class="reveal-heading">{{ t('attempt.followUps') }}</h4>
               <div v-if="contentStore[attempt.questionId].followUps" class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].followUps)"></div>
             </template>
             <template v-else>
-              <h4 class="reveal-heading evidence-heading">可验证依据</h4>
+              <h4 class="reveal-heading evidence-heading">{{ t('attempt.evidence') }}</h4>
               <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].evidenceEntry)"></div>
-              <h4 class="reveal-heading fact-heading">不支持声称警示</h4>
+              <h4 class="reveal-heading fact-heading">{{ t('attempt.factBoundary') }}</h4>
               <div class="markdown-body" v-html="renderMarkdownCollapsible(contentStore[attempt.questionId].factBoundary)"></div>
             </template>
           </div>
@@ -326,24 +320,24 @@ function rubricAnchor(track, key) {
         <div class="countdown-bar" :class="{ 'countdown-warning': countdown.isWarning(attempt.id), 'countdown-expired': countdown.getTimer(attempt.id).expired }">
           <template v-if="!countdown.getTimer(attempt.id).running && countdown.getTimer(attempt.id).remaining === 0 && !countdown.getTimer(attempt.id).expired">
             <button type="button" class="btn-timer-start" @click="startTimer(attempt)">
-              开始限时（{{ timeLabel(attempt) }}）
+              {{ t('attempt.startTimer', { label: timeLabel(attempt) }) }}
             </button>
           </template>
           <template v-else>
             <span class="countdown-display">{{ countdown.formatRemaining(countdown.getTimer(attempt.id).remaining) }}</span>
-            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">时间到!</span>
-            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">即将超时</span>
+            <span v-if="countdown.getTimer(attempt.id).expired" class="countdown-label">{{ t('attempt.expired') }}</span>
+            <span v-else-if="countdown.isWarning(attempt.id)" class="countdown-label">{{ t('attempt.warnSoon') }}</span>
             <span v-else class="countdown-label">{{ timeLabel(attempt) }}</span>
-            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">⏸ 暂停</button>
-            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">▶ 继续</button>
-            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">↺ 重置</button>
+            <button v-if="countdown.getTimer(attempt.id).running" type="button" class="btn-timer-sm btn-timer-pause" @click="countdown.pause(attempt.id)">{{ t('attempt.pause') }}</button>
+            <button v-else-if="!countdown.getTimer(attempt.id).expired" type="button" class="btn-timer-sm btn-timer-resume" @click="countdown.resume(attempt.id)">{{ t('attempt.resume') }}</button>
+            <button type="button" class="btn-timer-sm btn-timer-reset" @click="countdown.reset(attempt.id)">{{ t('attempt.reset') }}</button>
           </template>
         </div>
 
         <div class="recorder-box">
           <div class="recorder-timer">
             <span class="timer-display">{{ recorder.formatElapsed(recorder.getTimer(attempt.id).elapsed) }}</span>
-            <span v-if="recorder.getTimer(attempt.id).running" class="timer-running">计时中</span>
+            <span v-if="recorder.getTimer(attempt.id).running" class="timer-running">{{ t('recorder.timing') }}</span>
           </div>
           <div class="recorder-controls">
             <template v-if="recorder.recordingSupported.value">
@@ -352,32 +346,32 @@ function rubricAnchor(track, key) {
                 type="button"
                 class="btn-record"
                 @click="recorder.startRecording(attempt.id)"
-              >开始录音</button>
+              >{{ t('recorder.startRecording') }}</button>
               <button
                 v-else
                 type="button"
                 class="btn-stop"
                 @click="recorder.stopRecording(attempt.id)"
-              >停止录音</button>
+              >{{ t('recorder.stopRecording') }}</button>
             </template>
             <template v-else>
               <button
                 v-if="!recorder.getTimer(attempt.id).running"
                 type="button"
                 @click="recorder.startTimer(attempt.id)"
-              >开始计时</button>
+              >{{ t('recorder.startTimer') }}</button>
               <button
                 v-else
                 type="button"
                 @click="recorder.stopTimer(attempt.id)"
-              >停止计时</button>
+              >{{ t('recorder.stopTimer') }}</button>
             </template>
             <button
               v-if="recorder.getTimer(attempt.id).elapsed > 0 && !recorder.getTimer(attempt.id).running"
               type="button"
               class="btn-reset"
               @click="recorder.discardRecording(attempt.id)"
-            >重置</button>
+            >{{ t('recorder.reset') }}</button>
           </div>
           <p v-if="recorder.getRecording(attempt.id).error" class="recorder-error">
             {{ recorder.getRecording(attempt.id).error }}
@@ -391,24 +385,24 @@ function rubricAnchor(track, key) {
         </div>
 
         <label>
-          <span>结果</span>
+          <span>{{ t('attempt.result') }}</span>
           <select v-model="submitForms[attempt.id].verdict">
-            <option value="PASSED">通过 / 表达达标</option>
-            <option value="FAILED">失败 / 需要复习</option>
+            <option value="PASSED">{{ t('attempt.passed') }}</option>
+            <option value="FAILED">{{ t('attempt.failed') }}</option>
           </select>
         </label>
         <label>
-          <span>用时（秒）</span>
+          <span>{{ t('attempt.durationSeconds') }}</span>
           <input v-model.number="submitForms[attempt.id].durationSeconds" min="0" type="number" />
         </label>
         <label class="check-label">
           <input v-model="submitForms[attempt.id].answerUnlocked" type="checkbox" />
-          <span>已看答案</span>
+          <span>{{ t('attempt.answerUnlocked') }}</span>
         </label>
 
         <div v-if="attempt.track !== 'CODING'" class="score-grid">
           <label v-for="dimension in scoreDimensions" :key="dimension.key">
-            <span>{{ dimension.label }}</span>
+            <span>{{ t('score.' + dimension.key) }}</span>
             <select v-model.number="submitForms[attempt.id][dimension.key]">
               <option :value="0">0</option>
               <option :value="1">1</option>
@@ -416,19 +410,19 @@ function rubricAnchor(track, key) {
             </select>
             <small class="rubric-anchor">{{ rubricAnchor(attempt.track, dimension.key) }}</small>
           </label>
-          <strong>总分 {{ scoreTotal(submitForms[attempt.id]) }}/10</strong>
+          <strong>{{ t('attempt.totalScore', { score: scoreTotal(submitForms[attempt.id]) }) }}</strong>
         </div>
 
         <label class="wide-field">
-          <span>复盘备注</span>
-          <textarea v-model="submitForms[attempt.id].notes" rows="2" placeholder="哪里卡住、下次怎么说得更好" />
+          <span>{{ t('attempt.notes') }}</span>
+          <textarea v-model="submitForms[attempt.id].notes" rows="2" :placeholder="t('attempt.notesPlaceholder')" />
         </label>
         <label class="wide-field">
-          <span>优化后的答案</span>
-          <textarea v-model="submitForms[attempt.id].improvedAnswer" rows="2" placeholder="沉淀一版 1-3 分钟口述稿或关键思路" />
+          <span>{{ t('attempt.improvedAnswer') }}</span>
+          <textarea v-model="submitForms[attempt.id].improvedAnswer" rows="2" :placeholder="t('attempt.improvedPlaceholder')" />
         </label>
         <button :disabled="trainingBusy" type="button" @click="$emit('submit', attempt)">
-          记录本题结果
+          {{ t('attempt.submit') }}
         </button>
       </div>
     </article>

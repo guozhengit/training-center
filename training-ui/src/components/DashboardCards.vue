@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   trackCards: Array,
   totalQuestions: Number,
@@ -13,26 +17,26 @@ defineProps({
       <strong>{{ card.value }}</strong>
     </article>
     <article class="metric-card dark">
-      <span>题库总量</span>
+      <span>{{ t('dashboard.totalQuestions') }}</span>
       <strong>{{ totalQuestions }}</strong>
     </article>
   </section>
 
   <section class="grid cards training-stats">
     <article class="metric-card">
-      <span>训练会话</span>
+      <span>{{ t('dashboard.sessions') }}</span>
       <strong>{{ stats?.sessions ?? 0 }}</strong>
     </article>
     <article class="metric-card">
-      <span>完成练习</span>
+      <span>{{ t('dashboard.finishedAttempts') }}</span>
       <strong>{{ stats?.finishedAttempts ?? 0 }}</strong>
     </article>
     <article class="metric-card">
-      <span>待复习错题</span>
+      <span>{{ t('dashboard.dueReviews') }}</span>
       <strong>{{ stats?.dueReviews ?? 0 }}</strong>
     </article>
     <article class="metric-card">
-      <span>口述均分</span>
+      <span>{{ t('dashboard.avgOralScore') }}</span>
       <strong>{{ (stats?.averageOralScore ?? 0).toFixed(1) }}</strong>
     </article>
   </section>

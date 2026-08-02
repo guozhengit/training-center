@@ -1,4 +1,5 @@
 import { ref, computed, onUnmounted } from 'vue'
+import { translate } from '../i18n'
 
 /**
  * Provides per-attempt timer and audio recording for oral questions.
@@ -65,7 +66,7 @@ export function useRecorder() {
   async function startRecording(attemptId) {
     if (!recordingSupported.value) {
       const rec = getRecording(attemptId)
-      rec.error = '当前浏览器不支持录音'
+      rec.error = translate('recorder.notSupported')
       return
     }
     const rec = getRecording(attemptId)
@@ -91,8 +92,8 @@ export function useRecorder() {
       startTimer(attemptId)
     } catch (exception) {
       rec.error = exception.name === 'NotAllowedError'
-        ? '麦克风权限被拒绝'
-        : '录音启动失败: ' + exception.message
+        ? translate('recorder.micDenied')
+        : translate('recorder.startFailed', { msg: exception.message })
     }
   }
 

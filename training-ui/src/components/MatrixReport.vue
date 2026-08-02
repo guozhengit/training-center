@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   matrix: Object,
   matrixCards: Array,
@@ -15,11 +19,13 @@ function passRate(item) {
   <section class="panel matrix-panel">
     <div class="panel-title">
       <div>
-        <p class="eyebrow">Task21 Matrix</p>
-        <h2>Starter 全量验证</h2>
+        <p class="eyebrow">{{ t('matrix.eyebrow') }}</p>
+        <h2>{{ t('matrix.title') }}</h2>
       </div>
       <span class="pill" :class="{ ok: matrixReady }">
-        {{ matrixReady ? '360/360 PASS' : '需要检查' }}
+        {{ matrixReady
+          ? t('matrix.pass', { passed: (matrix.totalResults ?? 0) - (matrix.nonPassResults ?? 0), total: matrix.totalResults ?? 0 })
+          : t('matrix.needCheck') }}
       </span>
     </div>
 
@@ -30,11 +36,11 @@ function passRate(item) {
         <em>{{ passRate(item.data) }}</em>
       </article>
     </div>
-    <p v-else class="muted">还没有找到 starter-matrix-report.json。</p>
+    <p v-else class="muted">{{ t('matrix.empty') }}</p>
 
     <footer v-if="matrix?.available" class="report-footer">
-      <span>报告 SHA-256：{{ matrix.reportSha256 }}</span>
-      <span>官方题树：{{ matrix.officialTreeAfterFileCount }} files</span>
+      <span>{{ t('matrix.reportSha') }}：{{ matrix.reportSha256 }}</span>
+      <span>{{ t('matrix.officialTree') }}：{{ matrix.officialTreeAfterFileCount }} {{ t('matrix.files') }}</span>
     </footer>
   </section>
 </template>

@@ -3,6 +3,7 @@ import { markedHighlight } from 'marked-highlight'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/common'
 import 'highlight.js/styles/github.css'
+import { translate } from '../i18n'
 
 marked.use(markedHighlight({
   langPrefix: 'hljs language-',
@@ -66,7 +67,7 @@ export function renderMarkdownCollapsible(md, openCount) {
     sectionIndex++
     const openAttr = (openCount == null || sectionIndex <= openCount) ? ' open' : ''
     const headingMatch = part.match(/<h2[^>]*>(.*?)<\/h2>/)
-    const summaryText = headingMatch ? headingMatch[1].replace(/<[^>]+>/g, '') : '详情'
+    const summaryText = headingMatch ? headingMatch[1].replace(/<[^>]+>/g, '') : translate('common.detail')
     const rest = part.replace(/<h2[^>]*>.*?<\/h2>/, '')
     return `<details class="q-section"${openAttr}><summary>${summaryText}</summary>${rest}</details>`
   }).join('')

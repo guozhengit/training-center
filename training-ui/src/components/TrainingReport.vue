@@ -1,6 +1,9 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Chart, registerables } from 'chart.js'
+
+const { t } = useI18n()
 
 Chart.register(...registerables)
 
@@ -23,7 +26,7 @@ function buildDonut() {
   donutChart = new Chart(donutCanvas.value, {
     type: 'doughnut',
     data: {
-      labels: ['通过', '失败', '未完成'],
+      labels: [t('report.passed'), t('report.failed'), t('report.pending')],
       datasets: [{
         data: [passed, failed, Math.max(0, pending)],
         backgroundColor: ['#10b981', '#ef4444', '#e2e8f0'],
@@ -56,7 +59,7 @@ function buildTrend() {
     data: {
       labels,
       datasets: [{
-        label: '用时（秒）',
+        label: t('report.durationLabel'),
         data: durations,
         backgroundColor: colors,
         borderRadius: 4
@@ -66,7 +69,7 @@ function buildTrend() {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        y: { beginAtZero: true, title: { display: true, text: '秒' } },
+        y: { beginAtZero: true, title: { display: true, text: t('report.seconds') } },
         x: { ticks: { maxRotation: 45 } }
       },
       plugins: {
@@ -93,27 +96,27 @@ onUnmounted(() => {
 
 <template>
   <section v-if="stats" class="report-panel">
-    <h2 class="panel-title">训练报告</h2>
+    <h2 class="panel-title">{{ t('report.title') }}</h2>
     <div class="report-grid">
       <div class="report-card">
-        <h4>通过 / 失败分布</h4>
+        <h4>{{ t('report.distribution') }}</h4>
         <div class="chart-box">
           <canvas ref="donutCanvas" />
         </div>
         <div class="report-summary">
-          <span>总练习 {{ stats.totalAttempts ?? 0 }}</span>
-          <span>通过率 {{ stats.finishedAttempts ? Math.round((stats.passedAttempts ?? 0) / stats.finishedAttempts * 100) : 0 }}%</span>
-          <span>待复习 {{ stats.dueReviewCount ?? 0 }}</span>
+          <span>{{ t('report.totalPractice') }} {{ stats.totalAttempts ?? 0 }}</span>
+          <span>{{ t('report.passRate') }} {{ stats.finishedAttempts ? Math.round((stats.passedAttempts ?? 0) / stats.finishedAttempts * 100) : 0 }}%</span>
+          <span>{{ t('report.dueReview') }} {{ stats.dueReviewCount ?? 0 }}</span>
         </div>
       </div>
       <div class="report-card">
-        <h4>最近用时趋势</h4>
+        <h4>{{ t('report.trend') }}</h4>
         <div class="chart-box">
           <canvas ref="trendCanvas" />
         </div>
         <div class="report-summary">
-          <span>平均用时 {{ stats.avgDurationSeconds ? Math.round(stats.avgDurationSeconds) : '-' }} 秒</span>
-          <span>口述均分 {{ stats.avgOralScore ? stats.avgOralScore.toFixed(1) : '-' }}/10</span>
+          <span>{{ t('report.avgDuration') }} {{ stats.avgDurationSeconds ? Math.round(stats.avgDurationSeconds) : '-' }} {{ t('report.seconds') }}</span>
+          <span>{{ t('report.avgOralScore') }} {{ stats.avgOralScore ? stats.avgOralScore.toFixed(1) : '-' }}/10</span>
         </div>
       </div>
     </div>

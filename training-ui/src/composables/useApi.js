@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { translate } from '../i18n'
 
 export function useApi() {
   async function fetchJson(path, options = {}) {
@@ -10,11 +11,11 @@ export function useApi() {
         headers: { 'Content-Type': 'application/json', ...(customHeaders ?? {}) }
       })
     } catch (networkError) {
-      throw new Error(`网络连接失败，请检查网络后重试（${path}）`)
+      throw new Error(translate('api.network', { path }))
     }
     if (!response.ok) {
       const body = await response.json().catch(() => ({}))
-      throw new Error(body.message || `${path} 请求失败：${response.status}`)
+      throw new Error(body.message || translate('api.requestFailed', { path, status: response.status }))
     }
     return response.json()
   }

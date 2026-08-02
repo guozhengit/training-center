@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { translate } from '../i18n'
 
 export function useHistory(dashboard, training) {
   const activeHistoryDetail = ref(null)
@@ -52,11 +53,11 @@ export function useHistory(dashboard, training) {
   async function createFailedRetrainSession() {
     const rows = failedRetrainRows.value
     if (!rows.length) {
-      dashboard.error.value = '当前筛选结果里没有失败题'
+      dashboard.error.value = translate('session.retrainNone')
       return
     }
     if (!failedRetrainTrack.value) {
-      dashboard.error.value = '当前失败题包含多个类型，请先在历史筛选里选择单一类型'
+      dashboard.error.value = translate('session.retrainMixed')
       return
     }
     await training.createSessionFromQuestionIds(

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useApi } from '../composables/useApi'
 import { renderMarkdownCollapsible } from '../composables/useMarkdown'
 
@@ -10,6 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'start'])
 
+const { t } = useI18n()
 const { fetchJson } = useApi()
 const content = ref(null)
 const loading = ref(false)
@@ -28,11 +30,15 @@ watch(() => props.question, async (q) => {
   try {
     content.value = await fetchJson(`/api/questions/${q.id}/content`)
   } catch (e) {
-    error.value = e.message || '加载题目内容失败'
+    error.value = e.message || t('qdetail.loadFailed')
   } finally {
     loading.value = false
   }
 }, { immediate: true })
+
+function priorityLabel(priority) {
+  return t(`qdetail.priority.${priority}`)
+}
 </script>
 
 <template>
@@ -45,10 +51,10 @@ watch(() => props.question, async (q) => {
             <h2>{{ question.title }}</h2>
           </div>
           <div class="qd-header-actions">
-            <button type="button" class="qd-maximize" :title="maximized ? '还原' : '最大化'" @click="maximized = !maximized">
+            <button type="button" class="qd-maximize" :aria-label="maximized ? t('qdetail.restore') : t('qdetail.maximize')" :title="maximized ? t('qdetail.restore') : t('qdetail.maximize')" @click="maximized = !maximized">
               {{ maximized ? '🗗' : '⬜' }}
             </button>
-            <button type="button" class="qd-close" @click="emit('close')">✕</button>
+            <button type="button" class="qd-close" :aria-label="t('qdetail.close')" :title="t('qdetail.close')" @click="emit('close')">✕</button>
           </div>
         </header>
 
@@ -58,20 +64,20 @@ watch(() => props.question, async (q) => {
           <span>{{ question.difficulty }}</span>
           <span>{{ question.language }}</span>
           <span v-if="question.priority" :class="'priority-' + question.priority" class="qd-priority">
-            {{ question.priority === 'green' ? '高频必刷' : question.priority === 'yellow' ? '中频推荐' : '低频补充' }}
+            {{ priorityLabel(question.priority) }}
           </span>
         </div>
 
-        <div v-if="loading" class="loading-box">加载题目内容中...</div>
+        <div v-if="loading" class="loading-box">{{ t('qdetail.loading') }}</div>
         <div v-else-if="error" class="error-box">{{ error }}</div>
         <div v-else-if="content" class="qd-content">
           <div class="question-desc-text markdown-body" v-html="renderMarkdownCollapsible(content.description)"></div>
           <div v-if="content.starterCode" class="qd-starter">
-            <h3>起始代码</h3>
+            <h3>{{ t('qdetail.startCode') }}</h3>
             <pre><code>{{ content.starterCode }}</code></pre>
           </div>
           <div v-if="content.referenceCode" class="qd-starter">
-            <h3>{{ question.language === 'python' ? 'Python' : 'Java' }} 答案示例</h3>
+            <h3>{{ t('qdetail.answerExample', { lang: question.language === 'python' ? 'Python' : 'Java' }) }}</h3>
             <pre><code>{{ content.referenceCode }}</code></pre>
           </div>
         </div>
@@ -79,9 +85,9 @@ watch(() => props.question, async (q) => {
         <footer class="qd-footer">
           <button type="button" class="qd-start-btn" :disabled="starting" @click="emit('start', question)">
             <span v-if="starting" class="qd-btn-loading"></span>
-            {{ starting ? '正在创建训练...' : '开始训练此题' }}
+            {{ starting ? t('qdetail.starting') : t('qdetail.start') }}
           </button>
-          <button type="button" class="qd-cancel-btn" :disabled="starting" @click="emit('close')">关闭</button>
+          <button type="button" class="qd-cancel-btn" :disabled="starting" @click="emit('close')">{{ t('qdetail.close') }}</button>
         </footer>
       </aside>
     </div>

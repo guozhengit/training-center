@@ -1,12 +1,14 @@
 import { computed, reactive, ref } from 'vue'
 import { useApi } from './useApi'
+import { translate } from '../i18n'
 
 export function useDashboard() {
   const { fetchJson } = useApi()
 
   const loading = ref(true)
   const error = ref('')
-  const errors = reactive({ health: null, catalog: null, matrix: null, stats: null, history: null })
+  const errors = reactive({ health: null, catalog: null, matrix: null, stats: null, history: null, questions: null })
+  const questionsLoading = ref(false)
   const health = ref(null)
   const catalog = ref(null)
   const matrix = ref(null)
@@ -19,33 +21,33 @@ export function useDashboard() {
   const selectedDifficulty = ref('')
   const availableFilters = ref({ groups: [], topics: [], difficulties: [] })
 
-  const tracks = [
-    { value: 'ALL', label: '全部' },
-    { value: 'CODING', label: '机试题' },
-    { value: 'ORAL', label: '口述题' },
-    { value: 'PROJECT', label: '项目答辩' }
-  ]
+  const tracks = computed(() => [
+    { value: 'ALL', label: translate('common.all') },
+    { value: 'CODING', label: translate('dashboard.coding') },
+    { value: 'ORAL', label: translate('dashboard.oral') },
+    { value: 'PROJECT', label: translate('dashboard.project') }
+  ])
 
   const trackCards = computed(() => {
     const counts = catalog.value?.trackCounts ?? {}
     return [
-      { label: '机试题', value: counts.CODING ?? 0, tone: 'blue' },
-      { label: '口述题', value: counts.ORAL ?? 0, tone: 'purple' },
-      { label: '项目答辩', value: counts.PROJECT ?? 0, tone: 'green' }
+      { label: translate('dashboard.coding'), value: counts.CODING ?? 0, tone: 'blue' },
+      { label: translate('dashboard.oral'), value: counts.ORAL ?? 0, tone: 'purple' },
+      { label: translate('dashboard.project'), value: counts.PROJECT ?? 0, tone: 'green' }
     ]
   })
 
   const matrixCards = computed(() => {
     if (!matrix.value?.available) return []
     return [
-      { label: '契约测试', data: matrix.value.contract },
-      { label: 'Starter 预期失败', data: matrix.value.starterExpectedFailures },
-      { label: '参考答案通过', data: matrix.value.referencePasses }
+      { label: translate('matrix.contract'), data: matrix.value.contract },
+      { label: translate('matrix.expectedFailures'), data: matrix.value.starterExpectedFailures },
+      { label: translate('matrix.referencePasses'), data: matrix.value.referencePasses }
     ]
   })
 
   const matrixReady = computed(() => {
-    return matrix.value?.available && matrix.value.nonPassResults === 0 && matrix.value.totalResults === 360
+    return matrix.value?.available && matrix.value.nonPassResults === 0 && matrix.value.totalResults > 0
   })
 
   const errorList = computed(() => {
@@ -59,14 +61,22 @@ export function useDashboard() {
   }
 
   async function loadQuestions() {
+    questionsLoading.value = true
+    errors.questions = null
     const params = new URLSearchParams()
     if (selectedTrack.value !== 'ALL') params.set('track', selectedTrack.value)
     if (selectedGroup.value) params.set('group', selectedGroup.value)
     if (selectedTopic.value) params.set('topic', selectedTopic.value)
     if (selectedDifficulty.value) params.set('difficulty', selectedDifficulty.value)
     params.set('limit', '300')
-    const data = await fetchJson(`/api/questions?${params.toString()}`)
-    questions.value = data.questions ?? []
+    try {
+      const data = await fetchJson(`/api/questions?${params.toString()}`)
+      questions.value = data.questions ?? []
+    } catch (exception) {
+      errors.questions = exception.message || translate('questions.loadFailed')
+    } finally {
+      questionsLoading.value = false
+    }
   }
 
   async function loadFilters() {
@@ -109,17 +119,17 @@ export function useDashboard() {
         else if (key === 'stats') stats.value = result.value
         else if (key === 'history') history.value = result.value
       } else {
-        errors[key] = result.reason?.message || `${key} 加载失败`
+        errors[key] = result.reason?.message || translate('dashboard.loadFailed', { key })
       }
     })
 
     if (health.value || catalog.value) {
-      try { await loadQuestions() } catch { /* non-critical */ }
+      await loadQuestions()
     }
 
     const allFailed = results.every((r) => r.status === 'rejected')
     if (allFailed) {
-      error.value = '所有接口均不可用，请确认后端已启动（localhost:8080）'
+      error.value = translate('dashboard.allDown')
     }
 
     loading.value = false
@@ -129,7 +139,7 @@ export function useDashboard() {
     loading, error, errors, errorList, dismissError,
     health, catalog, matrix, stats, history, questions, selectedTrack,
     selectedGroup, selectedTopic, selectedDifficulty, availableFilters,
-    tracks, trackCards, matrixCards, matrixReady,
+    tracks, trackCards, matrixCards, matrixReady, questionsLoading,
     loadQuestions, loadFilters, loadStats, loadHistory, loadDashboard
   }
 }

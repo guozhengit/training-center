@@ -70,11 +70,11 @@ onMounted(() => {
     <div v-if="dashboard.errorList.value.length" class="error-list">
       <p v-for="item in dashboard.errorList.value" :key="item.key" class="error-box error-item">
         <span>[{{ item.key }}] {{ item.msg }}</span>
-        <button type="button" class="error-dismiss" @click="dashboard.dismissError(item.key)">×</button>
+        <button type="button" class="error-dismiss" :aria-label="t('common.close')" :title="t('common.close')" @click="dashboard.dismissError(item.key)">×</button>
       </p>
     </div>
     <p v-if="training.trainingMessage.value" class="success-box">{{ training.trainingMessage.value }}</p>
-    <p v-if="dashboard.loading.value" class="loading-box">正在加载训练数据...</p>
+    <p v-if="dashboard.loading.value" class="loading-box">{{ t('app.loading') }}</p>
 
     <template v-else>
       <DashboardCards
@@ -87,7 +87,7 @@ onMounted(() => {
 
       <SessionCreator
         :session-form="training.sessionForm.value"
-        :training-tracks="training.trainingTracks"
+        :training-tracks="training.trainingTracks.value"
         :training-busy="training.trainingBusy.value"
         :active-session="training.activeSession.value"
         :active-session-progress="training.activeSessionProgress.value"
@@ -100,7 +100,7 @@ onMounted(() => {
         :judge-results="training.judgeResults.value"
         :judge-progress="training.judgeProgress.value"
         :training-busy="training.trainingBusy.value"
-        :score-dimensions="training.scoreDimensions"
+        :score-dimensions="training.scoreDimensions.value"
         @judge="training.judgeAttempt"
         @submit="training.submitAttempt"
         @open-sandbox="training.openSandbox"
@@ -137,12 +137,14 @@ onMounted(() => {
 
       <QuestionBrowser
         :questions="dashboard.questions.value"
-        :tracks="dashboard.tracks"
+        :tracks="dashboard.tracks.value"
         :selected-track="dashboard.selectedTrack.value"
         :selected-group="dashboard.selectedGroup.value"
         :selected-topic="dashboard.selectedTopic.value"
         :selected-difficulty="dashboard.selectedDifficulty.value"
         :available-filters="dashboard.availableFilters.value"
+        :loading="dashboard.questionsLoading.value"
+        :error="dashboard.errors.questions"
         @update:selected-track="dashboard.selectedTrack.value = $event; dashboard.selectedGroup.value = ''; dashboard.selectedTopic.value = ''; dashboard.selectedDifficulty.value = ''"
         @update:selected-group="dashboard.selectedGroup.value = $event"
         @update:selected-topic="dashboard.selectedTopic.value = $event"

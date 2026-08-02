@@ -1,3 +1,5 @@
+import { translate } from '../i18n'
+
 export function useExport(dashboard, historyComposable, training) {
   function csvCell(value) {
     const text = value == null ? '' : String(value)
@@ -66,10 +68,10 @@ export function useExport(dashboard, historyComposable, training) {
       } else {
         fallbackCopyText(text)
       }
-      training.trainingMessage.value = `${label}已复制`
+      training.trainingMessage.value = `${label}${translate('export.copied')}`
     } catch {
       fallbackCopyText(text)
-      training.trainingMessage.value = `${label}已复制`
+      training.trainingMessage.value = `${label}${translate('export.copied')}`
     }
   }
 
@@ -86,11 +88,11 @@ export function useExport(dashboard, historyComposable, training) {
   }
 
   function copySandboxPath(path) {
-    return copyText(path, '沙箱路径')
+    return copyText(path, translate('export.copyPath'))
   }
 
   function copyCdCommand(path) {
-    return copyText(`cd /d "${path}"`, '切换目录命令')
+    return copyText(`cd /d "${path}"`, translate('export.copyCd'))
   }
 
   return { exportHistoryCsv, exportHistoryMarkdown, copySandboxPath, copyCdCommand }

@@ -8,42 +8,113 @@ export default {
     matrixLoaded: 'Matrix report loaded',
     matrixWaiting: 'Waiting for matrix report'
   },
+  common: {
+    close: 'Close',
+    all: 'All',
+    detail: 'Details'
+  },
   dashboard: {
     coding: 'Coding',
     oral: 'Oral',
     project: 'Project Defense',
-    totalQuestions: 'Total Questions'
+    totalQuestions: 'Total Questions',
+    sessions: 'Sessions',
+    finishedAttempts: 'Completed',
+    dueReviews: 'Due Reviews',
+    avgOralScore: 'Avg Oral Score',
+    allDown: 'All APIs unavailable. Please confirm the backend is running (localhost:8080).',
+    loadFailed: 'Failed to load {key}'
   },
   session: {
-    create: 'Create Session',
-    creating: 'Creating...',
-    mode: 'Training',
-    sessionId: 'Session',
-    coding: 'Coding',
-    oral: 'Oral',
-    project: 'Project',
-    mixed: 'Mixed'
+    workspace: 'Training Workspace',
+    title: 'Start a Training Session',
+    progress: 'Progress {progress}',
+    trackLabel: 'Training Type',
+    count: 'Question Count',
+    prioritizeWrong: 'Prioritize wrong/unseen',
+    dueReviewOnly: 'Due reviews only',
+    start: 'Start Training',
+    busy: 'Processing...',
+    created: 'Created {mode} training: {count} questions',
+    singleCreated: 'Focused training created: {id}',
+    retrainCreated: 'Targeted training created: {count} questions',
+    loadSuccess: 'Loaded session for {id}. Continue or re-run judging.',
+    createFailed: 'Failed to create training',
+    createRetrainFailed: 'Failed to create retrain session',
+    submitFailed: 'Failed to submit result',
+    loadFail: 'Failed to load training session',
+    retrainNone: 'No failed questions match the current filters',
+    retrainMixed: 'Failed questions span multiple types. Pick a single type in the history filter first.'
   },
   attempt: {
+    training: 'Training',
+    session: 'Session',
+    status: 'Status',
+    result: 'Result',
+    started: 'Started',
+    submitted: 'Submitted',
+    duration: 'Duration',
+    durationSeconds: 'Duration (seconds)',
+    durationUnit: 'sec',
+    sandbox: 'Sandbox',
+    startTimer: 'Start timer ({label})',
+    recommended: 'Recommended: {time}',
+    expired: 'Time is up!',
+    warn5: 'Less than 5 minutes left',
+    warnSoon: 'Time running out',
+    pause: '⏸ Pause',
+    resume: '▶ Resume',
+    reset: '↺ Reset',
+    codeLabel: 'Code editor ({lang})',
+    sandboxHint: 'Auto judging creates an isolated sandbox. Edit code in the returned sandboxPath, then re-run judging.',
     judge: 'Run Auto Judge',
     judging: 'Judging...',
     judgeResult: 'Judge Result',
     verdict: 'Verdict',
     tests: 'Tests',
-    duration: 'Duration',
-    sandbox: 'Sandbox',
-    sandboxHint: 'Auto judging creates an isolated sandbox. Edit code in the returned sandboxPath, then re-run judging.',
-    result: 'Result',
+    exit: 'Exit',
+    showDesc: 'Show question',
+    hideDesc: 'Hide question',
+    revealAnswer: 'Reveal solution',
+    hideAnswer: 'Hide solution',
+    revealPoints: 'Reveal key points',
+    hidePoints: 'Hide key points',
+    thinkApproach: 'Approach',
+    answerExample: '{lang} sample answer',
+    startCode: 'Starter Code',
+    fullScript: 'Full Oral Script',
+    followUps: 'Follow-up Questions',
+    evidence: 'Verifiable Evidence',
+    factBoundary: 'Unsupported Claims Warning',
+    oralScore: 'Oral score',
+    latestJudge: 'Latest judgement',
+    reviewNote: 'Review',
+    totalScore: 'Total {score}/10',
     passed: 'Passed',
     failed: 'Failed / Needs Review',
-    durationSeconds: 'Duration (seconds)',
     answerUnlocked: 'Viewed Answer',
     notes: 'Review Notes',
     notesPlaceholder: 'What got stuck, how to explain better next time',
     improvedAnswer: 'Improved Answer',
     improvedPlaceholder: 'Distill a 1-3 minute oral script or key approach',
     submit: 'Record Result',
-    finished: 'Finished'
+    finished: 'Finished',
+    judgePassed: '{id} passed judging. This question is auto-completed.',
+    judgeFailed: '{id} did not pass judging. Keeping the question so you can retry after editing.',
+    submittedMsg: 'Recorded {id}. Next review: {date}',
+    sessionDone: 'This training session is complete. Review plan updated.',
+    focus: '; Focus: {dims}',
+    loadFailed: '(Failed to load question content)',
+    judgeTimeout: 'Judging timed out. The server did not respond in time.',
+    judgeParseError: 'Failed to parse judge result',
+    judgeFail: 'Auto judging failed',
+    judgeDisconnected: 'Judging connection lost',
+    judgeConnAbort: 'Judging connection error',
+    syncSource: 'Syncing code to sandbox…',
+    connectJudge: 'Connecting to judge service…',
+    writeSourceFail: 'Failed to write code to sandbox',
+    openSandboxSuccess: 'Sandbox opened: {path}',
+    openSandboxFail: 'Failed to open sandbox'
   },
   recorder: {
     startRecording: 'Start Recording',
@@ -54,7 +125,7 @@ export default {
     timing: 'Timing',
     micDenied: 'Microphone permission denied',
     notSupported: 'Recording not supported in this browser',
-    startFailed: 'Failed to start recording'
+    startFailed: 'Failed to start recording: {msg}'
   },
   hint: {
     show: 'Show Hint',
@@ -63,6 +134,22 @@ export default {
     level0: 'Signatures Only',
     level1: 'Signatures + Hints',
     level2: 'Full Source'
+  },
+  rubric: {
+    ORAL: {
+      correctness: 'Check key point coverage against the full oral script',
+      structure: 'Conclusion first, then elaboration (general-specific-general)',
+      projectEvidence: 'Supported by concrete project examples',
+      tradeoff: 'Explain trade-offs and alternatives',
+      factRestraint: 'No fabricated metrics/ownership; a 0 forces a retrain'
+    },
+    PROJECT: {
+      correctness: 'Covers the core conclusions of the case',
+      structure: 'Structured as conclusion-evidence-trade-off',
+      projectEvidence: 'Check against the verifiable-evidence section',
+      tradeoff: 'Explain technology selection trade-offs',
+      factRestraint: 'Check against the unsupported-claims warning; a 0 forces a retrain'
+    }
   },
   report: {
     title: 'Training Report',
@@ -73,30 +160,120 @@ export default {
     dueReview: 'Due for Review',
     avgDuration: 'Avg Duration',
     avgOralScore: 'Avg Oral Score',
-    seconds: 'sec'
+    seconds: 'sec',
+    durationLabel: 'Duration (seconds)',
+    passed: 'Passed',
+    failed: 'Failed',
+    pending: 'Pending'
   },
   history: {
-    title: 'Training History',
-    exportMd: 'Export MD',
+    eyebrow: 'Review History',
+    title: 'Practice & Judging Review',
+    retrain: 'Retrain Failed ({count})',
+    exportMd: 'Export Markdown',
     exportCsv: 'Export CSV',
-    retrain: 'Retrain Failed',
+    type: 'Type',
+    status: 'Status',
+    result: 'Result',
+    all: 'All',
+    trackOptions: {
+      CODING: 'Coding',
+      ORAL: 'Oral',
+      PROJECT: 'Project Defense'
+    },
+    statusOptions: {
+      IN_PROGRESS: 'In Progress',
+      FINISHED: 'Finished',
+      SKIPPED: 'Skipped'
+    },
+    verdictOptions: {
+      PASSED: 'Passed',
+      FAILED: 'Failed',
+      NONE: 'No Result'
+    },
+    failedOnly: 'Failed only',
+    started: 'Started',
+    submitted: 'Submitted',
+    duration: 'Duration',
+    oralScore: 'Oral score: {total}/10',
+    dimAbbr: 'Acc{correctness} Str{structure} Ev{projectEvidence} Tr{tradeoff} Bnd{factRestraint}',
+    reviewNote: 'Review: {notes}',
+    latestJudge: 'Latest judgement: {status}',
+    tests: 'Tests: {passed}/{failed}',
+    durationMs: 'Duration: {ms} ms',
+    exit: 'Exit: {code}',
     detail: 'Detail',
-    load: 'Load',
-    copyPath: 'Copy Path',
+    loadSession: 'Load session',
+    copyPath: 'Copy path',
     copyCd: 'Copy cd',
-    openSandbox: 'Open Sandbox'
+    openSandbox: 'Open sandbox',
+    empty: 'No training history yet. Start a session and it will be recorded here.'
+  },
+  detail: {
+    eyebrow: 'Attempt Detail',
+    title: '{id} Review Detail',
+    close: 'Close',
+    type: 'Type',
+    status: 'Status',
+    result: 'Result',
+    started: 'Started',
+    submitted: 'Submitted',
+    oralScore: 'Oral score: {score}/10',
+    dimNames: 'Accuracy {correctness} / Structure {structure} / Project evidence {projectEvidence} / Trade-off {tradeoff} / Fact restraint {factRestraint}',
+    notes: 'Review Notes',
+    improvedAnswer: 'Improved Answer',
+    passedFailed: 'Pass/Fail',
+    duration: 'Duration',
+    exit: 'Exit',
+    startedAt: 'Started',
+    finishedAt: 'Finished',
+    noJudge: 'No auto-judging record for this attempt.'
   },
   matrix: {
-    title: 'Starter Verification Matrix',
+    eyebrow: 'Task21 Matrix',
+    title: 'Starter Full Verification',
+    pass: '{passed}/{total} PASS',
+    needCheck: 'Needs Check',
+    empty: 'starter-matrix-report.json not found yet.',
+    reportSha: 'Report SHA-256',
+    officialTree: 'Official tree',
+    files: 'files',
     contract: 'Contract Tests',
     expectedFailures: 'Starter Expected Failures',
-    referencePasses: 'Reference Passes',
-    ready: 'Matrix Verified'
+    referencePasses: 'Reference Passes'
   },
   questions: {
-    title: 'Question Browser',
-    all: 'All',
-    load: 'Load Questions'
+    eyebrow: 'Question Browser',
+    title: 'Training Questions',
+    allGroups: 'All groups',
+    allTopics: 'All topics',
+    allDifficulties: 'All difficulties',
+    count: '{count} questions',
+    clickView: 'Click to view detail',
+    empty: 'No questions. Adjust the filters.',
+    loading: 'Loading questions...',
+    loadFailed: 'Failed to load questions',
+    priority: {
+      green: 'High-frequency, must-do',
+      yellow: 'Medium-frequency, recommended',
+      red: 'Low-frequency, supplementary'
+    }
+  },
+  qdetail: {
+    loadFailed: 'Failed to load question content',
+    loading: 'Loading question content...',
+    startCode: 'Starter Code',
+    answerExample: '{lang} sample answer',
+    start: 'Start Training',
+    starting: 'Creating training...',
+    close: 'Close',
+    maximize: 'Maximize',
+    restore: 'Restore',
+    priority: {
+      green: 'High-frequency, must-do',
+      yellow: 'Medium-frequency, recommended',
+      red: 'Low-frequency, supplementary'
+    }
   },
   score: {
     correctness: 'Correctness',
@@ -105,5 +282,14 @@ export default {
     tradeoff: 'Trade-off',
     factRestraint: 'Fact Restraint',
     total: 'Total'
+  },
+  export: {
+    copyPath: 'Sandbox path',
+    copyCd: 'cd command',
+    copied: 'copied'
+  },
+  api: {
+    network: 'Network error, please check your connection ({path})',
+    requestFailed: '{path} request failed: {status}'
   }
 }

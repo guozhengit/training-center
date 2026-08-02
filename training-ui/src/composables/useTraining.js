@@ -1,5 +1,6 @@
 import { computed, ref, getCurrentScope, onScopeDispose } from 'vue'
 import { useApi } from './useApi'
+import { translate } from '../i18n'
 
 const SESSION_STORAGE_KEY = 'training:activeSession'
 const JUDGE_TIMEOUT_MS = 125_000
@@ -65,19 +66,19 @@ export function useTraining(dashboard) {
     dueReviewOnly: false
   })
 
-  const trainingTracks = [
-    { value: 'CODING', label: '机试题' },
-    { value: 'ORAL', label: '口述题' },
-    { value: 'PROJECT', label: '项目答辩' }
-  ]
+  const trainingTracks = computed(() => [
+    { value: 'CODING', label: translate('dashboard.coding') },
+    { value: 'ORAL', label: translate('dashboard.oral') },
+    { value: 'PROJECT', label: translate('dashboard.project') }
+  ])
 
-  const scoreDimensions = [
-    { key: 'correctness', label: '准确性' },
-    { key: 'structure', label: '结构化' },
-    { key: 'projectEvidence', label: '项目证据' },
-    { key: 'tradeoff', label: '取舍意识' },
-    { key: 'factRestraint', label: '事实边界' }
-  ]
+  const scoreDimensions = computed(() => [
+    { key: 'correctness', label: translate('score.correctness') },
+    { key: 'structure', label: translate('score.structure') },
+    { key: 'projectEvidence', label: translate('score.projectEvidence') },
+    { key: 'tradeoff', label: translate('score.tradeoff') },
+    { key: 'factRestraint', label: translate('score.factRestraint') }
+  ])
 
   const activeSessionProgress = computed(() => {
     const attempts = activeSession.value?.attempts ?? []
@@ -123,8 +124,7 @@ export function useTraining(dashboard) {
 
   function focusDimensionsLabel(csv) {
     if (!csv) return ''
-    const labelByKey = Object.fromEntries(scoreDimensions.map((d) => [d.key, d.label]))
-    return csv.split(',').map((key) => labelByKey[key] || key).join('、')
+    return csv.split(',').map((key) => translate(`score.${key}`)).join('、')
   }
 
   async function createTrainingSession() {
@@ -146,9 +146,9 @@ export function useTraining(dashboard) {
       persistSession(session)
       await dashboard.loadStats()
       await dashboard.loadHistory()
-      trainingMessage.value = `已创建 ${session.mode} 训练：${session.attempts.length} 道题`
+      trainingMessage.value = translate('session.created', { mode: session.mode, count: session.attempts.length })
     } catch (exception) {
-      dashboard.error.value = exception.message || '创建训练失败'
+      dashboard.error.value = exception.message || translate('session.createFailed')
     } finally {
       trainingBusy.value = false
     }
@@ -181,13 +181,13 @@ export function useTraining(dashboard) {
       await dashboard.loadStats()
       await dashboard.loadHistory()
       const focusSuffix = result.focusDimensions
-        ? `；复习重点：${focusDimensionsLabel(result.focusDimensions)}`
+        ? translate('attempt.focus', { dims: focusDimensionsLabel(result.focusDimensions) })
         : ''
       trainingMessage.value = result.sessionCompleted
-        ? '本组训练已完成，复习计划已更新'
-        : `已记录 ${attempt.questionId}，下次复习：${formatDate(result.nextReviewAt)}${focusSuffix}`
+        ? translate('attempt.sessionDone')
+        : translate('attempt.submittedMsg', { id: attempt.questionId, date: formatDate(result.nextReviewAt) }) + focusSuffix
     } catch (exception) {
-      dashboard.error.value = exception.message || '提交训练结果失败'
+      dashboard.error.value = exception.message || translate('session.submitFailed')
     } finally {
       trainingBusy.value = false
     }
@@ -199,7 +199,7 @@ export function useTraining(dashboard) {
     trainingBusy.value = true
     trainingMessage.value = ''
     dashboard.error.value = ''
-    judgeProgress.value = { stage: 'CONNECTING', message: '同步代码到沙箱…' }
+    judgeProgress.value = { stage: 'CONNECTING', message: translate('attempt.syncSource') }
 
     if (sourceCode) {
       try {
@@ -210,12 +210,12 @@ export function useTraining(dashboard) {
       } catch (exception) {
         trainingBusy.value = false
         judgeProgress.value = null
-        dashboard.error.value = exception.message || '写入代码到沙箱失败'
+        dashboard.error.value = exception.message || translate('attempt.writeSourceFail')
         return
       }
     }
 
-    judgeProgress.value = { stage: 'CONNECTING', message: '连接判题服务…' }
+    judgeProgress.value = { stage: 'CONNECTING', message: translate('attempt.connectJudge') }
 
     const source = new EventSource(`/api/training/attempts/${attempt.id}/judge-stream`)
     activeEventSource = source
@@ -225,7 +225,7 @@ export function useTraining(dashboard) {
         closeJudgeStream()
         judgeProgress.value = null
         trainingBusy.value = false
-        dashboard.error.value = '判题超时，服务端未在规定时间内响应'
+        dashboard.error.value = translate('attempt.judgeTimeout')
       }
     }, JUDGE_TIMEOUT_MS)
 
@@ -247,10 +247,10 @@ export function useTraining(dashboard) {
         await dashboard.loadStats()
         await dashboard.loadHistory()
         trainingMessage.value = result.status === 'PASSED'
-          ? `${attempt.questionId} 判题通过，已自动完成本题`
-          : `${attempt.questionId} 判题未通过，保留当前题目以便修改后重跑`
+          ? translate('attempt.judgePassed', { id: attempt.questionId })
+          : translate('attempt.judgeFailed', { id: attempt.questionId })
       } catch (exception) {
-        dashboard.error.value = '解析判题结果失败'
+        dashboard.error.value = translate('attempt.judgeParseError')
       } finally {
         trainingBusy.value = false
       }
@@ -263,12 +263,12 @@ export function useTraining(dashboard) {
       if (event.data) {
         try {
           const err = JSON.parse(event.data)
-          dashboard.error.value = err.message || '自动判题失败'
+          dashboard.error.value = err.message || translate('attempt.judgeFail')
         } catch {
-          dashboard.error.value = '自动判题失败'
+          dashboard.error.value = translate('attempt.judgeFail')
         }
       } else {
-        dashboard.error.value = '判题连接中断'
+        dashboard.error.value = translate('attempt.judgeDisconnected')
       }
     })
 
@@ -277,7 +277,7 @@ export function useTraining(dashboard) {
       closeJudgeStream()
       judgeProgress.value = null
       trainingBusy.value = false
-      dashboard.error.value = dashboard.error.value || '判题连接异常'
+      dashboard.error.value = dashboard.error.value || translate('attempt.judgeConnAbort')
     }
   }
 
@@ -290,9 +290,9 @@ export function useTraining(dashboard) {
         method: 'POST',
         body: '{}'
       })
-      trainingMessage.value = result.message || `已打开沙箱：${result.sandboxPath}`
+      trainingMessage.value = result.message || translate('attempt.openSandboxSuccess', { path: result.sandboxPath })
     } catch (exception) {
-      dashboard.error.value = exception.message || '打开沙箱失败'
+      dashboard.error.value = exception.message || translate('attempt.openSandboxFail')
     } finally {
       trainingBusy.value = false
     }
@@ -307,9 +307,9 @@ export function useTraining(dashboard) {
       activeSession.value = session
       initializeSubmitForms(session)
       persistSession(session)
-      trainingMessage.value = `已载入 ${entry.attempt.questionId} 所在训练组，可继续练习或重跑判题`
+      trainingMessage.value = translate('session.loadSuccess', { id: entry.attempt.questionId })
     } catch (exception) {
-      dashboard.error.value = exception.message || '载入训练组失败'
+      dashboard.error.value = exception.message || translate('session.loadFail')
     } finally {
       trainingBusy.value = false
     }
@@ -336,10 +336,10 @@ export function useTraining(dashboard) {
       await dashboard.loadStats()
       await dashboard.loadHistory()
       trainingMessage.value = session.attempts.length === 1
-        ? `已创建专项训练：${session.attempts[0].questionId}`
-        : `已创建定向训练：${session.attempts.length} 道题`
+        ? translate('session.singleCreated', { id: session.attempts[0].questionId })
+        : translate('session.retrainCreated', { count: session.attempts.length })
     } catch (exception) {
-      dashboard.error.value = exception.message || '创建失败题重练失败'
+      dashboard.error.value = exception.message || translate('session.createRetrainFailed')
     } finally {
       trainingBusy.value = false
     }
