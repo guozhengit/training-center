@@ -63,6 +63,32 @@ public final class JudgementRepository {
         }
     }
 
+    /** Batch-loads judgements for multiple attempts in a single query to avoid N+1. */
+    public java.util.Map<String, List<Judgement>> findByAttempts(Connection connection, List<String> attemptIds)
+            throws SQLException {
+        java.util.Map<String, List<Judgement>> grouped = new java.util.LinkedHashMap<>();
+        if (attemptIds.isEmpty()) {
+            return grouped;
+        }
+        String placeholders = String.join(",", java.util.Collections.nCopies(attemptIds.size(), "?"));
+        try (PreparedStatement statement = connection.prepareStatement("""
+                SELECT * FROM judgements
+                WHERE attempt_id IN (%s)
+                ORDER BY attempt_id, sequence_no
+                """.formatted(placeholders))) {
+            for (int i = 0; i < attemptIds.size(); i++) {
+                statement.setString(i + 1, attemptIds.get(i));
+            }
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Judgement judgement = map(result);
+                    grouped.computeIfAbsent(judgement.attemptId(), k -> new ArrayList<>()).add(judgement);
+                }
+            }
+        }
+        return grouped;
+    }
+
     public void transition(Connection connection, String id, JudgementStatus target, Instant transitionAt)
             throws SQLException {
         Judgement current = findById(connection, id)

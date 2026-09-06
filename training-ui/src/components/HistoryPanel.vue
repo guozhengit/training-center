@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, tm, rt } = useI18n()
 
 defineProps({
   historyFilters: Object,
@@ -40,21 +40,21 @@ defineEmits(['retrain', 'export-md', 'export-csv', 'detail', 'load-session', 'co
         <span>{{ t('history.type') }}</span>
         <select v-model="historyFilters.track">
           <option value="ALL">{{ t('history.all') }}</option>
-          <option v-for="(label, value) in t('history.trackOptions')" :key="value" :value="value">{{ label }}</option>
+          <option v-for="(label, value) in tm('history.trackOptions')" :key="value" :value="value">{{ rt(label) }}</option>
         </select>
       </label>
       <label>
         <span>{{ t('history.status') }}</span>
         <select v-model="historyFilters.status">
           <option value="ALL">{{ t('history.all') }}</option>
-          <option v-for="(label, value) in t('history.statusOptions')" :key="value" :value="value">{{ label }}</option>
+          <option v-for="(label, value) in tm('history.statusOptions')" :key="value" :value="value">{{ rt(label) }}</option>
         </select>
       </label>
       <label>
         <span>{{ t('history.result') }}</span>
         <select v-model="historyFilters.verdict">
           <option value="ALL">{{ t('history.all') }}</option>
-          <option v-for="(label, value) in t('history.verdictOptions')" :key="value" :value="value">{{ label }}</option>
+          <option v-for="(label, value) in tm('history.verdictOptions')" :key="value" :value="value">{{ rt(label) }}</option>
         </select>
       </label>
       <label class="check-label">

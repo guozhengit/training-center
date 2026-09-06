@@ -290,6 +290,7 @@ export default {
   },
   api: {
     network: 'Network error, please check your connection ({path})',
+    timeout: 'Request timed out after {timeout}ms ({path})',
     requestFailed: '{path} request failed: {status}'
   }
 }

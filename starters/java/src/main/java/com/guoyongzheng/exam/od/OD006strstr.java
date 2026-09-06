@@ -1,7 +1,5 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 增强的strstr
@@ -16,6 +14,6 @@ public final class OD006strstr {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

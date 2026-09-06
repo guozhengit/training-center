@@ -10,7 +10,18 @@
     "content_path": "content/od/OD001.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD001Problem001.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD001Problem001Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "给定一个非空字符串S，其被N个‘-’分隔成N+1的子串，给定正整数K，要求除第一个子串外，其余的子串每K个字符组成新的子串，并用‘-’分隔。\n对于新组成的每一个子串，如果它含有的小写字母比大写字母多，则将这个子串的所有大写字母转换为小写字母；\n反之，如果它含有的大写字母比小写字母多，则将这个子串的所有小写字母转换为大写字母；大小写字母的数量相等时，不做转换。\n输入为两行，第一行为参数K，第二行为字符串S。\n输出转换后的字符串。",
+    "examples": [
+      {
+        "input": "3\n12abc-abCABc-4aB@12",
+        "output": "12abc-abc-ABC-4aB-@1"
+      },
+      {
+        "input": "12\n12abc-abCABc-4aB@12",
+        "output": "12abc-abCABc4aB@12"
+      }
+    ]
   },
   {
     "id": "OD002",
@@ -23,7 +34,18 @@
     "content_path": "content/od/OD002.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD002Problem002.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD002Problem002Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "给定一个字符串的摘要算法，请输出给定字符串的摘要值\n去除字符串中非字母的符号。如果出现连续字符(不区分大小写) ，则输出：该字符 (小写) + 连续出现的次数。如果是非连续的字符(不区分大小写)，则输出：该字符(小写) + 该字母之后字符串中出现的该字符的次数对按照以上方式表示后的字符串进行排序：字母和紧随的数字作为一组进行排序，数字大的在前，数字相同的，则按字母进行排序，字母小的在前。\n一行字符串，长度为[1,200]\n摘要字符串",
+    "examples": [
+      {
+        "input": "aabbcc",
+        "output": "a2b2c2"
+      },
+      {
+        "input": "bAaAcBb",
+        "output": "a3b2b2c0"
+      }
+    ]
   },
   {
     "id": "OD003",
@@ -36,7 +58,14 @@
     "content_path": "content/od/OD003.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD003Problem003.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD003Problem003Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "提取字符串中的最长合法简单数学表达式，字符串长度最长的，并计算表达式的值。如果没有，则返回 0 。\n简单数学表达式只能包含以下内容：\n0-9数字，符号+-*\n说明：\n所有数字，计算结果都不超过long如果有多个长度一样的，请返回第一个表达式的结果数学表达式，必须是最长的，合法的操作符不能连续出现，如 +--+1 是不合法的\n字符串\n表达式值",
+    "examples": [
+      {
+        "input": "1-2abcd",
+        "output": "-1"
+      }
+    ]
   },
   {
     "id": "OD004",
@@ -49,7 +78,18 @@
     "content_path": "content/od/OD004.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD004Problem004.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD004Problem004Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "小王在进行游戏大闯关，有一个关卡需要输入一个密码才能通过，密码获得的条件如下：\n在一个密码本中，每一页都有一个由26个小写字母组成的若干位密码，每一页的密码不同，需要从这个密码本中寻找这样一个最长的密码，\n从它的末尾开始依次去掉一位得到的新密码也在密码本中存在。\n请输出符合要求的密码，如果有多个符合要求的密码，则返回字典序最大的密码。\n若没有符合要求的密码，则返回空字符串。\n密码本由一个字符串数组组成，不同元素之间使用空格隔开，每一个元素代表密码本每一页的密码。\n一个字符串",
+    "examples": [
+      {
+        "input": "h he hel hell hello",
+        "output": "hello"
+      },
+      {
+        "input": "b ereddred bw bww bwwl bwwlm bwwln",
+        "output": "bwwln"
+      }
+    ]
   },
   {
     "id": "OD005",
@@ -62,7 +102,18 @@
     "content_path": "content/od/OD005.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD005Problem005.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD005Problem005Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "相对开音节构成的结构为：辅音 + 元音（aeiou）+ 辅音(r除外) + e。\n常见的单词有bike、cake等。\n给定一个字符串，以空格为分隔符，反转每个单词中的字母，若单词中包含如数字等其他非字母时不进行反转。\n反转后计算其中含有相对开音节结构的子串个数（连续的子串中部分字符可以重复）。\n字符串，以空格分割的多个单词，字符串长度<10000，字母只考虑小写\n含有相对开音节结构的子串个数，注：个数<10000",
+    "examples": [
+      {
+        "input": "ekam a ekac",
+        "output": "2"
+      },
+      {
+        "input": "!ekam a ekekac",
+        "output": "2"
+      }
+    ]
   },
   {
     "id": "OD006",
@@ -75,7 +126,18 @@
     "content_path": "content/od/OD006.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD006strstr.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD006strstrTest.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "C 语言有一个库函数： char *strstr(const char *haystack, const char *needle) ，实现在字符串 haystack 中查找第一次出现字符串 needle 的位置，如果未找到则返回 null。\n现要求实现一个strstr的增强函数，可以使用带可选段的字符串来模糊查询，与strstr一样返回首次查找到的字符串位置。\n可选段使用“[]”标识，表示该位置是可选段中任意一个字符即可满足匹配条件。比如“a[bc]”表示可以匹配“ab”或“ac”。\n注意目标字符串中可选段可能出现多次。\n与strstr函数一样，输入参数是两个字符串指针，分别是源字符串和目标字符串。\n与strstr函数不同，返回的是源字符串中，匹配子字符串相对于源字符串地址的偏移（从0开始算），如果没有匹配返回-1。\n补充说明：源字符串中必定不包含‘[]’；目标字符串中‘[]’必定成对出现，且不会出现嵌套。\n输入的字符串长度在[1,100]之间。",
+    "examples": [
+      {
+        "input": "abcd\nb[cd]12",
+        "output": "11"
+      },
+      {
+        "input": "importre\n\nsource=input()target=input()target=re.sub(r'\\[(.*?)\\]',r'[\\1]',target)pattern=re.compile(target)matcher=pattern.search(source)ifmatcher:print(matcher.start())else:print(-1)123456789101112131415",
+        "output": "constreadline=require('readline');constrl=readline.createInterface({input:process.stdin,output:process.stdout});rl.on('line',(source)=>{rl.on('line',(target)=>{target=target.replace(/\\[(.*?)\\]/g,'[$1]');constpattern=newRegExp(target);constmatcher=pattern.exec(source);if(matcher){console.log(matcher.index);}else{console.log(-1);}rl.close();});});1234567891011121314151617181920212223"
+      }
+    ]
   },
   {
     "id": "OD007",
@@ -88,7 +150,22 @@
     "content_path": "content/od/OD007.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD007Problem007.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD007Problem007Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一个由多个命令字组成的命令字符串：\n1、字符串长度小于等于127字节，只包含大小写字母，数字，下划线和偶数个双引号；2、命令字之间以一个或多个下划线_进行分割；3、可以通过两个双引号””来标识包含下划线_的命令字或空命令字（仅包含两个双引号的命令字），双引号不会在命令字内部出现；\n请对指定索引的敏感字段进行加密，替换为******（6个*），并删除命令字前后多余的下划线_。\n如果无法找到指定索引的命令字，输出字符串ERROR。\n输入为两行，第一行为命令字索引K（从0开始），第二行为命令字符串S。\n输出处理后的命令字符串，如果无法找到指定索引的命令字，输出字符串ERROR",
+    "examples": [
+      {
+        "input": "1\npassword__a12345678_timeout_10012",
+        "output": "password_******_timeout_1001"
+      },
+      {
+        "input": "2\naaa_password_\"a12_45678\"_timeout__100_\"\"_12",
+        "output": "aaa_password_******_timeout_100_\"\"1"
+      },
+      {
+        "input": "1\npassword__a12345678_timeout_10012",
+        "output": "password_******_timeout_1001"
+      }
+    ]
   },
   {
     "id": "OD008",
@@ -101,7 +178,18 @@
     "content_path": "content/od/OD008.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD008Problem008.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD008Problem008Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定两个字符串s1和s2和正整数K，其中s1长度为n1，s2长度为n2，在s2中选一个子串，满足:\n该子串长度为n1+k该子串中包含s1中全部字母，该子串每个字母出现次数不小于s1中对应的字母，\n我们称s2以长度k冗余覆盖s1，给定s1，s2，k，求最左侧的s2以长度k冗余覆盖s1的子串的首个元素的下标，如果没有返回**-1**。\n输入三行，第一行为s1，第二行为s2，第三行为k，s1和s2只包含小写字母\n最左侧的s2以长度k冗余覆盖s1的子串首个元素下标，如果没有返回**-1。**",
+    "examples": [
+      {
+        "input": "ab\naabcd\n1123",
+        "output": "01"
+      },
+      {
+        "input": "abc\ndfs\n10123",
+        "output": "-11"
+      }
+    ]
   },
   {
     "id": "OD009",
@@ -114,7 +202,18 @@
     "content_path": "content/od/OD009.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD009Problem009.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD009Problem009Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "(100分) 压缩日志查询（Java & JS & Python&C/C++）-解题思路待更新\n题目描述\n某设备需要记录每分钟检测到的指标值。为了节约存储空间，将连续相同指标值的记录合并。\n压缩之前： 202411231000,11 202411231001,11 202411231002,12 202411231003,12 202411231004,10 202411231005,17 202411231006,17 202411231007,17\n压缩之后： 202411231000,202411231001,11 202411231002,202411231003,12 202411231004,202411231004,10 202411231005,202411231007,17\n查询时，根据输入的时间范围进行查询，需要返回回时间范围内记录的每分钟的指标值，如果某个时间点没有记录值，则此条记录忽略不返回。\n输入描述：\n第一行为查询的时间范围，格式是：startTime,endTime。查询的时间范围为闭区间，即大于等于startTime且小于等于endTime， startTime <= endTime，且他们跨度的分钟数小于100； 第二行为压缩日志记录的行数，100 >= N > 0； 第三行及以后为压缩日志内容。每一行的格式为：startTime,endTime,kpi，其中 startTime<=endTime，10^5>kpi>=0；记录已按升序进行排序。\n不保证两行记录之间是紧密连接，startTime和endTime的时间跨度可能很大。 如：上一行的数据显示范围是202411231540, 202411231542，下一行的数据显示可以是 202411231544, 202411231547， 中间202411231543的数据可能由于其他原因缺失。\n输出描述：\n输出描述 查询到的日志清单，如： 202411231010,11 202411231011,10 202411231012,10 202411231013,16\n输出结果按数据时间升序排序。\n补充说明 输入的数据可能超出当前已存储的数据范围，此时只输出查询到的数据。 如果从头到尾都没有查询到记录，则输出-1。\n示例1\n输入：\n202411231010,202411231013\n4\n202411231000,202411231010,11\n202411231011,202411231012,10\n202411231013,202411231020,16",
+    "examples": [
+      {
+        "input": "输入描述：\n第一行为查询的时间范围，格式是：startTime,endTime。查询的时间范围为闭区间，即大于等于startTime且小于等于endTime， startTime <= endTime，且他们跨度的分钟数小于100； 第二行为压缩日志记录的行数，100 >= N > 0； 第三行及以后为压缩日志内容。每一行的格式为：startTime,endTime,kpi，其中 startTime<=endTime，10^5>kpi>=0；记录已按升序进行排序。\n不保证两行记录之间是紧密连接，startTime和endTime的时间跨度可能很大。 如：上一行的数据显示范围是202411231540, 202411231542，下一行的数据显示可以是 202411231544, 202411231547， 中间202411231543的数据可能由于其他原因缺失。",
+        "output": "输出描述 查询到的日志清单，如： 202411231010,11 202411231011,10 202411231012,10 202411231013,16\n输出结果按数据时间升序排序。"
+      },
+      {
+        "input": "示例1\n输入：\n202411231010,202411231013\n4\n202411231000,202411231010,11\n202411231011,202411231012,10\n202411231013,202411231020,16\n202411231021,202411231028,17",
+        "output": "202411231010,11\n202411231011,10\n202411231012,10\n202411231013,16"
+      }
+    ]
   },
   {
     "id": "OD010",
@@ -127,7 +226,22 @@
     "content_path": "content/od/OD010.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD010Problem010.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD010Problem010Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "有一种特殊的加密算法，明文为一段数字串，经过密码本查找转换，生成另一段密文数字串。\n规则如下：\n明文为一段数字串由 0~9 组成密码本为数字 0~9 组成的二维数组需要按明文串的数字顺序在密码本里找到同样的数字串，密码本里的数字串是由相邻的单元格数字组成，上下和左右是相邻的，注意：对角线不相邻，同一个单元格的数字不能重复使用。每一位明文对应密文即为密码本中找到的单元格所在的行和列序号（序号从0开始）组成的两个数宇。如明文第 i 位 Data[i] 对应密码本单元格为 Book[x][y]，则明文第 i 位对应的密文为X Y，X和Y之间用空格隔开。\n如果有多条密文，返回字符序最小的密文。\n如果密码本无法匹配，返回\"error\"。\n请你设计这个加密程序。\n示例1：\n密码本：\n0 0 21 3 46 6 4\n明文：“3”，密文：“1 1”\n示例2：\n密码本：\n0 0 21 3 46 6 4\n明文：“0 3”，密文：“0 1 1 1”\n示例3：\n密码本：\n0 0 2 41 3 4 63 4 1 56 6 6 5\n明文：“0 0 2 4”，密文：“0 0 0 1 0 2 0 3” 和 “0 0 0 1 0 2 1 2”，返回字典序最小的\"0 0 0 1 0 2 0 3\"\n明文：“8 2 2 3”，密文：“error”，密码本中无法匹配\n第一行输入 1 个正整数 N，代表明文的长度（1 ≤ N ≤ 200）\n第二行输入 N 个明文组成的序列 Data[i]（0 ≤ Data[i] ≤ 9）\n第三行输入 1 个正整数 M，代表密文的长度\n接下来 M 行，每行 M 个数，代表密文矩阵\n输出字典序最小密文，如果无法匹配，输出\"error\"",
+    "examples": [
+      {
+        "input": "2\n0 3\n3\n0 0 2\n1 3 4\n6 6 4123456",
+        "output": "0 1 1 11"
+      },
+      {
+        "input": "2\n0 5\n3\n0 0 2\n1 3 4\n6 6 4123456",
+        "output": "error1"
+      },
+      {
+        "input": "2\n0 3\n3\n0 0 2\n1 3 4\n6 6 4123456",
+        "output": "2\n0 5\n3\n0 0 2\n1 3 4\n6 6 4123456"
+      }
+    ]
   },
   {
     "id": "OD011",
@@ -140,7 +254,22 @@
     "content_path": "content/od/OD011.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD011Problem011.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD011Problem011Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "有一个文件，包含以一定规则写作的文本，请统计文件中包含的文本数量。\n规则如下：\n文本以”;”分隔，最后一条可以没有”;”，但空文本不能算语句，比如”COMMAND A; ;”只能算一条语句。注意，无字符/空白字符/制表符都算作”空”文本；文本可以跨行，比如下面，是一条文本，而不是三条；\nCOMMAND A\nAND\nCOMMAND B;123\n文本支持字符串，字符串为成对的单引号(')或者成对的双引号(“)，字符串可能出现用转义字符()处理的单双引号(“your input is””)和转义字符本身，比如\nCOMMAND A \"Say \\\"hello\\\"\";1\n支持注释，可以出现在字符串之外的任意位置注释以”–“开头，到换行结束，比如：\nCOMMAND A; --this is comment\nCOMMAND --comment\nA AND COMMAND B;123\n注意字符串内的”–“，不是注释。\n文本文件\n包含的文本数量",
+    "examples": [
+      {
+        "input": "COMMAND A\nAND\nCOMMAND B;123",
+        "output": "COMMAND A \"Say \\\"hello\\\"\";1"
+      },
+      {
+        "input": "COMMAND A; --this is comment\nCOMMAND --comment\nA AND COMMAND B;123",
+        "output": "COMMAND TABLE IF EXISTS \"UNITED STATE\";\nCOMMAND A GREAT (\nID ADSAB,\ndownload_length INTE-GER, -- test\nfile_name TEXT,\nguid TEXT,\nmime_type TEXT,\nnotifica-tionid INTEGER,\noriginal_file_name TEXT,\npause_reason_type INTEGER,\nresumable_flag INTEGER,\nstart_time INTEGER,\nstate INTEGER,\nfolder TEXT,\npath TEXT,\ntotal_length INTE-GER,\nurl TEXT\n);123456789101112131415161718"
+      },
+      {
+        "input": "21",
+        "output": "COMMAND A; --this is comment\nCOMMAND -comment\nA AND COMMAND B;\n上面文本数为2\n\nCOMMAND A --this is ；comment;\nCOMMAND -comment\nA AND COMMAND B;\n文本数为1123456789"
+      }
+    ]
   },
   {
     "id": "OD012",
@@ -153,7 +282,22 @@
     "content_path": "content/od/OD012.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD012Problem012.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD012Problem012Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给定两个字符串string1和string2。string1是一个被加扰的字符串。\nstring1由小写英文字母（’a’~’z’）和数字字符（’0’~’9’）组成，而加扰字符串由’0’~’9’、’a’~’f’组成。\nstring1里面可能包含0个或多个加扰子串，剩下可能有0个或多个有效子串，这些有效子串被加扰子串隔开。\nstring2是一个参考字符串，仅由小写英文字母（’a’~’z’）组成。\n你需要在string1字符串里找到一个有效子串，这个有效子串要同时满足下面两个条件：\n（1）这个有效子串里不同字母的数量不超过且最接近于string2里不同字母的数量，即小于或等于string2里不同字母的数量的同时且最大。\n（2）这个有效子串是满足条件（1）里的所有子串（如果有多个的话）里字典序最大的一个。\n如果没有找到合适条件的子串的话，请输出”Not Found”\ninput_string1input_string2\noutput_string",
+    "examples": [
+      {
+        "input": "123admyffc79ptssyy",
+        "output": "pt"
+      },
+      {
+        "input": "123admyffc79ptaagghi2222smeersst88mnrtssyyfgh",
+        "output": "mnrt"
+      },
+      {
+        "input": "abcmnqrt",
+        "output": "Not Found"
+      }
+    ]
   },
   {
     "id": "OD013",
@@ -166,7 +310,22 @@
     "content_path": "content/od/OD013.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD013Problem013.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD013Problem013Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "误码率是最常用的数据通信传输质量指标。它可以理解为“在多少位数据中出现一位差错”。\n移动通信网络中的误码率主要是指比特误码率，其计算公式如下: 比特误码率=错误比特数/传输总比特数，\n为了简单，我们使用字符串来标识通信的信息，一个字符错误了，就认为出现了一个误码\n输入一个标准的字符串，和一个传输后的字符串，计算误码率\n字符串会被压缩，例:“2A3B4D5X1Z”表示\"AABBBDDDDXXXXXZ\"用例会保证两个输入字符串解压后长度一致，解压前的长度不一定一致\n每个生成后的字符串长度<100000000。\n两行，分别为两种字符串的压缩形式。\n每行字符串 (压缩后的) 长度<100000\n一行，错误的字等数量/展开后的总长度",
+    "examples": [
+      {
+        "input": "3A3B2A4B",
+        "output": "1/6"
+      },
+      {
+        "input": "5Y5Z5Y5Z",
+        "output": "0/10"
+      },
+      {
+        "input": "4Y5Z9Y",
+        "output": "5/9"
+      }
+    ]
   },
   {
     "id": "OD014",
@@ -179,7 +338,18 @@
     "content_path": "content/od/OD014.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD014Problem014.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD014Problem014Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "每个数字关联多个字母，关联关系如下：\n0 关联 “a”,”b”,”c”1 关联 “d”,”e”,”f”2 关联 “g”,”h”,”i”3 关联 “j”,”k”,”l”4 关联 “m”,”n”,”o”5 关联 “p”,”q”,”r”6 关联 “s”,”t”7 关联 “u”,”v”8 关联 “w”,”x”9 关联 “y”,”z”\n输入一串数字后，通过数字和字母的对应关系可以得到多个字母字符串（要求按照数字的顺序组合字母字符串）；\n屏蔽字符串：屏蔽字符串中的所有字母不能同时在输出的字符串出现，如屏蔽字符串是abc，则要求字符串中不能同时出现a,b,c，但是允许同时出现a,b或a,c或b,c等；\n给定一个数字字符串和一个屏蔽字符串，输出所有可能的字符组合；\n例如输入数字字符串78和屏蔽字符串ux，输出结果为uw，vw，vx；数字字符串78，可以得到如下字符串uw，ux，vw，vx；由于ux是屏蔽字符串，因此排除ux，最终的输出是uw，vw，vx;\n第一行输入为一串数字字符串，数字字符串中的数字不允许重复，数字字符串的长度大于0，小于等于5；\n第二行输入是屏蔽字符串，屏蔽字符串的长度一定小于数字字符串的长度，屏蔽字符串中字符不会重复；\n输出可能的字符串组合\n注：字符串之间使用逗号隔开，最后一个字符串后携带逗号",
+    "examples": [
+      {
+        "input": "78\nux12",
+        "output": "uw,vw,vx,1"
+      },
+      {
+        "input": "78\nx12",
+        "output": "uw,vw,1"
+      }
+    ]
   },
   {
     "id": "OD015",
@@ -192,7 +362,8 @@
     "content_path": "content/od/OD015.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD015Problem015.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD015Problem015Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分  国际移动用户识别码(IMSI)匹配   思路待更新\n题目描述"
   },
   {
     "id": "OD016",
@@ -205,7 +376,14 @@
     "content_path": "content/od/OD016.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD016Problem016.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD016Problem016Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分，整理版本号-解题思路待更新\n题目描述：产品迭代开发期间，会规划多个版本。现在有一批字符串，需要过滤出来合法的版本号，并将其整理为规范格式。 合法版本号： 1.完整的版本号由“V”版本，“R”版本，“C”版本，“B”版本构成。每个纬度的版本只能出现一次。例如：“V001R025C010B013”。 2.B版本为非必填项，其他维度的版本为必填项。例如：“V001R025C010”。 3.每个纬度的版本后的数字最少有1位，最多有3位。\n输入描述： 一个整数N，表示带整理版本号的个数，取值范围为[1,100) 接下来N行，每行字符串是一个待整理的版本号（长度不能超过50）\n输出描述： 所有字母为大写 去除所有空格 如果某个纬度版本的数字不满3位，则在前边补0 。各维度版本 按照V,R,C,B的顺序输出 去重后，按照字典序降序输出。如果全部为非法版本号，则返回-1\n示例1：\n输入\n7\nv02 R20c1B 02\nVv02R1 c1\nv2R20B 12c01\nv2R20c01B12aB\nv2 b002R2 0c0 1\nv 0 2c101R20\nv23B23R1\n输出\nV002R020C101\nV002R020C001B012\nV002R020C001B002\n说明 “V02R1 c1”、“v2R20c01B12ab”、“v23B23R1”是非法的 “v02 R20c1B 02”与“v2 b002R2 0c0 1”重复",
+    "examples": [
+      {
+        "input": "7\nv02 R20c1B 02\nVv02R1 c1\nv2R20B 12c01\nv2R20c01B12aB\nv2 b002R2 0c0 1\nv 0 2c101R20\nv23B23R1",
+        "output": "V002R020C101\nV002R020C001B012\nV002R020C001B002"
+      }
+    ]
   },
   {
     "id": "OD017",
@@ -218,7 +396,14 @@
     "content_path": "content/od/OD017.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD017Problem017.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD017Problem017Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "题目 模拟数据序列化传输-解题思路待更新\n描述\n模拟一套简化的序列化传输方式，请实现下面的数据编码与解码过程。\n编码前数据格式为[位置，类型，值]，多个数据的时侯用逗号隔开，位置仅支持数字，不考虑重复场景；类型仅支持: Integer / String / Compose（Compose的数据类型表示该存储的数据也需要编码）。\n编码后数据参考图示，数据区的格式是: 位置#类型#长度#数据，类型存储需要编码，Integer->0；String->1；Compose->2，长度是指数据的字符长度；数据仅允许数字、大写字母、小写字母、空格。\n输入的编码字符长度不能超过1000，一个数据的格式错误，则解码剩余数据，其他错误输出ENCODE_ERROR。\n输入的解码字符不能超过1000，数据区异常则跳过，继续解析剩余数据区，其余异常输出DECODE_ERROR。\n二、输入描述\n输入有行：\n第一行是命令，1表示编码，2表示解码，第二行为输入待解码、解码的字符，数据最多嵌套10层，[1,Compose,[1,String,Second]] 为2层嵌套。\n三、输出描述\n如果输入要求是编码，则输出编码结果；如果输入要求是解码，则输出解码结果；当异常时输出对应的错误字符。\n四、测试用例\n测试用例1：\n1、输入\n1\n[1,String,I am Mary],[2,Integer,23],[3,Long,100000],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]\n2、输出\n1#19#I am Mary2#0#2#234#2#25#1#1#10#I am Kitty2#0#2#44\n3、说明",
+    "examples": [
+      {
+        "input": "2\n1#1#9#I am Mary2#0#2#233#0#3#8794#2#25#1#1#10#I am Kitty2#0#2#44",
+        "output": "[1,String,I am Mary],[2,Integer,23],[3,Integer,879],[4,Compose,[1,String,I am Kitty],[2,Integer,44]]"
+      }
+    ]
   },
   {
     "id": "OD018",
@@ -231,7 +416,22 @@
     "content_path": "content/od/OD018.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD018Problem018.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD018Problem018Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "题目：字符串计数匹配 -解题思路待更新\n题目描述：\n给你一个字符串 str 和整数 k，返回满足以下条件的所有子字符串个数：\n恰好包含 k 个字母\n数字 0-9 各出现至少一次\n输入描述\n第一行为字符串 str (1 < length < 100000)，仅包含数字和小写字母 第二行为整数 k (0 < k <= 100000)\n输出描述\n输出一个整数，表示满足条件的所有子字符串个数\n补充说明 子字符串：是字符串中连续的非空字符序列\n示例 1\n输入\na0123456789aa\n1\n输出\n2\n说明\n说明 满足条件的子字符串有2个：a0123456789和0123456789a\n示例2\n输入\naa01234a5678901234aa",
+    "examples": [
+      {
+        "input": "第一行为字符串 str (1 < length < 100000)，仅包含数字和小写字母 第二行为整数 k (0 < k <= 100000)",
+        "output": "输出一个整数，表示满足条件的所有子字符串个数"
+      },
+      {
+        "input": "a0123456789aa\n1",
+        "output": "2"
+      },
+      {
+        "input": "aa01234a5678901234aa\n1",
+        "output": "22"
+      }
+    ]
   },
   {
     "id": "OD019",
@@ -244,7 +444,22 @@
     "content_path": "content/od/OD019.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD019App.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD019AppTest.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "智能手机方便了我们生活的同时，也侵占了我们不少的时间。“手机App防沉迷系统”能够让我们每天合理地规划手机App使用时间，在正确的时间做正确的事。\n它的大概原理是这样的：\n在一天24小时内，可以注册每个App的允许使用时段一个时间段只能使用一个AppApp有优先级，数值越高，优先级越高。注册使用时段时，如果高优先级的App时间和低优先级的时段有冲突，则系统会自动注销低优先级的时段，如果App的优先级相同，则后添加的App不能注册。\n请编程实现，根据输入数据注册App，并根据输入的时间点，返回时间点使用的App名称，如果该时间点没有注册任何App，请返回字符串“NA”。\n第一行表示注册的App数量 N（N ≤ 100）\n第二部分包括 N 行，每行表示一条App注册数据\n最后一行输入一个时间点，程序即返回该时间点使用的App\n2App1 1 09:00 10:00App2 2 11:00 11:3009:30\n数据说明如下：\nN行注册数据以空格分隔，四项数依次表示：App名称、优先级、起始时间、结束时间优先级1~5，数字越大，优先级越高时间格式 HH:MM，小时和分钟都是两位，不足两位前面补0起始时间需小于结束时间，否则注册不上注册信息中的时间段包含起始时间点，不包含结束时间点\n输出一个字符串，表示App名称，或NA表示空闲时间",
+    "examples": [
+      {
+        "input": "1\nApp1 1 09:00 10:00\n09:30123",
+        "output": "App11"
+      },
+      {
+        "input": "2\nApp1 1 09:00 10:00\nApp2 2 09:10 09:30\n09:201234",
+        "output": "App21"
+      },
+      {
+        "input": "2\nApp1 1 09:00 10:00\nApp2 2 09:10 09:30\n09:501234",
+        "output": "NA1"
+      }
+    ]
   },
   {
     "id": "OD020",
@@ -257,7 +472,18 @@
     "content_path": "content/od/OD020.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD020Problem020.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD020Problem020Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "公司用一个字符串来表示员工的出勤信息\nabsent：缺勤late：迟到leaveearly：早退present：正常上班\n现需根据员工出勤信息，判断本次是否能获得出勤奖，能获得出勤奖的条件如下：\n缺勤不超过一次；没有连续的迟到/早退；任意连续7次考勤，缺勤/迟到/早退不超过3次。\n用户的考勤数据字符串\n记录条数 >= 1；输入字符串长度 < 10000；不存在非法输入；\n如：\n2presentpresent absent present present leaveearly present absent\n根据考勤数据字符串，如果能得到考勤奖，输出”true”；否则输出”false”，对于输入示例的结果应为：\ntrue false",
+    "examples": [
+      {
+        "input": "2\npresent\npresent present123",
+        "output": "true true1"
+      },
+      {
+        "input": "2\npresent\npresent absent present present leaveearly present absent123",
+        "output": "true false1"
+      }
+    ]
   },
   {
     "id": "OD021",
@@ -270,7 +496,14 @@
     "content_path": "content/od/OD021.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD021Problem021.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD021Problem021Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "在一款虚拟游戏中生活，你必须进行投资以增强在虚拟游戏中的资产以免被淘汰出局。\n现有一家Bank，它提供有若干理财产品 m 个，风险及投资回报不同，你有 N（元）进行投资，能接收的总风险值为X。\n你要在可接受范围内选择最优的投资方式获得最大回报。\n备注：\n在虚拟游戏中，每项投资风险值相加为总风险值；在虚拟游戏中，最多只能投资2个理财产品；在虚拟游戏中，最小单位为整数，不能拆分为小数；投资额*回报率=投资回报\n第一行：\n产品数（取值范围[1,20]）总投资额（整数，取值范围[1, 10000]）可接受的总风险（整数，取值范围[1,200]）\n第二行：产品投资回报率序列，输入为整数，取值范围[1,60]\n第三行：产品风险值序列，输入为整数，取值范围[1, 100]\n第四行：最大投资额度序列，输入为整数，取值范围[1, 10000]\n每个产品的投资额序列",
+    "examples": [
+      {
+        "input": "5 100 10\n10 20 30 40 50\n3 4 5 6 10\n20 30 20 40 301234",
+        "output": "0 30 0 40 01"
+      }
+    ]
   },
   {
     "id": "OD022",
@@ -283,7 +516,14 @@
     "content_path": "content/od/OD022.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD022Problem022.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD022Problem022Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "有一座保密大楼，你从0楼到达指定楼层m，必须这样的规则乘坐电梯：\n给定一个数字序列，每次根据序列中的数字n，上升n层或者下降n层，前后两次的方向必须相反，规定首次的方向向上，自行组织序列的顺序按规定操作到达指定楼层。\n求解到达楼层的序列组合，如果不能到达楼层，给出小于该楼层的最近序列组合。\n第一行：期望的楼层，取值范围[1,50]; 序列总个数，取值范围[1,23]\n第二行：序列，每个值取值范围[1,50]\n能够达到楼层或者小于该楼层最近的序列",
+    "examples": [
+      {
+        "input": "5 31 2 6",
+        "output": "6 2 1"
+      }
+    ]
   },
   {
     "id": "OD023",
@@ -296,7 +536,18 @@
     "content_path": "content/od/OD023.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD023Problem023.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD023Problem023Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "在第一人称射击游戏中，玩家通过键盘的A、S、D、W四个按键控制游戏人物分别向左、向后、向右、向前进行移动，从而完成走位。\n假设玩家每按动一次键盘，游戏任务会向某个方向移动一步，如果玩家在操作一定次数的键盘并且各个方向的步数相同时，此时游戏任务必定会回到原点，则称此次走位为完美走位。\n现给定玩家的走位（例如：ASDA），请通过更换其中一段连续走位的方式使得原走位能够变成一个完美走位。其中待更换的连续走位可以是相同长度的任何走位。\n请返回待更换的连续走位的最小可能长度。\n如果原走位本身是一个完美走位，则返回0。\n输入为由键盘字母表示的走位s，例如：ASDA\n输出为待更换的连续走位的最小可能长度。",
+    "examples": [
+      {
+        "input": "WASDAASD",
+        "output": "1"
+      },
+      {
+        "input": "AAAA",
+        "output": "3"
+      }
+    ]
   },
   {
     "id": "OD024",
@@ -309,7 +560,22 @@
     "content_path": "content/od/OD024.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD024Problem024.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD024Problem024Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "考勤记录是分析和考核职工工作时间利用情况的原始依据，也是计算职工工资的原始依据，为了正确地计算职工工资和监督工资基金使用情况，公司决定对员工的手机打卡记录进行异常排查。\n如果出现以下两种情况，则认为打卡异常：\n实际设备号与注册设备号不一样或者，同一个员工的两个打卡记录的时间小于60分钟并且打卡距离超过5km。\n给定打卡记录的字符串数组clockRecords（每个打卡记录组成为：工号;时间（分钟）;打卡距离（km）;实际设备号;注册设备号），返回其中异常的打卡记录（按输入顺序输出）。\n第一行输入为N，表示打卡记录数；\n之后的N行为打卡记录，每一行为一条打卡记录。\n输出异常的打卡记录。",
+    "examples": [
+      {
+        "input": "2100000,10,1,ABCD,ABCD100000,50,10,ABCD,ABCD",
+        "output": "100000,10,1,ABCD,ABCD;100000,50,10,ABCD,ABCD"
+      },
+      {
+        "input": "2100000,10,1,ABCD,ABCD100001,80,10,ABCE,ABCE",
+        "output": "null"
+      },
+      {
+        "input": "2100000,10,1,ABCD,ABCD100000,80,10,ABCE,ABCD",
+        "output": "100000,80,10,ABCE,ABCD"
+      }
+    ]
   },
   {
     "id": "OD025",
@@ -322,7 +588,14 @@
     "content_path": "content/od/OD025.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD025Problem025.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD025Problem025Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "某网上商场举办优惠活动，发布了满减、打折、无门槛3种优惠券，分别为：\n每满100元优惠10元，无使用数限制，如100~199元可以使用1张减10元，200~299可使用2张减20元，以此类推；92折券，1次限使用1张，如100元，则优惠后为92元；无门槛5元优惠券，无使用数限制，直接减5元。\n优惠券使用限制\n每次最多使用2种优惠券，2种优惠可以叠加（优惠叠加时以优惠后的价格计算），以购物200元为例，可以先用92折券优惠到184元，再用1张满减券优惠10元，最终价格是174元，也可以用满减券2张优惠20元为180元，再使用92折券优惠到165（165.6向下取整），不同使用顺序的优惠价格不同，以最优惠价格为准。在一次购物种，同一类型优惠券使用多张时必须一次性使用，不能分多次拆开使用（不允许先使用1张满减券，再用打折券，再使用一张满减券）。\n问题\n请设计实现一种解决方法，帮助购物者以最少的优惠券获得最优的优惠价格。优惠后价格越低越好，同等优惠价格，使用的优惠券越少越好，可以允许某次购物不使用优惠券。\n约定\n优惠活动每人只能参加一次，每个人的优惠券种类和数量是一样的。\n第一行：每个人拥有的优惠券数量（数量取值范围为[0,10]），按满减、打折、无门槛的顺序输入第二行：表示购物的人数n（1 ≤ n ≤ 10000）最后n行：每一行表示某个人优惠前的购物总价格（价格取值范围(0, 1000] ，都为整数）。约定：输入都是符合题目设定的要求的。\n每行输出每个人每次购物优惠后的最低价格以及使用的优惠券总数量每行的输出顺序和输入的顺序保持一致",
+    "examples": [
+      {
+        "input": "3 2 53100200400",
+        "output": "65 6155 7338 4"
+      }
+    ]
   },
   {
     "id": "OD026",
@@ -335,7 +608,18 @@
     "content_path": "content/od/OD026.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD026Problem026.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD026Problem026Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "在一条笔直的公路上安装了N个路灯，从位置0开始安装，路灯之间间距固定为100米。每个路灯都有自己的照明半径，请计算第一个路灯和最后一个路灯之间，无法照明的区间的长度和。\n第一行为一个数N，表示路灯个数，1<=N<=100000第二行为N个空格分隔的数，表示路灯的照明半径，1<=照明半径<=100000*100\n第一个路灯和最后一个路灯之间，无法照明的区间的长度和",
+    "examples": [
+      {
+        "input": "250 50",
+        "output": "0"
+      },
+      {
+        "input": "路灯1 覆盖0-50路灯2 覆盖30-170路灯3 覆盖180-220路灯4 覆盖230-370",
+        "output": "20"
+      }
+    ]
   },
   {
     "id": "OD027",
@@ -348,7 +632,18 @@
     "content_path": "content/od/OD027.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD027Problem027.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD027Problem027Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "商人经营一家店铺，有number种商品，由于仓库限制每件商品的最大持有数量是item[index]，每种商品的价格是item-price[item_index][day]\n通过对商品的买进和卖出获取利润，请给出商人在days天内能获取的最大的利润注：同一件商品可以反复买进和卖出\n第一行输入商品的数量number，比如3第二行输入商品售货天数days，比如3第三行输入仓库限制每件商品的最大持有数量是item[index]，比如4 5 6后面继续输入number行days列，含义如下：第一件商品每天的价格，比如1 2 3第二件商品每天的价格，比如4 3 2第三件商品每天的价格，比如1 5 3\n输出商人在这段时间内的最大利润。",
+    "examples": [
+      {
+        "input": "3\n3\n4 5 6\n1 2 3\n4 3 2\n1 5 2123456",
+        "output": "321"
+      },
+      {
+        "input": "1\n1\n1\n11234",
+        "output": "01"
+      }
+    ]
   },
   {
     "id": "OD028",
@@ -361,7 +656,18 @@
     "content_path": "content/od/OD028.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD028Problem028.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD028Problem028Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "流浪地球计划在赤道上均匀部署了N个转向发动机，按位置顺序编号为0~N-1。\n初始状态下所有的发动机都是未启动状态;发动机启动的方式分为”手动启动\"和”关联启动\"两种方式;如果在时刻1一个发动机被启动，下一个时刻2与之相邻的两个发动机就会被”关联启动”;如果准备启动某个发动机时，它已经被启动了，则什么都不用做;发动机0与发动机N-1是相邻的;\n地球联合政府准备挑选某些发动机在某些时刻进行“手动启动”。当然最终所有的发动机都会被启动。\n哪些发动机最晚被启动呢?\n第一行两个数字N和E，中间有空格N代表部署发动机的总个数，E代表计划手动启动的发动机总个数1<N<=1000,1<=E<=1000,E<=N接下来共E行，每行都是两个数字T和P，中间有空格T代表发动机的手动启动时刻，P代表此发动机的位置编号。0<=T<=N.0<=P<N\n第一行一个数字N，以回车结束N代表最后被启动的发动机个数第二行N个数字，中间有空格，以回车结束每个数字代表发动机的位置编号，从小到大排序",
+    "examples": [
+      {
+        "input": "8 2\n0 2\n0 6123",
+        "output": "2\n0 412"
+      },
+      {
+        "input": "8 2\n0 0\n1 7123",
+        "output": "1\n412"
+      }
+    ]
   },
   {
     "id": "OD029",
@@ -374,7 +680,14 @@
     "content_path": "content/od/OD029.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD029Problem029.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD029Problem029Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "一个人设定一组四码的数字作为谜底，另一方猜。\n每猜一个数，出数者就要根据这个数字给出提示，提示以XAYB形式呈现，直到猜中位置。\n其中X表示位置正确的数的个数（数字正确且位置正确），而Y表示数字正确而位置不对的数的个数。\n例如，当谜底为8123，而猜谜者猜1052时，出题者必须提示0A2B。\n例如，当谜底为5637，而猜谜者才4931时，出题者必须提示1A0B。\n当前已知N组猜谜者猜的数字与提示，如果答案确定，请输出答案，不确定则输出NA。\n第一行输入一个正整数，0＜N ＜ 100。\n接下来N行，每一行包含一个猜测的数字与提示结果。\n输出最后的答案，答案不确定则输出NA。",
+    "examples": [
+      {
+        "input": "6\n4815 1A1B\n5716 0A1B\n7842 0A1B\n4901 0A0B\n8585 3A0B\n8555 2A1B1234567",
+        "output": "35851"
+      }
+    ]
   },
   {
     "id": "OD030",
@@ -387,7 +700,18 @@
     "content_path": "content/od/OD030.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD030Problem030.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD030Problem030Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "某公司研发了一款高性能AI处理器。每台物理设备具备8颗AI处理器，编号分别为0、1、2、3、4、5、6、7。\n编号0-3的处理器处于同一个链路中，编号4-7的处理器处于另外一个链路中，不通链路中的处理器不能通信。\n如下图所示。现给定服务器可用的处理器编号数组array，以及任务申请的处理器数量num，找出符合下列亲和性调度原则的芯片组合。\n如果不存在符合要求的组合，则返回空列表。\n亲和性调度原则：\n-如果申请处理器个数为1，则选择同一链路，剩余可用的处理器数量为1个的最佳，其次是剩余3个的为次佳，然后是剩余2个，最后是剩余4个。\n-如果申请处理器个数为2，则选择同一链路剩余可用的处理器数量2个的为最佳，其次是剩余4个，最后是剩余3个。\n-如果申请处理器个数为4，则必须选择同一链路剩余可用的处理器数量为4个。\n-如果申请处理器个数为8，则申请节点所有8个处理器。\n提示：\n任务申请的处理器数量只能是1、2、4、8。编号0-3的处理器处于一个链路，编号4-7的处理器处于另外一个链路。处理器编号唯一，且不存在相同编号处理器。\n输入包含可用的处理器编号数组array，以及任务申请的处理器数量num两个部分。\n第一行为array，第二行为num。例如：\n[0, 1, 4, 5, 6, 7]1\n表示当前编号为0、1、4、5、6、7的处理器可用。任务申请1个处理器。\n0 <= array.length <= 80 <= array[i] <= 7num in [1, 2, 4, 8]\n输出为组合列表，当array=[0，1，4，5，6，7]，num=1 时，输出为[[0], [1]]。",
+    "examples": [
+      {
+        "input": "[0, 1, 4, 5, 6, 7]1",
+        "output": "[[0], [1]]"
+      },
+      {
+        "input": "[0, 1, 4, 5, 6, 7]4",
+        "output": "[[4, 5, 6, 7]]"
+      }
+    ]
   },
   {
     "id": "OD031",
@@ -400,7 +724,22 @@
     "content_path": "content/od/OD031.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD031Problem031.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD031Problem031Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "有一辆汽车需要从 m * n 的地图左上角（起点）开往地图的右下角（终点），去往每一个地区都需要消耗一定的油量，加油站可进行加油。\n请你计算汽车确保从从起点到达终点时所需的最少初始油量。\n说明：\n智能汽车可以上下左右四个方向移动地图上的数字取值是 0 或 -1 或 正整数：-1 ：表示加油站，可以加满油，汽车的油箱容量最大为100；0 ：表示这个地区是障碍物，汽车不能通过正整数：表示汽车走过这个地区的耗油量如果汽车无论如何都无法到达终点，则返回 -1\n第一行为两个数字，M，N，表示地图的大小为 M * N\n0 < M,N ≤ 200\n后面一个 M * N 的矩阵，其中的值是 0 或 -1 或正整数，加油站的总数不超过 200 个\n如果汽车无论如何都无法到达终点，则返回 -1\n如果汽车可以到达终点，则返回最少的初始油量",
+    "examples": [
+      {
+        "input": "2,2\n10,20\n30,40123",
+        "output": "701"
+      },
+      {
+        "input": "4,4\n10,30,30,20\n30,30,-1,10\n0,20,20,40\n10,-1,30,4012345",
+        "output": "701"
+      },
+      {
+        "input": "4,5\n10,0,30,-1,10\n30,0,20,0,20\n10,0,10,0,30\n10,-1,30,0,1012345",
+        "output": "601"
+      }
+    ]
   },
   {
     "id": "OD032",
@@ -413,7 +752,14 @@
     "content_path": "content/od/OD032.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD032Problem032.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD032Problem032Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "某公司部门需要派遣员工去国外做项目。\n现在，代号为 x 的国家和代号为 y 的国家分别需要 cntx 名和 cnty 名员工。\n部门每个员工有一个员工号（1,2,3,......），工号连续，从1开始。\n部长派遣员工的规则：\n规则1：从 [1, k] 中选择员工派遣出去规则2：编号为 x 的倍数的员工不能去 x 国，编号为 y 的倍数的员工不能去 y 国。\n问题：\n找到最小的 k，使得可以将编号在 [1, k] 中的员工分配给 x 国和 y 国，且满足 x 国和 y 国的需求。\n四个整数 x，y，cntx，cnty。\n2 ≤ x < y ≤ 30000x 和 y 一定是质数1 ≤ cntx, cnty < 10^9cntx + cnty ≤ 10^9\n满足条件的最小的k",
+    "examples": [
+      {
+        "input": "2 3 3 1",
+        "output": "5"
+      }
+    ]
   },
   {
     "id": "OD033",
@@ -426,7 +772,22 @@
     "content_path": "content/od/OD033.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD033Problem033.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD033Problem033Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "某部门开展Family Day开放日活动，其中有个从桶里取球的游戏，游戏规则如下：\n有N个容量一样的小桶等距排开，\n且每个小桶都默认装了数量不等的小球，\n每个小桶装的小球数量记录在数组 bucketBallNums 中，\n游戏开始时，要求所有桶的小球总数不能超过SUM，\n如果小球总数超过SUM，则需对所有的小桶统一设置一个容量最大值 maxCapacity，\n并需将超过容量最大值的小球拿出来，直至小桶里的小球数量小于 maxCapacity;\n请您根据输入的数据，计算从每个小桶里拿出的小球数量。\n限制规则一：\n所有小桶的小球总和小于SUM，则无需设置容量值maxCapacity，并且无需从小桶中拿球出来，返回结果[]\n限制规则二：\n如果所有小桶的小球总和大于SUM，则需设置容量最大值maxCapacity，并且需从小桶中拿球出来，返回从每个小桶拿出的小球数量组成的数组；\n第一行输入2个正整数，数字之间使用空格隔开，其中第一个数字表示SUM，第二个数字表示bucketBallNums数组长度；第二行输入N个正整数，数字之间使用空格隔开，表示bucketBallNums的每一项；\n找到一个maxCapacity，来保证取出尽量少的球，并返回从每个小桶拿出的小球数量组成的数组。",
+    "examples": [
+      {
+        "input": "14 72 3 2 5 5 1 4",
+        "output": "[0,1,0,3,3,0,2]"
+      },
+      {
+        "input": "3 31 2 3",
+        "output": "[0,1,2]"
+      },
+      {
+        "input": "6 23 2",
+        "output": "[]"
+      }
+    ]
   },
   {
     "id": "OD034",
@@ -439,7 +800,22 @@
     "content_path": "content/od/OD034.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD034Problem034.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD034Problem034Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给定两个只包含数字的数组a，b，调整数组 a 里面的数字的顺序，使得尽可能多的a[i] > b[i]。\n数组a和b中的数字各不相同。\n输出所有可以达到最优结果的a数组的结果。\n输入的第一行是数组 a 中的数字，其中只包含数字，每两个数字之间相隔一个空格，a数组大小不超过10。\n输入的第二行是数组 b 中的数字，其中只包含数字，每两个数字之间相隔一个空格，b数组大小不超过10。\n输出所有可以达到最优结果的 a 数组的数量。",
+    "examples": [
+      {
+        "input": "11 8 2010 13 7",
+        "output": "1"
+      },
+      {
+        "input": "11 12 2010 13 7",
+        "output": "2"
+      },
+      {
+        "input": "1 2 34 5 6",
+        "output": "6"
+      }
+    ]
   },
   {
     "id": "OD035",
@@ -452,7 +828,22 @@
     "content_path": "content/od/OD035.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD035Problem035.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD035Problem035Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "幼儿园里有一个放倒的圆桶，它是一个线性结构，允许在桶的右边将篮球放入，可以在桶的左边和右边将篮球取出。\n每个篮球有单独的编号，老师可以连续放入一个或多个篮球，小朋友可以在桶左边或右边将篮球取出，当桶只有一个篮球的情况下，必须从左边取出。\n如老师按顺序放入1、2、3、4、5 共有 5 个编号的篮球，那么小朋友可以依次取出编号为1、2、3、4、5 或者 3、1、2、4、5 编号的篮球，无法取出 5、1、3、2、4 编号的篮球。\n其中 3、1、2、4、5 的取出场景为：\n连续放入1、2、3号从右边取出3号从左边取出1号从左边取出2号放入4号从左边取出4号放入5号从左边取出5号\n简答起见，我们以 L 表示左，R表示右，此时取出篮球的依次取出序列为“RLLLL”。\n每次输入包含一个测试用例：\n第一行的数字作为老师依次放入的篮球编号第二行的数字作为要检查是否能够按照放入的顺序取出给定的篮球的编号，其中篮球的编号用逗号进行分隔。\n其中篮球编号用逗号进行分隔。\n对于每个篮球的取出序列，如果确实可以获取，请打印出其按照左右方向的操作取出顺序，如果无法获取则打印“NO”。",
+    "examples": [
+      {
+        "input": "4,5,6,7,0,1,26,4,0,1,2,5,7",
+        "output": "RLRRRLL"
+      },
+      {
+        "input": "4,5,6,7,0,1,26,0,5,1,2,4,7",
+        "output": "NO"
+      },
+      {
+        "input": "1,2,3,41,2,3,5",
+        "output": "NO"
+      }
+    ]
   },
   {
     "id": "OD036",
@@ -465,7 +856,14 @@
     "content_path": "content/od/OD036.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD036Problem036.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD036Problem036Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "一个歌手准备从A城去B城参加演出。\n按照合同，他必须在 T 天内赶到歌手途经 N 座城市歌手不能往回走每两座城市之间需要的天数都可以提前获知。歌手在每座城市都可以在路边卖唱赚钱。经过调研，歌手提前获知了每座城市卖唱的收入预期：如果在一座城市第一天卖唱可以赚M，后续每天的收入会减少D（第二天赚的钱是 M - D，第三天是 M - 2D ...）。如果收入减少到 0 就不会再少了。歌手到达后的第二天才能开始卖唱。如果今天卖过唱，第二天才能出发。\n贪心的歌手最多可以赚多少钱？\n第一行两个数字 T 和 N，中间用空格隔开。\nT 代表总天数，0 < T < 1000N 代表路上经过 N 座城市，0 < N < 100\n第二行 N+1 个数字，中间用空格隔开。代表每两座城市之间耗费的时间。\n其总和 ≤ T。\n接下来 N 行，每行两个数字 M 和 D，中间用空格隔开。代表每个城市的输入预期。\n0 < M < 10000 < D < 100\n一个数字。代表歌手最多可以赚多少钱。以回车结束。",
+    "examples": [
+      {
+        "input": "10 21 1 2120 2090 10",
+        "output": "540"
+      }
+    ]
   },
   {
     "id": "OD037",
@@ -478,7 +876,18 @@
     "content_path": "content/od/OD037.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD037Problem037.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD037Problem037Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "你有 n 台机器，编号为 1~n，每台都需要完成一项工作，机器经过配置后都能独立完成一项工作。\n假设第 i 台机器你需要花 Bi 分钟进行设置，然后开始运行，Ji 分钟后完成任务。\n现在，你需要选择布置工作的顺序，使得用最短的时间完成所有工作。\n注意，不能同时对两台进行配置，但配置完成的机器们可以同时执行他们各自的工作。\n第一行输入代表总共有 M 组任务数据（1<M<=10）。\n每组数第一行为一个整数指定机器的数量 N（0<N<=1000）。随后的 N 行每行两个整数，第一个表示 B（0<=B<=10000），第二个表示 J（0<=J<=10000）。\n每组数据连续输入，不会用空行分隔。各组任务单独计时。\n对于每组任务，输出最短完成时间，且每组的结果独占一行。例如，两组任务就应该有两行输出。",
+    "examples": [
+      {
+        "input": "112 2",
+        "output": "4"
+      },
+      {
+        "input": "221 12 231 12 23 3",
+        "output": "47"
+      }
+    ]
   },
   {
     "id": "OD038",
@@ -491,7 +900,8 @@
     "content_path": "content/od/OD038.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD038Problem038.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD038Problem038Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分  采购订单 思路待更新\n题目描述"
   },
   {
     "id": "OD039",
@@ -504,7 +914,22 @@
     "content_path": "content/od/OD039.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD039Problem039.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD039Problem039Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "题目：停车场收入统计 -解题思路待更新\n题目描述：\n给定一个停车场某一天的车辆出入记录，请计算该停车场的当日收入，收费规则如下：\n停车半小时收费1元，不足半小时按半小时计算。\n一辆车每天收费封顶15元。\n停车时间小于半小时则不收费。\n11:30 - 13:30 不计入停车时间。\n包月的车辆不统计当日收入。\n输入描述\n输入分两段。 第一段是购买了包月服务的车辆信息：第一行是包月车辆的数量；从第二行开始，每行是一个包月的车牌号。 第二段是当日车辆出入记录：格式为：时(24小时制):分 车牌号（6~10位） enter/leave\n输出描述\n停车场当日收入，整数\n补充说明\n假设所有车辆在当天进当天离。每天的车辆出入记录<10000条，包月车辆个数小于10000。\n示例 1\n输入\n1\nA12345\n01:28 A12345 enter\n01:59 A12345 leave",
+    "examples": [
+      {
+        "input": "输入分两段。 第一段是购买了包月服务的车辆信息：第一行是包月车辆的数量；从第二行开始，每行是一个包月的车牌号。 第二段是当日车辆出入记录：格式为：时(24小时制):分 车牌号（6~10位） enter/leave",
+        "output": "停车场当日收入，整数"
+      },
+      {
+        "input": "1\nA12345\n01:28 A12345 enter\n01:59 A12345 leave",
+        "output": "0"
+      },
+      {
+        "input": "0\n08:00 A12346 enter\n11:20 A12345 enter\n11:30 A12346 leave\n12:00 A12345 leave",
+        "output": "7"
+      }
+    ]
   },
   {
     "id": "OD040",
@@ -517,7 +942,18 @@
     "content_path": "content/od/OD040.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD040Problem040.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD040Problem040Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "题目：敌情监控 -解题思路待更新\n题目描述：\nH国最近在和M国打仗，H国间谍头子Peter负责监视敌国M的兵力部署情况。M国沿边境线布置了N个营地，Peter的任务就是监视这些营地的兵力部署情况。\n中央情报局要研究敌情，所以Peter要汇报一段兵营中哪个连续的H个驻兵最少之和是多少，可以作为攻击的突破点，例如：“Peter，快汇报第2个营地到第10个营地中哪H连续的3座兵营人数之和最少”；而且每个营地的人数在不断变化。请你帮Peter设计一个程序，快速计算汇到的结果\n◆ 输入描述\n第一行3个正整数：N(N<=50000),K,L,N表示敌人营地兵营的数量，每个营地编号为1,2,3...N.K表示连续的兵营数L表示后续要问的命令数量；接下来有N个正整数，第i个正整数ai代表第i个营地里开始时有ai个人（1<=ai<=50000）\n接下来有行有L条命令。命令有4种形式：\n(1)Add i j, i和j为正整数，表示第i个营地增加j个人（j不超过30）\n(2)Sub i j, i和j为正整数，表示第i个营地减少j个人（j不超过30）\n(3)Query i j, i和j为正整数, i<=j，表示询问问第i个营地到第j个营地，连续H个兵营人数之和最少的总人数\n其中: j-i+1>=K，每组数据最多有50条命令\n◆ 输出描述\n对于每个Query询问，输出一个整数并回车，表示询问的该段中的连续的K座兵营人数之和最少的数量，这个数保持在int以内。\n示例 1\n输入\n5 2 3\n1 2 2 3 3\nQuery 1 3\nAdd 3 6\nQuery 2 4",
+    "examples": [
+      {
+        "input": "第一行3个正整数：N(N<=50000),K,L,N表示敌人营地兵营的数量，每个营地编号为1,2,3...N.K表示连续的兵营数L表示后续要问的命令数量；接下来有N个正整数，第i个正整数ai代表第i个营地里开始时有ai个人（1<=ai<=50000）\n接下来有行有L条命令。命令有4种形式：\n(1)Add i j, i和j为正整数，表示第i个营地增加j个人（j不超过30）\n(2)Sub i j, i和j为正整数，表示第i个营地减少j个人（j不超过30）\n(3)Query i j, i和j为正整数, i<=j，表示询问问第i个营地到第j个营地，连续H个兵营人数之和最少的总人数\n其中: j-i+1>=K，每组数据最多有50条命令",
+        "output": "对于每个Query询问，输出一个整数并回车，表示询问的该段中的连续的K座兵营人数之和最少的数量，这个数保持在int以内。"
+      },
+      {
+        "input": "5 2 3\n1 2 2 3 3\nQuery 1 3\nAdd 3 6\nQuery 2 4",
+        "output": "3\n10"
+      }
+    ]
   },
   {
     "id": "OD041",
@@ -530,7 +966,8 @@
     "content_path": "content/od/OD041.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD041Problem041.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD041Problem041Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分-新题：面试叫号系统 -思路待更新"
   },
   {
     "id": "OD042",
@@ -543,7 +980,8 @@
     "content_path": "content/od/OD042.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD042Problem042.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD042Problem042Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分-新题：水库溃坝填补"
   },
   {
     "id": "OD043",
@@ -556,7 +994,22 @@
     "content_path": "content/od/OD043.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD043Problem043.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD043Problem043Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "[运维工程师]采集到某产品线网运行一天产生的日志n条，现需根据日志时间先后顺序对日志进行排序，日志时间格式为H:M:S.N。\nH表示小时(0~23)M表示分钟(0~59)S表示秒(0~59)N表示毫秒(0~999)\n时间可能并没有补全，也就是说，01:01:01.001也可能表示为1:1:1.1。\n第一行输入一个整数n表示日志条数，1<=n<=100000，接下来n行输入n个时间。\n按时间升序排序之后的时间，如果有两个时间表示的时间相同，则保持输入顺序。",
+    "examples": [
+      {
+        "input": "2\n01:41:8.9\n1:1:09.211123",
+        "output": "1:1:09.211\n01:41:8.912"
+      },
+      {
+        "input": "3\n23:41:08.023\n1:1:09.211\n08:01:22.01234",
+        "output": "1:1:09.211\n08:01:22.0\n23:41:08.023123"
+      },
+      {
+        "input": "2\n22:41:08.023\n22:41:08.23123",
+        "output": "22:41:08.023\n22:41:08.2312"
+      }
+    ]
   },
   {
     "id": "OD044",
@@ -569,7 +1022,22 @@
     "content_path": "content/od/OD044.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD044Problem044.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD044Problem044Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "现在有一队小朋友，他们高矮不同，我们以正整数数组表示这一队小朋友的身高，如数组{5,3,1,2,3}。\n我们现在希望小朋友排队，以“高”“矮”“高”“矮”顺序排列，每一个“高”位置的小朋友要比相邻的位置高或者相等；每一个“矮”位置的小朋友要比相邻的位置矮或者相等；\n要求小朋友们移动的距离和最小，第一个从“高”位开始排，输出最小移动距离即可。\n例如，在示范小队{5,3,1,2,3}中，{5, 1, 3, 2, 3}是排序结果。\n{5, 2, 3, 1, 3} 虽然也满足“高”“矮”“高”“矮”顺序排列，但小朋友们的移动距离大，所以不是最优结果。\n移动距离的定义如下所示：\n第二位小朋友移到第三位小朋友后面，移动距离为1，若移动到第四位小朋友后面，移动距离为2；\n排序前的小朋友，以英文空格的正整数：\n4 3 5 7 8\n注：小朋友<100个\n排序后的小朋友，以英文空格分割的正整数：4 3 7 5 8\n备注：4（高）3（矮）7（高）5（矮）8（高）， 输出结果为最小移动距离，只有5和7交换了位置，移动距离都是1。",
+    "examples": [
+      {
+        "input": "4 1 3 5 21",
+        "output": "4 1 5 2 31"
+      },
+      {
+        "input": "1 1 1 1 11",
+        "output": "1 1 1 1 11"
+      },
+      {
+        "input": "xxx1",
+        "output": "[ ]1"
+      }
+    ]
   },
   {
     "id": "OD045",
@@ -582,7 +1050,18 @@
     "content_path": "content/od/OD045.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD045Problem045.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD045Problem045Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一组数字，表示扑克牌的牌面数字，忽略扑克牌的花色，请按如下规则对这一组扑克牌进行整理：\n步骤1.对扑克牌进行分组，形成组合牌，规则如下：\n当牌面数字相同张数大于等于4时，组合牌为“炸弹”；3张相同牌面数字 + 2张相同牌面数字，且3张牌与2张牌不相同时，组合牌为“葫芦”；3张相同牌面数字，组合牌为“三张”；2张相同牌面数字，组合牌为“对子”；剩余没有相同的牌，则为“单张”；\n步骤2.对上述组合牌进行由大到小排列，规则如下：\n不同类型组合牌之间由大到小排列规则：“炸弹” > “葫芦” > “三张” > “对子” > “单张”；相同类型组合牌之间，除“葫芦”外，按组合牌全部牌面数字加总由大到小排列；“葫芦”则先按3张相同牌面数字加总由大到小排列，3张相同牌面数字加总相同时，再按另外2张牌面数字加总由大到小排列；由于“葫芦”>“三张”，因此如果能形成更大的组合牌，也可以将“三张”拆分为2张和1张，其中的2张可以和其它“三张”重新组合成“葫芦”，剩下的1张为“单张”\n步骤3.当存在多个可能组合方案时，按如下规则排序取最大的一个组合方案：\n依次对组合方案中的组合牌进行大小比较，规则同上；当组合方案A中的第n个组合牌大于组合方案B中的第n个组合牌时，组合方案A大于组合方案B；\n第一行为空格分隔的N个正整数，每个整数取值范围[1,13]，N的取值范围[1,1000]\n经重新排列后的扑克牌数字列表，每个数字以空格分隔",
+    "examples": [
+      {
+        "input": "1 3 3 3 2 1 5",
+        "output": "3 3 3 1 1 5 2"
+      },
+      {
+        "input": "4 4 2 1 2 1 3 3 3 4",
+        "output": "4 4 4 3 3 2 2 1 1 3"
+      }
+    ]
   },
   {
     "id": "OD046",
@@ -595,7 +1074,26 @@
     "content_path": "content/od/OD046.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD046Problem046.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD046Problem046Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "一个有N个选手参加比赛，选手编号为1~N（3<=N<=100），有M（3<=M<=10）个评委对选手进行打分。打分规则为每个评委对选手打分，最高分10分，最低分1分。请计算得分最多的3位选手的编号。如果得分相同，则得分高分值最多的选手排名靠前(10分数量相同，则比较9分的数量，以此类推，用例中不会出现多个选手得分完全相同的情况)。\n第一行为半角逗号分割的两个正整数，第一个数字表示M（3<=M<=10）个评委，第二个数字表示N（3<=N<=100）个选手。第2到M+1行是半角逗号分割的整数序列，表示评委为每个选手的打分，0号下标数字表示1号选手分数，1号下标数字表示2号选手分数，依次类推。\n选手前3名的编号。注：若输入为异常，输出-1，如M、N、打分不在范围内。",
+    "examples": [
+      {
+        "input": "4,510,6,9,7,69,10,6,7,58,10,6,5,109,10,8,4,9",
+        "output": "2,1,5"
+      },
+      {
+        "input": "2,57,3,5,4,28,5,4,4,3",
+        "output": "-1"
+      },
+      {
+        "input": "4,28,55,610,48,9",
+        "output": "-1"
+      },
+      {
+        "input": "4,511,6,9,7,89,10,6,7,88,10,6,9,79,10,8,6,7",
+        "output": "-1"
+      }
+    ]
   },
   {
     "id": "OD047",
@@ -608,7 +1106,26 @@
     "content_path": "content/od/OD047.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD047Problem047.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD047Problem047Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "一个有N个选手参加比赛，选手编号为1~N（3<=N<=100），有M（3<=M<=10）个评委对选手进行打分。打分规则为每个评委对选手打分，最高分10分，最低分1分。请计算得分最多的3位选手的编号。如果得分相同，则得分高分值最多的选手排名靠前(10分数量相同，则比较9分的数量，以此类推，用例中不会出现多个选手得分完全相同的情况)。\n第一行为半角逗号分割的两个正整数，第一个数字表示M（3<=M<=10）个评委，第二个数字表示N（3<=N<=100）个选手。第2到M+1行是半角逗号分割的整数序列，表示评委为每个选手的打分，0号下标数字表示1号选手分数，1号下标数字表示2号选手分数，依次类推。\n选手前3名的编号。注：若输入为异常，输出-1，如M、N、打分不在范围内。",
+    "examples": [
+      {
+        "input": "4,510,6,9,7,69,10,6,7,58,10,6,5,109,10,8,4,9",
+        "output": "2,1,5"
+      },
+      {
+        "input": "2,57,3,5,4,28,5,4,4,3",
+        "output": "-1"
+      },
+      {
+        "input": "4,28,55,610,48,9",
+        "output": "-1"
+      },
+      {
+        "input": "4,511,6,9,7,89,10,6,7,88,10,6,9,79,10,8,6,7",
+        "output": "-1"
+      }
+    ]
   },
   {
     "id": "OD048",
@@ -621,7 +1138,8 @@
     "content_path": "content/od/OD048.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD048Problem048.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD048Problem048Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分  商品推荐多属性排序  思路待更新\n题目描述"
   },
   {
     "id": "OD049",
@@ -634,7 +1152,22 @@
     "content_path": "content/od/OD049.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD049Problem049.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD049Problem049Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一个N行M列的二维矩阵，矩阵中每个位置的数字取值为0或1。矩阵示例如：\n1 1 0 0 \n0 0 0 1 \n0 0 1 1 \n1 1 1 11234\n现需要将矩阵中所有的1进行反转为0，规则如下：\n当点击一个1时，该1便被反转为0，同时相邻的上、下、左、右，以及左上、左下、右上、右下8 个方向的1（如果存在1）均会自动反转为0；进一步地，一个位置上的1被反转为0时，与其相邻的8个方向的1（如果存在1）均会自动反转为0；\n按照上述规则示例中的矩阵只最少需要点击2次后，所有值均为0。\n请问，给定一个矩阵，最少需要点击几次后，所有数字均为0？\n第一行为两个整数，分别表示句子的行数 N 和列数 M，取值范围均为 [1, 100]\n接下来 N 行表示矩阵的初始值，每行均为 M 个数，取值范围 [0, 1]\n输出一个整数，表示最少需要点击的次数",
+    "examples": [
+      {
+        "input": "1 1 0 0 \n0 0 0 1 \n0 0 1 1 \n1 1 1 11234",
+        "output": "4 4\n1 1 0 0\n0 0 0 1\n0 0 1 1\n1 1 1 112345"
+      },
+      {
+        "input": "21",
+        "output": "3 3\n1 0 1\n0 1 0\n1 0 11234"
+      },
+      {
+        "input": "11",
+        "output": "输入：\n4 4\n1 1 0 0\n0 0 0 1\n0 0 1 1\n1 1 1 1123456"
+      }
+    ]
   },
   {
     "id": "OD050",
@@ -647,7 +1180,34 @@
     "content_path": "content/od/OD050.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD050Problem050.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD050Problem050Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "某公司为了更高效的编写代码，邀请你开发一款代码编辑器程序。\n程序的输入为 已有的代码文本和指令序列，程序需输出编辑后的最终文本。指针初始位置位于文本的开头。支持的指令(X为大于等于0的整数, word 为无空格的字符串)：\nFORWARD X 指针向前(右)移动X,如果指针移动位置超过了文本末尾，则将指针移动到文本末尾BACKWARD X 指针向后(左)移动X,如果指针移动位置超过了文本开头，则将指针移动到文本开头SEARCH-FORWARD word 从指针当前位置向前查找 word 并将指针移动到word的起始位置，如果未找到则保持不变SEARCH-BACKWARD word 在文本中向后查我 word 并将指针移动到word的起始位置，如果未找到则保持不变INSERT word 在指针当前位置前插入word，并将指针移动到word的结尾REPLACE word 在指针当前位置替换并插入字符(删除原有字符，并增加新的字符)DELETE X 在指针位置删除X个字符\n输入的第一行为命令列表的长度K\n输入的第二行为文件中的原始文本\n接下来的K行，每行为一个指令\n编辑后的最终结果",
+    "examples": [
+      {
+        "input": "1elloINSERT h",
+        "output": "hello"
+      },
+      {
+        "input": "2hlloFORWARD 1INSERT e",
+        "output": "hello"
+      },
+      {
+        "input": "2hellFORWARD 1000INSERT o",
+        "output": "hello"
+      },
+      {
+        "input": "1helloREPLACE HELLO",
+        "output": "HELLO"
+      },
+      {
+        "input": "1helloREPLACE HELLO_WORLD",
+        "output": "HELLO_WORLD"
+      },
+      {
+        "input": "2hellFORWARD 10000REPLACE O",
+        "output": "hellO"
+      }
+    ]
   },
   {
     "id": "OD051",
@@ -660,7 +1220,14 @@
     "content_path": "content/od/OD051.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD051Problem051.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD051Problem051Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "有一个特异性的双端队列，该队列可以从头部或尾部添加数据，但是只能从头部移出数据。\n小A依次执行2n个指令往队列中添加数据和移出数据。其中n个指令是添加数据（可能从头部添加、也可能从尾部添加），依次添加1到n；n个指令是移出数据。\n现在要求移除数据的顺序为1到n。\n为了满足最后输出的要求，小A可以在任何时候调整队列中数据的顺序。\n请问 小A 最少需要调整几次才能够满足移除数据的顺序正好是1到n；\n第一行一个数据n，表示数据的范围。\n接下来的2n行，其中有n行为添加数据，指令为：\n\"head add x\" 表示从头部添加数据 x，\"tail add x\" 表示从尾部添加数据x，\n另外 n 行为移出数据指令，指令为：\"remove\" 的形式，表示移出1个数据；\n1 ≤ n ≤ 3 * 10^5。\n所有的数据均合法。\n一个整数，表示 小A 要调整的最小次数。",
+    "examples": [
+      {
+        "input": "5head add 1tail add 2removehead add 3tail add 4head add 5removeremoveremoveremove",
+        "output": "1"
+      }
+    ]
   },
   {
     "id": "OD052",
@@ -673,7 +1240,18 @@
     "content_path": "content/od/OD052.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD052Problem052.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD052Problem052Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "让我们来模拟一个消息队列的运作，有一个发布者和若干消费者，发布者会在给定的时刻向消息队列发送消息，\n若此时消息队列有消费者订阅，这个消息会被发送到订阅的消费者中优先级最高（输入中消费者按优先级升序排列）的一个；若此时没有订阅的消费者，该消息被消息队列丢弃。\n消费者则会在给定的时刻订阅消息队列或取消订阅。\n当消息发送和订阅发生在同一时刻时，先处理订阅操作，即同一时刻订阅的消费者成为消息发送的候选。当消息发送和取消订阅发生在同一时刻时，先处理取消订阅操作，即消息不会被发送到同一时刻取消订阅的消费者。\n输入为两行。\n第一行为2N个正整数，代表发布者发送的N个消息的时刻和内容（为方便解折，消息内容也用正整数表示）。第一个数字是第一个消息的发送时刻，第二个数字是第一个消息的内容，以此类推。用例保证发送时刻不会重复，但注意消息并没有按照发送时刻排列。\n第二行为2M个正整数，代表M个消费者订阅和取消订阅的时刻。第一个数字是第一个消费者订阅的时刻，第二个数字是第一个消费者取消订阅的时刻，以此类推。用例保证每个消费者的取消订阅时刻大于订阅时刻，消费者按优先级升序排列。\n两行的数字都由空格分隔。N不超过100，M不超过10，每行的长度不超过1000字符。\n输出为M行，依次为M个消费者收到的消息内容，消息内容按收到的顺序排列，且由空格分隔；\n若某个消费者没有收到任何消息，则对应的行输出-1.",
+    "examples": [
+      {
+        "input": "2 22 1 11 4 44 5 55 3 331 7 2 3",
+        "output": "11 33 44 5522"
+      },
+      {
+        "input": "5 64 11 64 9 979 11 4 9",
+        "output": "9764"
+      }
+    ]
   },
   {
     "id": "OD053",
@@ -686,7 +1264,22 @@
     "content_path": "content/od/OD053.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD053Problem053.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD053Problem053Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "在斗地主扑克牌游戏中， 扑克牌由小到大的顺序为：3,4,5,6,7,8,9,10,J,Q,K,A,2，玩家可以出的扑克牌阵型有：单张、对子、顺子、飞机、炸弹等。\n其中顺子的出牌规则为：由至少5张由小到大连续递增的扑克牌组成，且不能包含2。\n例如：{3,4,5,6,7}、{3,4,5,6,7,8,9,10,J,Q,K,A}都是有效的顺子；而{J,Q,K,A,2}、 {2,3,4,5,6}、{3,4,5,6}、{3,4,5,6,8}等都不是顺子。\n给定一个包含13张牌的数组，如果有满足出牌规则的顺子，请输出顺子。\n如果存在多个顺子，请每行输出一个顺子，且需要按顺子的第一张牌的大小（必须从小到大）依次输出。\n如果没有满足出牌规则的顺子，请输出No。\n13张任意顺序的扑克牌，每张扑克牌数字用空格隔开，每张扑克牌的数字都是合法的，并且不包括大小王：\n2 9 J 2 3 4 K A 7 9 A 5 6\n不需要考虑输入为异常字符的情况\n组成的顺子，每张扑克牌数字用空格隔开：\n3 4 5 6 7",
+    "examples": [
+      {
+        "input": "2 9 J 2 3 4 K A 7 9 A 5 61",
+        "output": "3 4 5 6 71"
+      },
+      {
+        "input": "2 9 J 10 3 4 K A 7 Q A 5 61",
+        "output": "3 4 5 6 7\n9 10 J Q K A12"
+      },
+      {
+        "input": "2 9 9 9 3 4 K A 10 Q A 5 61",
+        "output": "No1"
+      }
+    ]
   },
   {
     "id": "OD054",
@@ -699,7 +1292,22 @@
     "content_path": "content/od/OD054.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD054Problem054.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD054Problem054Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "对于一个连续正整数组成的序列，可以将其拼接成一个字符串，再将字符串里的部分字符打乱顺序。如序列8 9 10 11 12，拼接成的字符串为89101112，打乱一部分字符后得到90811211，原来的正整数10就被拆成了0和1。\n现给定一个按如上规则得到的打乱字符的字符串，请将其还原成连续正整数序列，并输出序列中最小的数字。\n输入一行，为打乱字符的字符串和正整数序列的长度，两者间用空格分隔，字符串长度不超过200，正整数不超过1000，保证输入可以还原成唯一序列。\n输出一个数字，为序列中最小的数字。",
+    "examples": [
+      {
+        "input": "19801211 51",
+        "output": "81"
+      },
+      {
+        "input": "432111111111 41",
+        "output": "1111"
+      },
+      {
+        "input": "输入：19801211 5\n输出：812",
+        "output": "输入：432111111111 4\n输出：11112"
+      }
+    ]
   },
   {
     "id": "OD055",
@@ -712,7 +1320,22 @@
     "content_path": "content/od/OD055.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD055Problem055.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD055Problem055Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "近些年来，我国防沙治沙取得显著成果。某沙漠新种植N棵胡杨（编号1-N），排成一排。\n一个月后，有M棵胡杨未能成活。\n现可补种胡杨K棵，请问如何补种（只能补种，不能新种），可以得到最多的连续胡杨树？\nN 总种植数量，1 <= N <= 100000\nM 未成活胡杨数量，M 个空格分隔的数，按编号从小到大排列，1 <= M <= N\nK 最多可以补种的数量，0 <= K <= M\n最多的连续胡杨棵树",
+    "examples": [
+      {
+        "input": "5\n2\n2 4\n11234",
+        "output": "31"
+      },
+      {
+        "input": "10\n3\n2 4 7\n11234",
+        "output": "61"
+      },
+      {
+        "input": "5\n2\n2 4\n11234",
+        "output": "10\n3\n2 4 7\n11234"
+      }
+    ]
   },
   {
     "id": "OD056",
@@ -725,7 +1348,18 @@
     "content_path": "content/od/OD056.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD056Problem056.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD056Problem056Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "斗地主起源于湖北十堰房县，据说是一位叫吴修全的年轻人根据当地流行的扑克玩法“跑得快”改编的，如今已风靡整个中国，并流行于互联网上。\n牌型：单顺，又称顺子，最少5张牌，最多12张牌(3…A)不能有2，也不能有大小王，不计花色。\n例如： 3-4-5-6-7-8，7-8-9-10-J-Q，3-4-5-6-7-8-9-10-J-Q-K-A\n可用的牌 3<4<5<6<7<8<9<10<J<Q<K<A<2<B(小王)<C(大王)，每种牌除大小王外有四种花色\n(共有13×4+2张牌)\n输入：\n手上有的牌已经出过的牌(包括对手出的和自己出的牌)\n输出：\n对手可能构成的最长的顺子(如果有相同长度的顺子，输出牌面最大的那一个)，如果无法构成顺子，则输出 NO-CHAIN。\n输入的第一行为当前手中的牌\n输入的第二行为已经出过的牌\n最长的顺子",
+    "examples": [
+      {
+        "input": "3-3-3-3-4-4-5-5-6-7-8-9-10-J-Q-K-A4-5-6-7-8-8-8",
+        "output": "9-10-J-Q-K-A"
+      },
+      {
+        "input": "3-3-3-3-8-8-8-8K-K-K-K",
+        "output": "NO-CHAIN"
+      }
+    ]
   },
   {
     "id": "OD057",
@@ -738,7 +1372,18 @@
     "content_path": "content/od/OD057.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD057Problem057.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD057Problem057Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一个整数数组 nums、一个数字k，一个整数目标值 target，请问nums中是否存在k个元素使得其相加结果为target，请输出所有符合条件且不重复的k元组的个数\n数据范围\n2 ≤ nums.length ≤ 200-10^9 ≤ nums[i] ≤ 10^9-10^9 ≤ target ≤ 10^92 ≤ k ≤ 100\n第一行是nums取值：2 7 11 15\n第二行是k的取值：2\n第三行是target取值：9\n输出第一行是符合要求的元组个数：1\n补充说明：[2,7]满足，输出个数是1",
+    "examples": [
+      {
+        "input": "-1 0 1 2 -1 -430",
+        "output": "2"
+      },
+      {
+        "input": "2 7 11 1529",
+        "output": "1"
+      }
+    ]
   },
   {
     "id": "OD058",
@@ -751,7 +1396,14 @@
     "content_path": "content/od/OD058.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD058Problem058.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD058Problem058Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一个数组X和正整数K，请找出使表达式：\nX[i] - X[i + 1] -  ... - X[i + K - 1]\n结果最接近于数组中位数的下标 i ，如果有多个 i 满足条件，请返回最大的 i.\n其中，数组中位数：长度为N的数组，按照元素的值大小升序排列后，下标为 N/2 元素的值\n无\n无",
+    "examples": [
+      {
+        "input": "[50,50,2,3],2",
+        "output": "1"
+      }
+    ]
   },
   {
     "id": "OD059",
@@ -764,7 +1416,18 @@
     "content_path": "content/od/OD059.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD059Problem059.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD059Problem059Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "跳房子，也叫跳飞机，是一种世界性的儿童游戏。\n游戏参与者需要分多个回合按顺序跳到第1格直到房子的最后一格。\n跳房子的过程中，可以向前跳，也可以向后跳。\n假设房子的总格数是count，小红每回合可能连续跳的步教都放在数组steps中，请问数组中是否有一种步数的组合，可以让小红两个回合跳到量后一格?\n如果有，请输出索引和最小的步数组合。\n注意：\n数组中的步数可以重复，但数组中的元素不能重复使用。提供的数据保证存在满足题目要求的组合，且索引和最小的步数组合是唯一的。\n第一行输入为房子总格数count，它是int整数类型。第二行输入为每回合可能连续跳的步数，它是int整数数组类型。\n返回索引和最小的满足要求的步数组合（顺序保持steps中原有顺序）",
+    "examples": [
+      {
+        "input": "[1,4,5,2,2]7",
+        "output": "[5, 2]"
+      },
+      {
+        "input": "[-1,2,4,9,6]8",
+        "output": "[-1, 9]"
+      }
+    ]
   },
   {
     "id": "OD060",
@@ -777,7 +1440,18 @@
     "content_path": "content/od/OD060.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD060Problem060.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD060Problem060Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "如果一个数组中出现次数最多的元素出现大于等于K次，被称为k-优雅数组，k也可以被称为优雅阈值。例如，数组1，2，3，1、2，3，1，它是一个3-优雅数组，因为元素1出现次数大于等于3次，数组[1, 2, 3, 1, 2]就不是一个3-优雅数组，因为其中出现次数最多的元素是1和2，只出现了2次。\n给定一个数组A和k，请求出A有多少子数组是k-优雅子数组。\n子数组是数组中一个或多个连续元素组成的数组。\n例如，数组[1,2,3,4]包含10个子数组，分别是：[1], [1,2], [1,2,3], [1,2,3,4], [2], [2,3], [2,3,4], [3], [3, 4], [4]。\n第一行输入两个数字，以空格隔开，含义是：A数组长度 k值\n第二行输入A数组元素，以空格隔开\n输出A有多少子数组是k-优雅子数组",
+    "examples": [
+      {
+        "input": "7 31 2 3 1 2 3 1",
+        "output": "1"
+      },
+      {
+        "input": "7 21 2 3 1 2 3 1",
+        "output": "10"
+      }
+    ]
   },
   {
     "id": "OD061",
@@ -790,7 +1464,22 @@
     "content_path": "content/od/OD061.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD061Problem061.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD061Problem061Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给定一组闭区间，其中部分区间存在交集。\n任意两个给定区间的交集，称为公共区间(如:[1,2],[2,3]的公共区间为[2,2]，[3,5],[3,6]的公共区间为[3,5])。\n公共区间之间若存在交集，则需要合并(如:[1,3],[3,5]区间存在交集[3,3]，需合并为[1,5])。\n按升序排列输出合并后的区间列表。\n一组区间列表，\n区间数为 N: 0<=N<=1000;\n区间元素为 X: -10000<=X<=10000。\n升序排列的合并区间列表",
+    "examples": [
+      {
+        "input": "40 31 33 53 6",
+        "output": "1 5"
+      },
+      {
+        "input": "40 31 44 75 8",
+        "output": "1 34 45 7"
+      },
+      {
+        "input": "21 23 4",
+        "output": "None"
+      }
+    ]
   },
   {
     "id": "OD062",
@@ -803,7 +1492,8 @@
     "content_path": "content/od/OD062.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD062Problem062.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD062Problem062Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分  统计差异值大于相似值二元组个数  思路待更新\n题目描述"
   },
   {
     "id": "OD063",
@@ -816,7 +1506,22 @@
     "content_path": "content/od/OD063.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD063Problem063.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD063Problem063Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "疫情期间，小明隔离在家，百无聊赖，在纸上写数字玩。他发明了一种写法：给出数字个数n和行数m（0 < n ≤ 999，0 < m ≤ 999），从左上角的1开始，按照顺时针螺旋向内写方式，依次写出2,3…n，最终形成一个m行矩阵。小明对这个矩阵有些要求：\n每行数字的个数一样多列的数量尽可能少填充数字时优先填充外部数字不够时，使用单个*号占位\n输入一行，两个整数，空格隔开，依次表示n、m\n符合要求的唯一矩阵",
+    "examples": [
+      {
+        "input": "9 41",
+        "output": "1 2 3\n* * 4\n9 * 5\n8 7 61234"
+      },
+      {
+        "input": "1\n2\n3\n*\n*12345",
+        "output": "120 71"
+      },
+      {
+        "input": "4 21",
+        "output": "10 21"
+      }
+    ]
   },
   {
     "id": "OD064",
@@ -829,7 +1534,14 @@
     "content_path": "content/od/OD064.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD064Problem064.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD064Problem064Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "现有一个机器人，可放置于 M × N 的网格中任意位置，每个网格包含一个非负整数编号，当相邻网格的数字编号差值的绝对值小于等于 1 时，机器人可以在网格间移动。\n问题：求机器人可活动的最大范围对应的网格点数目。说明：网格左上角坐标为 (0,0) ,右下角坐标为(m−1,n−1)，机器人只能在相邻网格间上下左右移动\n第 1 行输入为 M 和 N ， M 表示网格的行数 N 表示网格的列数之后 M 行表示网格数值，每行 N 个数值（数值大小用 k 表示），数值间用单个空格分隔，行首行尾无多余空格。M、 N、 k 均为整数，且 1 ≤ M,N ≤ 150, 0 ≤ k ≤ 50\n输出 1 行，包含 1 个数字，表示最大活动区域的网格点数目，行首行尾无多余空格。",
+    "examples": [
+      {
+        "input": "4 41 2 5 22 4 4 53 5 7 14 6 2 4",
+        "output": "6"
+      }
+    ]
   },
   {
     "id": "OD065",
@@ -842,7 +1554,26 @@
     "content_path": "content/od/OD065.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD065Problem065.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD065Problem065Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "给定一个 m x n 的矩阵，由若干字符 ‘X’ 和 ‘O’构成，’X’表示该处已被占据，’O’表示该处空闲，请找到最大的单入口空闲区域。\n解释：\n空闲区域是由连通的’O’组成的区域，位于边界的’O’可以构成入口，\n单入口空闲区域即有且只有一个位于边界的’O’作为入口的由连通的’O’组成的区域。如果两个元素在水平或垂直方向相邻，则称它们是“连通”的。\n第一行输入为两个数字，第一个数字为行数m，第二个数字为列数n，两个数字以空格分隔，1<=m,n<=200。\n剩余各行为矩阵各行元素，元素为‘X’或‘O’，各元素间以空格分隔。\n若有唯一符合要求的最大单入口空闲区域，输出三个数字\n第一个数字为入口行坐标（0~m-1）第二个数字为入口列坐标（0~n-1）第三个数字为区域大小\n三个数字以空格分隔；\n若有多个符合要求，则输出区域大小最大的，若多个符合要求的单入口区域的区域大小相同，则此时只需要输出区域大小，不需要输出入口坐标。\n若没有，输出NULL。",
+    "examples": [
+      {
+        "input": "4 4X X X XX O O XX O O XX O X X",
+        "output": "3 1 5"
+      },
+      {
+        "input": "4 5X X X X XO O O O XX O O O XX O X X O",
+        "output": "3 4 1"
+      },
+      {
+        "input": "5 4X X X XX O O OX O O OX O O XX X X X",
+        "output": "NULL"
+      },
+      {
+        "input": "5 4X X X XX O O OX X X XX O O OX X X X",
+        "output": "3"
+      }
+    ]
   },
   {
     "id": "OD066",
@@ -855,7 +1586,14 @@
     "content_path": "content/od/OD066.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD066Problem066.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD066Problem066Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "存在一个m×n的二维数组，其成员取值范围为0或1。\n其中值为1的成员具备扩散性，每经过1S，将上下左右值为0的成员同化为1。\n二维数组的成员初始值都为0，将第[i,j]和[k,l]两个个位置上元素修改成1后，求矩阵的所有元素变为1需要多长时间。\n输入数据中的前2个数字表示这是一个m×n的矩阵，m和n不会超过1024大小；\n中间两个数字表示一个初始扩散点位置为i,j；\n最后2个数字表示另一个扩散点位置为k,l。\n输出矩阵的所有元素变为1所需要秒数。",
+    "examples": [
+      {
+        "input": "4,4,0,0,3,3",
+        "output": "3"
+      }
+    ]
   },
   {
     "id": "OD067",
@@ -868,7 +1606,26 @@
     "content_path": "content/od/OD067.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD067Problem067.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD067Problem067Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "有M个端口组(1<=M<=10)，每个端口组是长度为N的整数数组(1<=N<=100)，如果端口组间存在2个及以上不同端口相同，则认为这2个端口组互相关联，可以合并。\n第一行输入端口组个数M，再输入M行，每行逗号分割，代表端口组。\n备注：端口组内数字可以重复。\n输出合并后的端口组，用二维数组表示。\n组内相同端口仅保留一个，从小到达排序。组外顺序保持输入顺序\n备注：M,N不在限定范围内，统一输出一组空数组[[]]",
+    "examples": [
+      {
+        "input": "442,3,21,25",
+        "output": "[[4],[2,3],[1,2],[5]]"
+      },
+      {
+        "input": "32,3,14,3,25",
+        "output": "[[1,2,3,4],[5]]"
+      },
+      {
+        "input": "6104,2,193,6,9,26,3,48",
+        "output": "[[10],[1,2,3,4,6,9],[9],[8]]"
+      },
+      {
+        "input": "11",
+        "output": "[[]]"
+      }
+    ]
   },
   {
     "id": "OD068",
@@ -881,7 +1638,14 @@
     "content_path": "content/od/OD068.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD068Wonderland.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD068WonderlandTest.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "Wonderland是小王居住地一家很受欢迎的游乐园。Wonderland目前有4种售票方式，分别为一日票（1天）、三日票（3天）、周票（7天）和月票（30天）。\n每种售票方式的价格由一个数组给出，每种票据在票面时限内可以无限制地进行游玩。例如：\n小王在第10日买了一张三日票，小王可以在第10日、第11日和第12日进行无限制地游玩。\n小王计划在接下来一年多次游玩该游乐园。小王计划地游玩日期将由一个数组给出。\n现在，请您根据给出地售票价格数组和小王计划游玩日期数组，返回游玩计划所需要地最低消费。\n输入为2个数组：\n售票价格数组为costs，costs.length = 4，默认顺序为一日票、三日票、周票和月票。小王计划游玩日期数组为days，1 ≤ days.length ≤ 365，1 ≤ days[i] ≤ 365，默认顺序为升序。\n完成游玩计划的最低消费。",
+    "examples": [
+      {
+        "input": "5 14 30 1001 3 5 20 21 200 202 230",
+        "output": "40"
+      }
+    ]
   },
   {
     "id": "OD069",
@@ -894,7 +1658,18 @@
     "content_path": "content/od/OD069.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD069Problem069.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD069Problem069Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "评估一个网络的信号质量，其中一个做法是将网络划分为栅格，然后对每个栅格的信号质量计算。\n路测的时候，希望选择一条信号最好的路线（彼此相连的栅格集合）进行演示。\n现给出 R 行 C 列的整数数组 Cov，每个单元格的数值 S 即为该栅格的信号质量（已归一化，无单位，值越大信号越好）。\n要求从 [0, 0] 到 [R-1, C-1]设计一条最优路测路线。返回该路线得分。\n规则：\n路测路线可以上下左右四个方向，不能对角路线的评分是以路线上信号最差的栅格为准的，例如路径 8→4→5→9 的值为4，该线路评分为4。线路最优表示该条线路的评分最高。\n第一行表示栅格的行数 R\n第二行表示栅格的列数 C\n第三行开始，每一行表示栅格地图一行的信号值，如5 4 5\n最优路线的得分",
+    "examples": [
+      {
+        "input": "335 4 51 2 67 4 6",
+        "output": "4"
+      },
+      {
+        "input": "653 4 6 3 40 2 1 1 78 8 3 2 73 2 4 9 84 1 2 0 04 6 5 4 3",
+        "output": "3"
+      }
+    ]
   },
   {
     "id": "OD070",
@@ -907,7 +1682,22 @@
     "content_path": "content/od/OD070.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD070Problem070.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD070Problem070Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给你一个由 '0' (空地)、'1' (银矿)、'2'(金矿) 组成的的地图，矿堆只能由上下左右相邻的金矿或银矿连接形成。超出地图范围可以认为是空地。\n假设银矿价值1，金矿价值2 ，请你找出地图中最大价值的矿堆并输出该矿堆的价值。\n地图元素信息如：\n22220000000000011111\n地图范围最大 300*3000 ≤ 地图元素 ≤ 2\n矿堆的最大价值",
+    "examples": [
+      {
+        "input": "22220000000000001111",
+        "output": "8"
+      },
+      {
+        "input": "22220000200001001111",
+        "output": "15"
+      },
+      {
+        "input": "20000000200000000111",
+        "output": "3"
+      }
+    ]
   },
   {
     "id": "OD071",
@@ -920,7 +1710,14 @@
     "content_path": "content/od/OD071.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD071Problem071.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD071Problem071Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "有N个快递站点用字符串标识，某些站点之间有道路连接。每个站点有一些包裹要运输，每个站点间的包裹不重复，路上有检查站会导致部分货物无法通行，计算哪些货物无法正常投递？\n第一行输入M N，M个包裹N个道路信息.0<=M,N<=100，检查站禁止通行的包裹如果有多个以空格分开\n输出不能送达的包裹，如：package2 package4，如果所有包裹都可以送达则输出：none，输出结果按照升序排列。",
+    "examples": [
+      {
+        "input": "4 2package1 A Cpackage2 A Cpackage3 B Cpackage4 A CA B package1A C package2",
+        "output": "package2"
+      }
+    ]
   },
   {
     "id": "OD072",
@@ -933,7 +1730,8 @@
     "content_path": "content/od/OD072.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD072Problem072.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD072Problem072Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分 产品模块算法检验-思路待更新"
   },
   {
     "id": "OD073",
@@ -946,7 +1744,8 @@
     "content_path": "content/od/OD073.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD073Problem073.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD073Problem073Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分 故障树诊断-思路待更新"
   },
   {
     "id": "OD074",
@@ -959,7 +1758,8 @@
     "content_path": "content/od/OD074.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD074Problem074.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD074Problem074Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分-新题： 项目排期最少交付时间 -思路待更新"
   },
   {
     "id": "OD075",
@@ -972,7 +1772,18 @@
     "content_path": "content/od/OD075.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD075Problem075.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD075Problem075Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "题目：【新版游戏分组】 -解题思路待更新\n题目描述：\n有n（n为2到24之间的偶数，包含2和24）位玩家参与一款在线对战游戏，游戏服务器会将玩家分为两组进行对战，每组人数为n/2。每位玩家都有一个战斗力，代表着这位玩家的厉害程度。为了对战尽可能精彩，分组时要做到两组的战斗力相差最小（每组的战斗力为组内玩家战斗力之和）。现在，给你n位玩家的战斗力，把他们分为战斗力相差最小的两组。请你输出这两组的战斗力差。\n输入描述 n个整数，n为2到24之间的偶数（包含2和24），整数之间用空格分隔。每个整数均为0和500000000之间的数字（包含0和500000000），每个整数为一位玩家的战斗力值\n输出描述 两组最小的战斗力差，整数\n示例1\n输入\n1 2 3 4 5 6 7 8 9 10\n输出\n1\n示例2\n输入\n500 700 0 0\n输出\n200",
+    "examples": [
+      {
+        "input": "1 2 3 4 5 6 7 8 9 10",
+        "output": "1"
+      },
+      {
+        "input": "500 700 0 0",
+        "output": "200"
+      }
+    ]
   },
   {
     "id": "OD076",
@@ -985,7 +1796,18 @@
     "content_path": "content/od/OD076.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD076Problem076.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD076Problem076Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "周末小明准备去爬山锻炼，0代表平地，山的高度使用1到9来表示，小明每次爬山或下山高度只能相差k及k以内，每次只能上下左右一个方向上移动一格，小明从左上角(0,0)位置出发\n第一行输入m n k(空格分隔)\n代表m*n的二维山地图，k为小明每次爬山或下山高度差的最大值，\n然后接下来输入山地图，一共m行n列，均以空格分隔。取值范围：\n0 < m ≤ 5000< n ≤ 5000 < k < 5\n请问小明能爬到的最高峰多高，到该最高峰的最短步数，输出以空格分隔。\n同高度的山峰输出较短步数。\n如果没有可以爬的山峰，则高度和步数都返回0。",
+    "examples": [
+      {
+        "input": "5 4 1\n0 1 2 0\n1 0 0 0\n1 0 1 2\n1 3 1 0\n0 0 0 9123456",
+        "output": "2 21"
+      },
+      {
+        "input": "5 4 3\n0 0 0 0\n0 0 0 0\n0 9 0 0\n0 0 0 0\n0 0 0 9123456",
+        "output": "0 01"
+      }
+    ]
   },
   {
     "id": "OD077",
@@ -998,7 +1820,14 @@
     "content_path": "content/od/OD077.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD077Problem077.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD077Problem077Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "Solo和koko是两兄弟，妈妈给了他们一大堆积木，每块积木上都有自己的重量。现在他们想要将这些积木分成两堆。哥哥Solo负责分配，弟弟koko要求两个人获得的积木总重量“相等”（根据Koko的逻辑），个数可以不同，不然就会哭，但koko只会先将两个数转成二进制再进行加法，而且总会忘记进位（每个进位都忘记）。如当25（11101）加11（01011）时，koko得到的计算结果是18（10010）：\n11001\n+01011\n--------\n 10010\nSolo想要尽可能使自己得到的积木总重量最大，且不让koko哭。\n第一行是一个整数N(2≤N≤100)，表示有多少块积木；\n第二行为空格分开的N个整数Ci(1≤Ci≤106)，表示第i块积木的重量。\n如果能让koko不哭，输出Solo所能获得积木的最大总重量；否则输出“NO”。",
+    "examples": [
+      {
+        "input": "33 5 6",
+        "output": "11"
+      }
+    ]
   },
   {
     "id": "OD078",
@@ -1011,7 +1840,18 @@
     "content_path": "content/od/OD078.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD078Problem078.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD078Problem078Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给定 M（0 < M ≤ 30）个字符（a-z），从中取出任意字符（每个字符只能用一次）拼接成长度为 N（0 < N ≤ 5）的字符串，\n要求相同的字符不能相邻，计算出给定的字符列表能拼接出多少种满足条件的字符串，\n输入非法或者无法拼接出满足条件的字符串则返回0。\n给定的字符列表和结果字符串长度，中间使用空格(\" \")拼接\n满足条件的字符串个数",
+    "examples": [
+      {
+        "input": "abc 1",
+        "output": "3"
+      },
+      {
+        "input": "dde 2",
+        "output": "2"
+      }
+    ]
   },
   {
     "id": "OD079",
@@ -1024,7 +1864,18 @@
     "content_path": "content/od/OD079.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD079Problem079.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD079Problem079Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "一个设备由N种类型元器件组成(每种类型元器件只需要一个，类型type编号从0~N-1)，\n每个元器件均有可靠性属性reliability，可靠性越高的器件其价格price越贵。\n而设备的可靠性由组成设备的所有器件中可靠性最低的器件决定。\n给定预算S，购买N种元器件( 每种类型元器件都需要购买一个)，在不超过预算的情况下，请给出能够组成的设备的最大可靠性。\nS N // S总的预算，N元器件的种类\ntotal // 元器件的总数，每种型号的元器件可以有多种;\n此后有total行具体器件的数据\ntype reliability price // type 整数类型，代表元器件的类型编号从0 ~ N-1; reliabilty 整数类型 ，代表元器件的可靠性; price 整数类型 ，代表元器件的价格\n符合预算的设备的最大可靠性，如果预算无法买齐N种器件，则返回 -1",
+    "examples": [
+      {
+        "input": "500 360 80 1000 90 2001 50 501 70 2102 50 1002 60 150",
+        "output": "60"
+      },
+      {
+        "input": "100 110 90 200",
+        "output": "-1"
+      }
+    ]
   },
   {
     "id": "OD080",
@@ -1037,7 +1888,18 @@
     "content_path": "content/od/OD080.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD080Problem080.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD080Problem080Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "题目：小明减肥 -解题思路待更新\n题目描述：\n小明最近想通过运动减肥。他列出了 n 种不同的运动，1 <= n <= 10。每种运动消耗的卡路里分别为 calories[i]，calories[i] >= 0。他希望选择恰好 K 种运动进行锻炼，使得这些运动消耗的总卡路里恰好等于目标 T，T >= 0。注意，每种运动最多只能选一次，且 k >= 0。请你帮助小明计算，共有多少种不同的运动组合方式可以达到目标。两种组合不同当且仅当至少包含一个不同的运动。\n▶ 输入描述\n第一行三个整数 n、T、K，表示运动的总数量、目标卡路里和需要选择的运动数量。\n第二行 n 个整数，表示每种运动的消耗。\n▶ 输出描述 一个整数，表示不同的组合数目\n示例 1\n输入\n5 6 3 [1,2,3,4,5]\n输出\n1\n说明\n唯一满足条件的组合是『1, 2, 3』（总和为6，恰好选3个运动）。\n示例2\n输入\n7 7 3 [0,1,2,3,4,5,6]\n输出\n4\n说明\n满足条件的组合是『0,1,6』『0,2,5』『0,3,4』『1,2,4』（总和为7，恰好选3个运动）。",
+    "examples": [
+      {
+        "input": "5 6 3 [1,2,3,4,5]",
+        "output": "1"
+      },
+      {
+        "input": "7 7 3 [0,1,2,3,4,5,6]",
+        "output": "4"
+      }
+    ]
   },
   {
     "id": "OD081",
@@ -1050,7 +1912,8 @@
     "content_path": "content/od/OD081.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD081Problem081.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD081Problem081Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分-新题： 资金投资 -思路待更新"
   },
   {
     "id": "OD082",
@@ -1063,7 +1926,22 @@
     "content_path": "content/od/OD082.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD082Problem082.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD082Problem082Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "实现一种整数编码方法，使得待编码的数字越小，编码后所占用的字节数越小。\n编码规则如下:\n编码时7位一组，每个字节的低7位用于存储待编码数字的补码字节的最高位表示后续是否还有字节，置1表示后面还有更多的字节，置0表示当前字节为最后一个字节。采用小端序编码，低位和低字节放在低地址上。编码结果按16进制数的字符格式输出，小写字母需转换为大写字母\n输入的为一个字符串表示的非负整数\n输出一个字符串，表示整数编码的16进制码流",
+    "examples": [
+      {
+        "input": "0",
+        "output": "00"
+      },
+      {
+        "input": "100",
+        "output": "64"
+      },
+      {
+        "input": "1000",
+        "output": "E807"
+      }
+    ]
   },
   {
     "id": "OD083",
@@ -1076,7 +1954,18 @@
     "content_path": "content/od/OD083.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD083Problem083.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD083Problem083Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "某生产门电路的厂商发现某一批次的或门电路不稳定，具体现象为计算两个二进制数的或操作时，第一个二进制数中某两个比特位会出现交换，交换的比特位置是随机的，但只交换这两个位，其他位不变。\n很明显，这个交换可能会影响最终的或结果，也可能不会有影响。\n为了评估影响和定位出错的根因，工程师需要研究在各种交换的可能下，最终的或结果发生改变的情况有多少种。\n第一行有一个正整数N; 其中1≤N≤1000000。第二行有一个长为N的二进制数，表示与电路的第一个输入数，即会发生比特交换的输入数。第三行有一个长为N的二进制数，表示与电路的第二个输入数。注意第二个输入数不会发生比特交换。\n输出只有一个整数，表示会影响或结果的交换方案个数。",
+    "examples": [
+      {
+        "input": "3010110",
+        "output": "1"
+      },
+      {
+        "input": "6011011110110",
+        "output": "4"
+      }
+    ]
   },
   {
     "id": "OD084",
@@ -1089,7 +1978,14 @@
     "content_path": "content/od/OD084.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD084Problem084.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD084Problem084Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "按照环保公司要求，小明需要在沙化严重的地区进行植树防沙工作，初步目标是种植一条直线的树带。由于有些区域目前不适合种植树木，所以只能在一些可以种植的点来种植树木。\n在树苗有限的情况下，要达到最佳效果，就要尽量散开种植，不同树苗之间的最小间距要尽量大。给你一个适合种情树木的点坐标和一个树苗的数量，请帮小明选择一个最佳的最小种植间距。\n例如，适合种植树木的位置分别为1,3,5,6,7,10,13 树苗数量是3，种植位置在1,7,13，树苗之间的间距都是6，均匀分开，就达到了散开种植的目的，最佳的最小种植间距是6\n第1行表示适合种树的坐标数量第2行是适合种树的坐标位置第3行是树苗的数量\n例如：\n71 5 3 6 10 7 133\n最佳的最小种植间距",
+    "examples": [
+      {
+        "input": "71 5 3 6 10 7 133",
+        "output": "6"
+      }
+    ]
   },
   {
     "id": "OD085",
@@ -1102,7 +1998,14 @@
     "content_path": "content/od/OD085.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD085Problem085.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD085Problem085Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "某业务需要根据终端的IP地址获取该终端归属的城市，可以根据公开的IP地址池信息查询归属城市。\n地址池格式如下：\n城市名=起始IP,结束IP\n起始和结束地址按照英文逗号分隔，多个地址段采用英文分号分隔。比如：\nCity1=1.1.1.1,1.1.1.2;City1=1.1.1.11,1.1.1.16;City2=3.3.3.3,4.4.4.4;City3=2.2.2.2,6.6.6.6\n一个城市可以有多个IP段，比如City1有2个IP段。\n城市间也可能存在包含关系，如City3的IP段包含City2的IP段范围。\n现在要根据输入的IP列表，返回最佳匹配的城市列表。\n注：最佳匹配即包含待查询IP且长度最小的IP段，比如例子中3.4.4.4最佳匹配是City2=3.3.3.3,4.4.4.4，5.5.5.5的最佳匹配是City3=2.2.2.2,6.6.6.6\n输入共2行。\n第一行为城市的IP段列表，多个IP段采用英文分号 ';' 分隔，IP段列表最大不超过500000。城市名称只包含英文字母、数字和下划线。最多不超过100000个。IP段包含关系可能有多层，但不超过100层。\n第二行为查询的IP列表，多个IP采用英文逗号 ',' 分隔，最多不超过10000条。\n最佳匹配的城市名列表，采用英文逗号 ',' 分隔，城市列表长度应该跟查询的IP列表长度一致。",
+    "examples": [
+      {
+        "input": "City1=1.1.1.1,1.1.1.2;City1=1.1.1.11,1.1.1.16;City2=3.3.3.3,4.4.4.4;City3=2.2.2.2,6.6.6.61.1.1.15,3.3.3.5,2.2.2.3",
+        "output": "City1,City2,City3"
+      }
+    ]
   },
   {
     "id": "OD086",
@@ -1115,7 +2018,18 @@
     "content_path": "content/od/OD086.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD086Problem086.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD086Problem086Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "输入N个互不相同的二维整数坐标，求这N个坐标可以构成的正方形数量。[内积为零的的两个向量垂直]\n第一行输入为N，N代表坐标数量，N为正整数。N <= 100\n之后的 K 行输入为坐标x y以空格分隔，x，y为整数，-10<=x, y<=10\n输出可以构成的正方形数量。\n4\n0 0\n1 2\n3 1\n2 -112345",
+    "examples": [
+      {
+        "input": "3\n1 3\n2 4\n3 11234",
+        "output": "01"
+      },
+      {
+        "input": "4\n0 0\n1 2\n3 1\n2 -112345",
+        "output": "11"
+      }
+    ]
   },
   {
     "id": "OD087",
@@ -1128,7 +2042,18 @@
     "content_path": "content/od/OD087.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD087Problem087.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD087Problem087Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "对称就是最大的美学，现有一道关于对称字符串的美学。已知：\n第1个字符串：R第2个字符串：BR第3个字符串：RBBR第4个字符串：BRRBRBBR第5个字符串：RBBRBRRBBRRBRBBR\n相信你已经发现规律了，没错！就是第 i 个字符串 = 第 i - 1 号字符串取反 + 第 i - 1 号字符串；\n取反（R->B, B->R）;\n现在告诉你n和k，让你求得第n个字符串的第k个字符是多少。（k的编号从0开始）\n第一行输入一个T，表示有T组用例；\n解析来输入T行，每行输入两个数字，表示n，k\n1 ≤ T ≤ 100；1 ≤ n ≤ 64；0 ≤ k ＜ 2^(n-1)；\n输出T行表示答案；\n输出 \"blue\" 表示字符是B；\n输出 \"red\" 表示字符是R。\n备注：输出字符串区分大小写，请注意输出小写字符串，不带双引号。",
+    "examples": [
+      {
+        "input": "51 02 13 24 65 8",
+        "output": "redredblueblueblue"
+      },
+      {
+        "input": "164 73709551616",
+        "output": "red"
+      }
+    ]
   },
   {
     "id": "OD088",
@@ -1141,7 +2066,18 @@
     "content_path": "content/od/OD088.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD088Problem088.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD088Problem088Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "给你一个整数M和数组N，N中的元素为连续整数，要求根据N中的元素组装成新的数组R，组装规则：\nR中元素总和加起来等于MR中的元素可以从N中重复选取R中的元素最多只能有1个不在N中，且比N中的数字都要小（不能为负数）\n第一行输入是连续数组N，采用空格分隔第二行输入数字M\n输出的是组装办法数量，int类型",
+    "examples": [
+      {
+        "input": "25",
+        "output": "1"
+      },
+      {
+        "input": "2 35",
+        "output": "2"
+      }
+    ]
   },
   {
     "id": "OD089",
@@ -1154,7 +2090,8 @@
     "content_path": "content/od/OD089.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD089Problem089.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD089Problem089Test.java",
-    "priority": "red"
+    "priority": "red",
+    "description": "100分 分弹珠游戏-思路待更新"
   },
   {
     "id": "OD090",
@@ -1167,7 +2104,8 @@
     "content_path": "content/od/OD090.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD090Problem090.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD090Problem090Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分 找到它-思路待更新"
   },
   {
     "id": "OD091",
@@ -1180,7 +2118,8 @@
     "content_path": "content/od/OD091.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD091Problem091.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD091Problem091Test.java",
-    "priority": "yellow"
+    "priority": "yellow",
+    "description": "200分  最小外接凸多边形   思路待更新\n题目描述"
   },
   {
     "id": "OD092",
@@ -1193,6 +2132,13 @@
     "content_path": "content/od/OD092.md",
     "source_path": "java/src/main/java/com/guoyongzheng/exam/od/OD092Problem092.java",
     "test_path": "java/src/test/java/com/guoyongzheng/exam/od/OD092Problem092Test.java",
-    "priority": "green"
+    "priority": "green",
+    "description": "给定长度为 n nn 的无序的数字数组，每个数字代表二叉树的叶子节点的权值，数字数组的值均大于等于 1 11 。请完成一个函数，根据输入的数字数组，生成哈夫曼树，并将哈夫曼树按照中序遍历输出。\n为了保证输出的二叉树中序遍历结果统一，增加以下限制:又树节点中，左节点权值小于等于右节点权值，根节点权值为左右节点权值之和。当左右节点权值相同时，左子树高度高度小于等于右子树。\n注意: 所有用例保证有效，并能生成哈夫曼树提醒:哈夫曼树又称最优二叉树，是一种带权路径长度最短的一叉树。\n所谓树的带权路径长度，就是树中所有的叶结点的权值乘上其到根结点的路径长度(若根结点为 0 00 层，叶结点到根结点的路径长度为叶结点的层数)\n例如：由叶子节点 5 15 40 30 10 生成的最优二叉树如下图所示，该树的最短带权路径长度为 40 * 1 + 30 * 2 +5 * 4 + 10 * 4 = 205 。\n输出一个哈夫曼的中序遍历数组，数值间以空格分隔",
+    "examples": [
+      {
+        "input": "5\n5 15 40 30 1012",
+        "output": "40 100 30 60 15 30 5 15 101"
+      }
+    ]
   }
 ]

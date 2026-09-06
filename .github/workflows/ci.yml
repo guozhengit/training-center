@@ -7,6 +7,19 @@ on:
     branches: [main]
 
 jobs:
+  deployment:
+    name: Deployment Scripts & Config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check shell syntax
+        run: |
+          for script in deploy/linux/*.sh deploy/base/*.sh; do
+            bash -n "$script"
+          done
+      - name: Test deployment lifecycle and Compose configuration
+        run: python3 -m unittest discover -s deploy/linux/tests -v
+
   backend:
     name: Java Build & Test
     runs-on: ubuntu-latest
@@ -21,7 +34,7 @@ jobs:
           cache: maven
 
       - name: Build and test all modules
-        run: mvn -B clean verify -Pverify -Dtest.excludedGroups=integration
+        run: mvn -B clean verify -Pverify -DexcludedGroups=integration
 
       - name: Upload surefire reports on failure
         if: failure()
@@ -49,6 +62,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --silent
+
+      - name: Run unit tests
+        run: npm run test:run
 
       - name: Build
         run: npx vite build

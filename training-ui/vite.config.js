@@ -11,7 +11,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           codemirror: ['codemirror', '@codemirror/lang-java', '@codemirror/lang-python', '@codemirror/theme-one-dark'],
-          markdown: ['marked', 'highlight.js']
+          markdown: ['marked', 'highlight.js'],
+          'chart-vendor': ['chart.js']
         }
       }
     }
@@ -27,6 +28,7 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
-    globals: true
+    globals: true,
+    fileParallelism: false
   }
 })

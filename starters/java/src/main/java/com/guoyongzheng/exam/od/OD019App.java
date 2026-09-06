@@ -1,6 +1,5 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.ArrayList;
 
 /**
  * 手机App防沉迷系统
@@ -15,6 +14,6 @@ public final class OD019App {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

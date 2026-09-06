@@ -35,9 +35,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
     && pip3 install --no-cache-dir --break-system-packages \
         -i "${PIP_INDEX_URL}" pytest \
-    && { curl -fsSL "${MAVEN_URL}" \
-            || curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; } \
-        | tar -xz -C /opt \
+    && { curl -fsSL --retry 3 -o /tmp/maven.tar.gz "${MAVEN_URL}" \
+            || curl -fsSL --retry 3 -o /tmp/maven.tar.gz "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; } \
+    && tar -xzf /tmp/maven.tar.gz -C /opt \
+    && rm -f /tmp/maven.tar.gz \
     && ln -s "/opt/apache-maven-${MAVEN_VERSION}" /opt/maven \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

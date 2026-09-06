@@ -1,7 +1,5 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 最大利润贪心的商人
@@ -16,6 +14,6 @@ public final class OD027Problem027 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

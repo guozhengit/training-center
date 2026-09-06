@@ -1,12 +1,9 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.ArrayList;
-import java.util.Vector;
-import java.util.HashSet;
 
 /**
- * 构成正方形的数量
- * 难度：一星 | 分类：数学与逻辑
+ * Count Squares
+ * Difficulty: 2-star | Topic: Math/Logic
  */
 public final class OD086Problem086 {
 
@@ -17,6 +14,10 @@ public final class OD086Problem086 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String input) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

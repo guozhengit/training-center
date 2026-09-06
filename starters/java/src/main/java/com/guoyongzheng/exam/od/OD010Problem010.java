@@ -1,6 +1,5 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.*;
 
 /**
  * 特殊的加密算法
@@ -15,6 +14,6 @@ public final class OD010Problem010 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

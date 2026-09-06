@@ -68,7 +68,8 @@ cd D:\AI-SOURCE\jiupainews\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
 $env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
-& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-web -am spring-boot:run
+& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-core -am -DskipTests install
+& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -f training-web\pom.xml spring-boot:run
 ```
 
 启动后访问：
@@ -94,6 +95,7 @@ java -jar training-web\target\training-web-1.0.0-SNAPSHOT.jar
 | `TRAINING_JDK_HOME` | `D:/jdk/jdk-17.0.12` | 判题使用的 JDK |
 | `TRAINING_MAVEN_HOME` | `D:/Program Files (x86)/apache-maven-3.9.9` | 判题使用的 Maven |
 | `TRAINING_PYTHON` | `python` | Python 可执行文件 |
+| `TRAINING_API_KEY` | 空 | 非空时 `/api/**` 需要 `X-API-Key` |
 | `SERVER_PORT` | `8080` | 服务端口 |
 
 ## 5. 前端开发
@@ -105,6 +107,10 @@ npm run dev
 ```
 
 访问 http://localhost:5173。Vite 开发服务器会把 `/api` 代理到 `http://localhost:8080`。
+
+如果后端设置了 `TRAINING_API_KEY`，前端可通过 `VITE_TRAINING_API_KEY` 注入同一 key；
+已打开的页面也可以在浏览器 `localStorage` 写入 `training:apiKey` 后刷新。判题进度流在
+有 key 时会使用 fetch 流式请求，以便继续发送 `X-API-Key`。
 
 生产构建：
 

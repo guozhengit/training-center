@@ -23,6 +23,7 @@ import com.guoyongzheng.training.persistence.TrainingDatabase;
 import com.guoyongzheng.training.process.LocalProcessRunner;
 import com.guoyongzheng.training.review.ReviewScheduler;
 import com.guoyongzheng.training.sandbox.SandboxManifest;
+import com.guoyongzheng.training.sandbox.SandboxPaths;
 import com.guoyongzheng.training.sandbox.SandboxPolicy;
 import com.guoyongzheng.training.sandbox.SandboxService;
 import com.guoyongzheng.training.web.config.TrainingProperties;
@@ -282,7 +283,7 @@ public class JudgeService {
         if (!sandboxPath.startsWith(allowedRoot)) {
             throw new IllegalArgumentException("Sandbox path is outside Web judge root: " + attemptId);
         }
-        Path manifestPath = sandboxPath.resolve("manifest.json");
+        Path manifestPath = SandboxPaths.manifestPath(sandboxPath);
         if (!Files.isRegularFile(manifestPath)) {
             throw new IllegalStateException("Sandbox manifest missing: " + attemptId);
         }
@@ -337,6 +338,11 @@ public class JudgeService {
         Instant now = clock.instant();
         try (var sessions = Files.list(root)) {
             for (Path sessionDir : sessions.filter(Files::isDirectory).toList()) {
+                String sessionId = sessionDir.getFileName().toString();
+                if (!isSafeSandboxSegment(sessionId)) {
+                    log.debug("[SandboxSweep] ignoring non-session directory {}", sessionDir);
+                    continue;
+                }
                 sweepSessionSandboxes(sessionDir, retention, now);
             }
         } catch (IOException exception) {
@@ -348,6 +354,10 @@ public class JudgeService {
         try (var attempts = Files.list(sessionDir)) {
             for (Path attemptDir : attempts.filter(Files::isDirectory).toList()) {
                 String attemptId = attemptDir.getFileName().toString();
+                if (!isSafeSandboxSegment(attemptId)) {
+                    log.debug("[SandboxSweep] ignoring non-attempt directory {}", attemptDir);
+                    continue;
+                }
                 if (shouldDeleteSandbox(attemptId, attemptDir, retention, now)) {
                     sandboxService(databaseProvider.workspace()).cleanup(attemptDir);
                     log.info("[SandboxSweep] removed stale sandbox {}", attemptDir);
@@ -356,6 +366,13 @@ public class JudgeService {
         } catch (IOException exception) {
             log.warn("[SandboxSweep] failed to sweep {}", sessionDir, exception);
         }
+    }
+
+    private static boolean isSafeSandboxSegment(String value) {
+        return value != null
+                && value.matches("[A-Za-z0-9][A-Za-z0-9._-]*")
+                && !".".equals(value)
+                && !"..".equals(value);
     }
 
     private boolean shouldDeleteSandbox(
@@ -403,7 +420,7 @@ public class JudgeService {
     // --- internal helpers ---
 
     private void cleanBuildArtifacts(Path sandboxPath) {
-        Path work = sandboxPath.resolve("work");
+        Path work = SandboxPaths.workPath(sandboxPath);
         if (!Files.isDirectory(work)) return;
         log.debug("[Judge] cleaning build artifacts in {}", work);
         deleteRecursively(work.resolve("java/target"));
@@ -423,9 +440,9 @@ public class JudgeService {
 
     private boolean isSandboxStructurallyReady(Path attemptDirectory) {
         try {
-            Path manifest = attemptDirectory.resolve("manifest.json");
-            Path state = attemptDirectory.resolve(".state");
-            Path work = attemptDirectory.resolve("work");
+            Path manifest = SandboxPaths.manifestPath(attemptDirectory);
+            Path state = SandboxPaths.statePath(attemptDirectory);
+            Path work = SandboxPaths.workPath(attemptDirectory);
             if (!Files.isRegularFile(manifest) || !Files.isRegularFile(state) || !Files.isDirectory(work)) {
                 return false;
             }
@@ -513,7 +530,7 @@ public class JudgeService {
         Path sandboxPath = sandboxRoot(databaseProvider.workspace())
                 .resolve(attempt.sessionId()).resolve(attempt.id())
                 .toAbsolutePath().normalize();
-        Path manifestPath = sandboxPath.resolve("manifest.json");
+        Path manifestPath = SandboxPaths.manifestPath(sandboxPath);
         if (attempt.sandboxPath() != null && !attempt.sandboxPath().isBlank()
                 && Files.isRegularFile(manifestPath)) {
             try {

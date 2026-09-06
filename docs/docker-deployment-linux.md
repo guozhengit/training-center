@@ -1,299 +1,191 @@
-# Training Center Docker 容器化部署手册
+# Training Center 生产部署与恢复
 
-本文档面向服务器已安装 Docker 的部署场景。推荐使用仓库内置部署工具包 `deploy/linux/`，一条命令完成部署。
+当前采用单机 Docker Compose：基础镜像包含 JDK 17、Maven、Python、pytest；应用镜像包含 Vue、Spring Boot、题库与面试资料；SQLite、沙箱与导出数据通过 bind mount 持久化。部署脚本要求 Linux、Bash 4.3+、Docker Engine、Compose 2.20+、Git、GNU coreutils 和 tar。
 
-默认服务器目录：
+该部署适用于本人或可信人员训练。判题进程与 Web 共享容器、操作系统用户及文件权限，目录沙箱不能替代运行不可信代码所需的独立执行环境。当前 SQLite 部署保持单实例。
 
-```bash
-/home/docker
-```
-
-默认项目目录：
-
-```bash
-/home/docker/training-center
-```
-
-## 1. 部署目标
-
-使用 Docker 构建并运行 `training-center`，容器内包含：
-
-- JDK 17 + Maven + Python + pytest（判题运行环境，来自基础镜像 `training-center-base:17`）
-- Spring Boot Web 服务
-- 已打包的 Vue 前端静态资源
-- 只读题库 `output/coding-ai-exam` + 面试资料 `output/interview`
-
-推荐部署方式：
+## 1. 目录与配置
 
 ```text
-两个镜像 (base + app) + 宿主机数据卷 + 8080 端口
-```
-
-## 2. 目录要求
-
-Dockerfile 的 build context 必须是工作区根目录 `/home/docker`，构建时会复制：
-
-```bash
-training-center/           # 仓库
-output/coding-ai-exam/     # 题库 (判题)
-output/interview/          # 面试资料 (口述/项目题)
-```
-
-推荐目录：
-
-```bash
 /home/docker/
-├── training-center/          # 本仓库
+├── training-center/                # Git 仓库
+│   └── deploy/linux/.env            # 生产配置，不提交 Git
 ├── output/
-│   ├── coding-ai-exam/       # 题库 (必须)
-│   └── interview/            # 面试资料 (必须)
-├── training-data/            # 运行数据 (deploy.sh 自动创建)
-└── backups/                  # backup.sh 输出目录
+│   ├── coding-ai-exam/              # 必须，含 catalog/questions.json
+│   └── interview/                   # 必须
+├── training-data/
+│   ├── training-runtime/            # database、sandboxes、exports、logs
+│   └── releases.log                 # 时间、状态、新镜像、旧镜像、备份路径
+└── backups/                        # 数据备份，必须在 training-data 之外
 ```
 
-检查：
-
-```bash
-cd /home/docker
-ls training-center
-ls output/coding-ai-exam/catalog/questions.json
-ls output/interview
-```
-
-`output/coding-ai-exam` 或 `output/interview` 缺失时，[catalog] 会出现 Missing source root 报错。
-
-> 两份数据的同步方式不同：
->
-> - `training-center/` 在 git 内，`git pull` 即可拿到最新代码与 `config/` 索引（含导入索引）
-> - `output/` 不在 git 内，构建镜像时烘焙进镜像；本地改动需用 `deploy/sync-data.ps1` 推送到服务器
-
-## 3. Docker daemon 优化（推荐先做）
-
-国内网络拉取镜像建议配置镜像加速，同时开启日志滚动防止磁盘被日志占满：
-
-```bash
-sudo cp training-center/deploy/linux/docker-daemon.json /etc/docker/daemon.json
-sudo systemctl restart docker
-```
-
-包含：registry 镜像加速、容器日志滚动（单容器 10MB x 3）、BuildKit 缓存自动回收（上限 20GB）。
-
-## 4. 一键部署
-
-先在本地开发机把题库与面试资料推送到服务器（`output/` 不在 git 内）：
+`output/` 不在 Git 内。先用本地 `deploy/sync-data.ps1` 同步完毕，再执行镜像构建；导入题目时，`config/` 索引与 `output/` 内容必须成套更新。
 
 ```powershell
-# 本地 Windows (OpenSSH 客户端, 需已配置免密登录)
+# 在本地 training-center 仓库执行
 .\deploy\sync-data.ps1 -Server user@<服务器IP>
 ```
 
-然后在服务器上执行：
+服务器首次配置：
 
 ```bash
-cd /home/docker
-chmod +x training-center/deploy/linux/*.sh
-./training-center/deploy/linux/deploy.sh
+cd /home/docker/training-center
+cp deploy/linux/.env.example deploy/linux/.env
+chmod 600 deploy/linux/.env
 ```
 
-脚本自动完成：
+编辑 `.env`，设置数据目录、端口与 API Key。脚本会从自身目录读取 `.env`，与当前工作目录无关；已导出的环境变量优先。也可用 `TRAINING_ENV_FILE=/绝对路径/production.env` 指定其他配置文件。
 
-1. 前置检查（docker、题库、面试资料、磁盘、端口 8080）
-2. 创建数据目录并设置属主（容器非 root 用户 uid 1000 运行）
-3. 构建基础镜像 `training-center-base:17`（已存在则跳过）
-4. 构建应用镜像 `training-center:latest`
-5. compose + prod override 启动（数据卷 bind mount 到 `/home/docker/training-data`）
-6. 健康检查并输出访问地址
+配置使用字面量 `KEY=value`，允许成对的单引号或双引号；不执行 shell 命令，不展开变量，不支持 `export` 与行尾注释。`TRAINING_IMAGE` 由发布脚本选择，无需写入 `.env`。
 
-## 5. 手动构建镜像
+| 配置 | 默认值 | 用途 |
+|---|---|---|
+| `TRAINING_DATA_DIR` | `/home/docker/training-data` | 运行数据与发布记录 |
+| `BACKUP_DIR` | `/home/docker/backups` | 备份位置，应另行复制到异机存储 |
+| `KEEP` | `7` | 本机保留备份份数，必须大于 0 |
+| `TRAINING_PORT` | `8080` | 宿主机端口；容器内部仍用 8080 |
+| `TRAINING_BIND_ADDRESS` | `0.0.0.0` | 宿主机有 Nginx 时改为 `127.0.0.1` |
+| `TRAINING_API_KEY` | 空 | 启用时 API 发送 `X-API-Key` |
+| `JAVA_OPTS` | `-Xms128m -Xmx512m ...` | Web JVM 内存参数 |
+| `TRAINING_MEMORY_LIMIT` | `2G` | 整个容器限制，包含判题子进程 |
+| `TRAINING_CPU_LIMIT` | `2.0` | 容器 CPU 限额 |
+| `BASE_IMAGE` | `training-center-base:17` | 构建基础镜像 |
+| `COMPOSE_PROJECT_NAME` | `deploy` | 保留旧脚本使用的 Compose 项目标识 |
+| `TRAINING_HEALTH_TIMEOUT` | `180` | 等待容器健康的秒数 |
 
-如要手动执行：
+2G 容器限制沿用旧配置，不能据此认定支持持续双路判题：Web 堆为 512MB，两路 Maven 堆各可用 512MB，另有测试 JVM、线程栈和原生内存。低内存机器先单人串行使用；双路判题应在留足宿主机内存的情况下提高容器限制，并通过真实判题压测和 `docker stats` 定容量。不要把 Web 堆再设为容器内存的 75%。
 
-### 5.1 构建基础镜像（JDK + Maven + Python + pytest）
+API Key 在运行时配置。浏览器打开页面后，可在控制台执行 `localStorage.setItem('training:apiKey', '你的key')` 并刷新；普通请求与判题 fetch 流都会带请求头。生产共享密钥不要通过 `VITE_TRAINING_API_KEY` 编译进可公开下载的 JS。通过公网使用时先配置 HTTPS 和访问限制。
+
+## 2. 首次部署
+
+```bash
+cd /home/docker/training-center
+bash deploy/linux/deploy.sh
+```
+
+脚本检查 Docker、Compose、已有容器的数据挂载与所属项目，构建基础镜像（缺失时）和应用镜像，再检查 uid 1000 对运行目录的写权限。首次部署无数据时直接启动；已有运行数据时先备份。使用 `up --wait` 等待容器健康后才报告成功。
+
+脚本不覆盖父目录 `.dockerignore`。应用构建自动使用 `Dockerfile.dockerignore`，只把构建所需源码、题库与镜像配置加入上下文。[Docker 支持与 Dockerfile 同名的忽略文件，并优先使用它](https://docs.docker.com/build/concepts/context/#filename-and-location)。
+
+应用镜像使用 `training-center:<UTC时间>-<Git短SHA>-<进程号>` 标记。这里的时间同时区分未纳入 Git 的题库内容版本；镜像才是本次发布的完整产物。
+
+运行目录必须对 uid 1000 可写；脚本会检查并在有权限时修正。权限检查失败应先按提示处理，不会继续停掉原服务。
+
+## 3. 更新与指定制品
+
+```bash
+cd /home/docker/training-center
+bash deploy/linux/update.sh
+
+# 已经手动选择 Git 版本，或明确需要构建当前本地修改时
+bash deploy/linux/update.sh --no-pull
+
+# 基础镜像已经存在时，构建并发布当前目录
+bash deploy/linux/deploy.sh --no-base
+
+# 使用已经存在于本机的镜像，不重新构建
+bash deploy/linux/deploy.sh --image training-center:<版本标签>
+```
+
+更新顺序：
+
+1. 检查工作树，再 `git pull --ff-only`；不会自动 rebase 生产代码。
+2. 旧服务保持运行，构建新镜像并验证数据目录写权限。
+3. 为旧镜像添加独立 rollback 标签，停写，生成完整数据备份。
+4. 重建容器，不临时拉取或重新构建镜像，等待健康状态。
+5. 在 `TRAINING_DATA_DIR/releases.log` 记录结果。成功后才清理超过 `KEEP` 的备份。
+
+构建失败不会停服务；备份失败会尝试重新启动原服务；容器替换开始后若启动失败，会留下旧镜像、备份路径及 failed 记录，不自动降级数据库。此流程存在停写备份和启动期间的维护窗口，数据量越大，窗口越长。
+
+可选 `--prune` 清理 Docker 悬空镜像；不会清理有标签的发布或 rollback 镜像。这些镜像需结合异机备份和保留策略人工清理，避免长期占满磁盘。
+
+首次构建或手动构建示例：
 
 ```bash
 cd /home/docker
 docker build -f training-center/deploy/base/Dockerfile -t training-center-base:17 .
+docker build -f training-center/Dockerfile -t training-center:manual-test .
+bash training-center/deploy/linux/deploy.sh --image training-center:manual-test
 ```
 
-构建期自检中间件（任一缺失直接构建失败）。中间件升级只需重建此镜像一次。
+基础镜像依赖更新后直接重建，再发布应用；不需要先删除旧基础镜像。
 
-### 5.2 构建应用镜像
+## 4. 验收与反向代理
 
 ```bash
-cd /home/docker
-docker build -f training-center/Dockerfile -t training-center:latest .
+docker inspect --format='{{json .State.Health}}' training-center
+docker logs --tail 100 training-center
+curl --fail http://127.0.0.1:8080/api/health
+docker stats --no-stream training-center
 ```
 
-> `.dockerignore` 位于工作区根目录 `/home/docker/.dockerignore`（Docker 只在 context 根目录读取它），用于排除 `output/doc`、`node_modules` 等加速构建传输。
+如果修改了 `TRAINING_PORT`，调整宿主机 curl 的端口。生产容器检查 `/actuator/health/readiness`，等待 Spring 启动完成并允许接收请求后才标记健康；它不代替业务验收。上线还应在浏览器检查题库摘要、创建会话并真实运行一次 Java/Python 判题。[Spring Boot readiness 说明](https://docs.spring.io/spring-boot/3.3/reference/actuator/endpoints.html#actuator.endpoints.kubernetes-probes)。
 
-## 6. 启动
+宿主机已有 HTTPS Nginx 时，将应用绑定到 `127.0.0.1`，在现有 `server` 中加入以下 location，并按实际端口修改 upstream。不要用此片段覆盖已有 TLS、域名或登录配置。
 
-### 6.1 docker compose（推荐）
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Connection "";
+    proxy_buffering off;
+    proxy_read_timeout 180s;
+}
+```
 
-生产环境使用 compose + prod override（bind mount）：
+关闭代理响应缓冲，使判题 SSE 进度及时到达浏览器；超时需大于应用的 150 秒判题流期限。[Nginx 缓冲与超时说明](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffering)。
+
+## 5. 备份与恢复
 
 ```bash
-cd /home/docker
-docker compose \
-  -f training-center/deploy/docker-compose.yml \
-  -f training-center/deploy/linux/docker-compose.prod.yml \
-  up -d
+bash /home/docker/training-center/deploy/linux/backup.sh
 ```
 
-### 6.2 docker run
+备份脚本短暂停止原本运行的容器，打包 SQLite/WAL、沙箱、导出和发布记录，校验归档后原子发布；失败时清理临时归档并尝试恢复原服务。原本停止的容器不会被启动。发布与备份通过同一个目录锁排斥并发操作。
 
-```bash
-docker rm -f training-center 2>/dev/null || true
+不能直接对正在写入的 SQLite 数据目录执行 tar 当作一致快照。若以后要求不停服务，应改用 [SQLite Online Backup API](https://www.sqlite.org/backup.html)，并另外设计沙箱文件与数据库之间的一致性策略。
 
-docker run -d \
-  --name training-center \
-  --init \
-  -p 8080:8080 \
-  -e TZ=Asia/Shanghai \
-  -e TRAINING_WORKSPACE=/workspace \
-  -e TRAINING_JDK_HOME=/opt/java/openjdk \
-  -e TRAINING_MAVEN_HOME=/opt/maven \
-  -e TRAINING_PYTHON=python3 \
-  -e SERVER_PORT=8080 \
-  -e JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport -Duser.timezone=Asia/Shanghai" \
-  -v /home/docker/training-data/training-runtime:/workspace/output/training-runtime \
-  --restart unless-stopped \
-  training-center:latest
-```
-
-## 7. 验证服务
-
-```bash
-docker ps | grep training-center
-docker logs -f training-center
-curl http://127.0.0.1:8080/api/health
-```
-
-期望返回：
-
-```json
-{"status":"UP"}
-```
-
-浏览器访问 `http://服务器IP:8080`。外网无法访问时，检查云安全组、防火墙和端口映射。
-
-## 8. 更新部署
-
-```bash
-cd /home/docker
-./training-center/deploy/linux/update.sh
-```
-
-脚本流程：`git pull` → 重建应用镜像 → 重建容器 → 健康检查。基础镜像未变时无需重建。
-
-### 8.1 题目导入后的部署（重要）
-
-`training import` 会把内容写到两个位置：
-
-| 内容 | 位置 | 同步方式 |
-|---|---|---|
-| 导入索引 | `training-center/config/imported-questions.json`（git 内） | `git pull` |
-| 题目内容 | `output/coding-ai-exam/`、`output/interview/imported/`（不在 git 内） | `sync-data.ps1` |
-
-因此导入题目后需要四步，缺一不可：
-
-```bash
-# 1. 本地: 提交并推送 config/ 改动（导入索引）
-git add training-center/config
-git commit -m "feat: import questions"
-git push
-
-# 2. 本地 Windows: 推送 output 数据（题目内容）
-.\deploy\sync-data.ps1 -Server user@<服务器IP>
-
-# 3. 服务器: 拉取代码
-cd /home/docker/training-center && git pull
-
-# 4. 服务器: 重建并重启（update.sh 已包含 git pull，步骤 3、4 可合并）
-./training-center/deploy/linux/update.sh
-```
-
-> 若只改了 `config/` 而忘记同步 `output/`，新题目的内容文件在容器内不存在，
-> 运行期会报 `Missing source path`。`deploy.sh` 检测到导入索引时会给出提示。
-
-## 9. 数据备份与恢复
-
-运行数据位于宿主机：
-
-```bash
-/home/docker/training-data/training-runtime
-```
-
-备份（保留最近 7 份）：
-
-```bash
-./training-center/deploy/linux/backup.sh
-```
-
-建议加入 crontab 每日执行：
+每日备份可安排在低峰维护窗口：
 
 ```cron
-0 2 * * * /home/docker/training-center/deploy/linux/backup.sh
+0 2 * * * /bin/bash /home/docker/training-center/deploy/linux/backup.sh >> /home/docker/backup.log 2>&1
 ```
 
-手动备份：
+恢复前从 `releases.log` 选择同一次发布前的备份和旧镜像。数据库已迁移时，不要仅切换旧镜像。恢复会退回到备份时间点。
+
+以下示例使用默认数据目录；必须将归档名和镜像标签替换为已选记录：
 
 ```bash
-cd /home/docker
-tar -czf training-data-backup-$(date +%Y%m%d_%H%M%S).tar.gz training-data
+docker stop --time 180 training-center
+mkdir -p /home/docker/restore-review
+tar -tzf /home/docker/backups/training-data-<备份标识>.tar.gz
+tar -xzf /home/docker/backups/training-data-<备份标识>.tar.gz -C /home/docker/restore-review
+
+# 将当前数据保留到新的旁路目录；不要把旧数据库覆盖到仍有新 WAL 的目录上。
+mv /home/docker/training-data/training-runtime /home/docker/training-runtime-before-restore-$(date +%s)
+mv /home/docker/restore-review/training-data/training-runtime /home/docker/training-data/training-runtime
+sudo chown -hR 1000:1000 /home/docker/training-data/training-runtime
+bash /home/docker/training-center/deploy/linux/deploy.sh --image training-center:rollback-<镜像标识>
 ```
 
-恢复：
+自定义数据目录的归档顶层名称等于该目录的 basename，先检查 `tar -tzf` 再调整恢复路径。`.env` 位于仓库中，不在数据备份内；应单独安全保存，并在跨版本恢复时核对配置兼容性。
+
+## 6. Docker daemon 与脚本排查
+
+容器日志轮转已配置为 10MB × 3，无需更改全局 daemon。`deploy/linux/docker-daemon.json` 只是合法 JSON 示例；需要采用缓存回收等配置时，先与服务器原配置合并，使用 `dockerd --validate --config-file=...` 校验，通过后再安排 Docker 重启。不要直接覆盖现有配置。镜像加速地址由运维选择可信且可用的源，不预置不确定可用的公共代理。[Docker daemon 配置说明](https://docs.docker.com/reference/cli/dockerd/#daemon-configuration-file)。
+
+异常退出留下 `.deploy.lock` 时，先确认没有部署或备份脚本运行，再用 `rmdir /home/docker/training-data/.deploy.lock` 移除空锁目录。不要在其他操作还运行时强行解锁。
+
+本地与 CI 验证：
 
 ```bash
-tar -xzf training-data-backup-xxxx.tar.gz -C /home/docker
-docker restart training-center
+for script in deploy/linux/*.sh deploy/base/*.sh; do bash -n "$script"; done
+python3 -m unittest discover -s deploy/linux/tests -v
+docker compose -f deploy/docker-compose.yml -f deploy/linux/docker-compose.prod.yml config --quiet
 ```
 
-## 10. 常用运维命令
-
-```bash
-docker ps                                          # 查看容器
-docker logs -f training-center                     # 查看日志
-docker exec -it training-center bash               # 进入容器
-docker exec -it training-center ls /workspace      # 查看工作区
-docker inspect --format='{{json .State.Health}}' training-center   # 健康状态
-docker stop training-center                        # 停止
-docker rm training-center                          # 删除容器
-```
-
-## 11. 强制重建基础镜像（中间件升级）
-
-```bash
-docker image rm training-center-base:17
-cd /home/docker
-docker build -f training-center/deploy/base/Dockerfile -t training-center-base:17 .
-./training-center/deploy/linux/update.sh
-```
-
-## 12. 常见问题
-
-### 12.1 [catalog] Missing interview source root
-
-`output/interview` 未打进镜像或目录缺失。确认宿主机存在 `output/interview` 后重新 `deploy.sh`。
-
-### 12.2 数据目录没有写权限
-
-容器以 uid 1000 运行，bind mount 目录需 1000 属主：
-
-```bash
-sudo chown -R 1000:1000 /home/docker/training-data/training-runtime
-```
-
-### 12.3 外部打不开页面
-
-```bash
-curl http://127.0.0.1:8080/api/health   # 本机是否正常
-ss -lntp | grep 8080
-```
-
-本机正常外部不通，通常是云安全组或防火墙未放行 8080。
-
-### 12.4 页面还是旧版本
-
-执行 `./training-center/deploy/linux/update.sh` 重建并重启。
+脚本测试使用临时目录及模拟 Docker；配置测试只调用真实 Compose 的 `config`，不启动容器。完整镜像构建、真实升级恢复演练及容量压测仍需在有 Docker Engine 的预发布环境执行。

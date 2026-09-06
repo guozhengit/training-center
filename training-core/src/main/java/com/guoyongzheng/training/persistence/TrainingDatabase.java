@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /** Owns SQLite startup policy, migrations, configured connections, and transaction boundaries. */
 public final class TrainingDatabase {
-    public static final int SUPPORTED_SCHEMA_VERSION = 2;
+    public static final int SUPPORTED_SCHEMA_VERSION = 3;
     public static final int BUSY_TIMEOUT_MILLIS = 10_000;
     private static final DateTimeFormatter BACKUP_TIMESTAMP =
             DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmssSSS'Z'")

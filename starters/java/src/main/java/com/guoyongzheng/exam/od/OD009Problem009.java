@@ -2,8 +2,8 @@ package com.guoyongzheng.exam.od;
 
 
 /**
- * )压缩日志查询
- * 难度：一星 | 分类：字符串处理
+ * Compressed Log Query
+ * Difficulty: 1-star | Topic: String
  */
 public final class OD009Problem009 {
 
@@ -14,6 +14,10 @@ public final class OD009Problem009 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String input) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

@@ -1,5 +1,5 @@
 import { computed, ref, getCurrentScope, onScopeDispose } from 'vue'
-import { useApi } from './useApi'
+import { apiHeaders, configuredApiKey, useApi } from './useApi'
 import { translate } from '../i18n'
 
 const SESSION_STORAGE_KEY = 'training:activeSession'
@@ -16,6 +16,7 @@ export function useTraining(dashboard) {
   const judgeProgress = ref(null)
 
   let activeEventSource = null
+  let activeJudgeAbortController = null
   let judgeTimeoutId = null
 
   function closeJudgeStream() {
@@ -26,6 +27,10 @@ export function useTraining(dashboard) {
     if (activeEventSource) {
       activeEventSource.close()
       activeEventSource = null
+    }
+    if (activeJudgeAbortController) {
+      activeJudgeAbortController.abort()
+      activeJudgeAbortController = null
     }
   }
 
@@ -217,6 +222,11 @@ export function useTraining(dashboard) {
 
     judgeProgress.value = { stage: 'CONNECTING', message: translate('attempt.connectJudge') }
 
+    if (configuredApiKey()) {
+      await judgeAttemptWithFetchStream(attempt)
+      return
+    }
+
     const source = new EventSource(`/api/training/attempts/${attempt.id}/judge-stream`)
     activeEventSource = source
 
@@ -240,15 +250,7 @@ export function useTraining(dashboard) {
       judgeProgress.value = null
       try {
         const result = JSON.parse(event.data)
-        judgeResults.value = { ...judgeResults.value, [attempt.id]: result }
-        activeSession.value = result.session
-        initializeSubmitForms(result.session)
-        if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
-        await dashboard.loadStats()
-        await dashboard.loadHistory()
-        trainingMessage.value = result.status === 'PASSED'
-          ? translate('attempt.judgePassed', { id: attempt.questionId })
-          : translate('attempt.judgeFailed', { id: attempt.questionId })
+        await applyJudgeResult(attempt, result)
       } catch (exception) {
         dashboard.error.value = translate('attempt.judgeParseError')
       } finally {
@@ -279,6 +281,144 @@ export function useTraining(dashboard) {
       trainingBusy.value = false
       dashboard.error.value = dashboard.error.value || translate('attempt.judgeConnAbort')
     }
+  }
+
+  async function judgeAttemptWithFetchStream(attempt) {
+    const controller = new AbortController()
+    activeJudgeAbortController = controller
+    const isCurrent = () => activeJudgeAbortController === controller
+
+    const timeoutId = setTimeout(() => {
+      if (isCurrent()) {
+        controller.abort()
+        activeJudgeAbortController = null
+        judgeProgress.value = null
+        trainingBusy.value = false
+        dashboard.error.value = translate('attempt.judgeTimeout')
+      }
+    }, JUDGE_TIMEOUT_MS)
+    judgeTimeoutId = timeoutId
+
+    try {
+      const response = await fetch(`/api/training/attempts/${attempt.id}/judge-stream`, {
+        headers: apiHeaders({ Accept: 'text/event-stream' }),
+        signal: controller.signal
+      })
+      if (!isCurrent()) {
+        await response.body?.cancel().catch(() => {})
+        return
+      }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body.message || translate('api.requestFailed', {
+          path: `/api/training/attempts/${attempt.id}/judge-stream`,
+          status: response.status
+        }))
+      }
+      if (!response.body) {
+        throw new Error(translate('attempt.judgeDisconnected'))
+      }
+      const completed = await readJudgeStream(response.body, async ({ event, data }) => {
+        if (!isCurrent()) return true
+        if (event === 'progress') {
+          judgeProgress.value = JSON.parse(data)
+        } else if (event === 'result') {
+          const result = JSON.parse(data)
+          clearTimeout(timeoutId)
+          judgeProgress.value = null
+          await applyJudgeResult(attempt, result, isCurrent)
+          return true
+        } else if (event === 'error') {
+          const err = JSON.parse(data)
+          throw new Error(err.message || translate('attempt.judgeFail'))
+        }
+      })
+      if (!completed && isCurrent()) {
+        throw new Error(translate('attempt.judgeDisconnected'))
+      }
+    } catch (exception) {
+      if (!isCurrent() || controller.signal.aborted) return
+      judgeProgress.value = null
+      dashboard.error.value = exception.message || translate('attempt.judgeFail')
+    } finally {
+      clearTimeout(timeoutId)
+      if (judgeTimeoutId === timeoutId) {
+        judgeTimeoutId = null
+      }
+      if (isCurrent()) {
+        activeJudgeAbortController = null
+        trainingBusy.value = false
+      }
+    }
+  }
+
+  async function applyJudgeResult(attempt, result, isCurrent = () => true) {
+    judgeResults.value = { ...judgeResults.value, [attempt.id]: result }
+    activeSession.value = result.session
+    initializeSubmitForms(result.session)
+    if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
+    await dashboard.loadStats()
+    if (!isCurrent()) return
+    await dashboard.loadHistory()
+    if (!isCurrent()) return
+    trainingMessage.value = result.status === 'PASSED'
+      ? translate('attempt.judgePassed', { id: attempt.questionId })
+      : translate('attempt.judgeFailed', { id: attempt.questionId })
+  }
+
+  async function readJudgeStream(body, onEvent) {
+    const reader = body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    try {
+      while (true) {
+        const { value, done } = await reader.read()
+        buffer += done ? decoder.decode() : decoder.decode(value, { stream: true })
+        buffer = normalizeSseNewlines(buffer, done)
+        buffer = await drainSseBuffer(buffer, onEvent)
+        if (buffer === null) return true
+        if (done) return false
+      }
+    } finally {
+      await reader.cancel().catch(() => {})
+      reader.releaseLock()
+    }
+  }
+
+  function normalizeSseNewlines(value, done) {
+    // A CR at a chunk boundary may be followed by LF in the next chunk.
+    const pendingCr = !done && value.endsWith('\r')
+    const complete = pendingCr ? value.slice(0, -1) : value
+    return complete.replace(/\r\n/g, '\n').replace(/\r/g, '\n') + (pendingCr ? '\r' : '')
+  }
+
+  async function drainSseBuffer(buffer, onEvent) {
+    let boundary = buffer.indexOf('\n\n')
+    while (boundary >= 0) {
+      const raw = buffer.slice(0, boundary)
+      buffer = buffer.slice(boundary + 2)
+      const event = parseSseEvent(raw)
+      if (event && await onEvent(event)) {
+        return null
+      }
+      boundary = buffer.indexOf('\n\n')
+    }
+    return buffer
+  }
+
+  function parseSseEvent(raw) {
+    const lines = raw.split('\n')
+    let event = 'message'
+    const data = []
+    for (const line of lines) {
+      if (line.startsWith('event:')) {
+        event = line.slice(6).trim()
+      } else if (line.startsWith('data:')) {
+        data.push(line.slice(5).trimStart())
+      }
+    }
+    if (!data.length) return null
+    return { event, data: data.join('\n') }
   }
 
   async function openSandbox(attempt) {

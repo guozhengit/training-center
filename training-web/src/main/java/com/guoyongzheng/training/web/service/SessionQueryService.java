@@ -77,10 +77,17 @@ public class SessionQueryService {
             throws SQLException {
         List<TrainingSessionService.TrainingAttemptCard> attempts =
                 SessionQueries.recentAttempts(connection, limit);
+        List<String> attemptIds = attempts.stream()
+                .map(TrainingSessionService.TrainingAttemptCard::id)
+                .toList();
+        var judgementsByAttempt = judgementRepository.findByAttempts(connection, attemptIds);
+        var oralScoresByAttempt = reviewRepository.findOralScores(connection, attemptIds);
+
         List<TrainingSessionService.AttemptHistoryCard> history = new ArrayList<>();
         for (TrainingSessionService.TrainingAttemptCard attempt : attempts) {
             List<TrainingSessionService.JudgementCard> judgements = new ArrayList<>();
-            for (JudgementRepository.Judgement judgement : judgementRepository.findByAttempt(connection, attempt.id())) {
+            for (JudgementRepository.Judgement judgement :
+                    judgementsByAttempt.getOrDefault(attempt.id(), List.of())) {
                 judgements.add(new TrainingSessionService.JudgementCard(
                         judgement.id(),
                         judgement.sequenceNo(),
@@ -95,7 +102,7 @@ public class SessionQueryService {
                         judgement.stderrExcerpt()));
             }
             TrainingSessionService.OralScoreView oralScore = null;
-            var score = reviewRepository.findOralScore(connection, attempt.id()).orElse(null);
+            var score = oralScoresByAttempt.get(attempt.id());
             if (score != null) {
                 oralScore = new TrainingSessionService.OralScoreView(
                         score.correctness(),

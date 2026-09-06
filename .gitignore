@@ -4,6 +4,9 @@ target/
 node_modules/
 **/node_modules/
 
+__pycache__/
+*.pyc
+
 dist/
 **/dist/
 training-web/src/main/resources/static/

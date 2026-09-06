@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.guoyongzheng.training.domain.QuestionDescriptor;
 import com.guoyongzheng.training.domain.Track;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("integration")
 class ImportedCatalogTest {
     private static final ObjectMapper JSON = new ObjectMapper();
 

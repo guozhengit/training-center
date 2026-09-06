@@ -3,7 +3,6 @@ package com.guoyongzheng.exam.od;
 
 /**
  * 代码编辑器
- * 难度：一星 | 分类：栈与队列
  */
 public final class OD050Problem050 {
 
@@ -14,6 +13,10 @@ public final class OD050Problem050 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String input) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String[] lines) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

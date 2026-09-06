@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Set;
 
 /**
@@ -39,6 +41,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         if (configuredKey.isBlank()) {
             return true; // auth disabled
         }
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
         String path = request.getRequestURI();
         // Allow health check and Swagger without auth
         for (String open : OPEN_PATHS) {
@@ -54,7 +59,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String provided = request.getHeader(HEADER_NAME);
-        if (configuredKey.equals(provided)) {
+        byte[] providedBytes = (provided == null ? "" : provided).getBytes(StandardCharsets.UTF_8);
+        byte[] expectedBytes = configuredKey.getBytes(StandardCharsets.UTF_8);
+        if (MessageDigest.isEqual(providedBytes, expectedBytes)) {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

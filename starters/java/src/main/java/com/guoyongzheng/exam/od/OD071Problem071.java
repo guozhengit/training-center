@@ -1,10 +1,8 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.*;
 
 /**
  * 快递投放问题
- * 难度：二星 | 分类：BFS/DFS/图论
  */
 public final class OD071Problem071 {
 
@@ -15,6 +13,10 @@ public final class OD071Problem071 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String input) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String[] lines) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

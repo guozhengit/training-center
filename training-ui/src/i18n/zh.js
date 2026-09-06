@@ -290,6 +290,7 @@ export default {
   },
   api: {
     network: '网络连接失败，请检查网络后重试（{path}）',
+    timeout: '请求超时（{timeout}ms），请检查网络后重试（{path}）',
     requestFailed: '{path} 请求失败：{status}'
   }
 }

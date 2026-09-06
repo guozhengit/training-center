@@ -1,13 +1,8 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * 寻找最大价值的矿堆
- * 难度：二星 | 分类：BFS/DFS/图论
  */
 public final class OD070Problem070 {
 
@@ -18,6 +13,10 @@ public final class OD070Problem070 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String input) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String[] lines) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

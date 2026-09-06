@@ -7,6 +7,7 @@ import com.guoyongzheng.training.domain.JudgementStatus;
 import com.guoyongzheng.training.process.FailureKind;
 import com.guoyongzheng.training.process.ProcessResult;
 import com.guoyongzheng.training.sandbox.SandboxManifest;
+import com.guoyongzheng.training.sandbox.SandboxPaths;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ final class JudgeSupport {
         if (!completionCheck.isComplete(attempt)) {
             throw new IOException("sandbox is not complete");
         }
-        Path manifestPath = attempt.resolve("manifest.json");
+        Path manifestPath = SandboxPaths.manifestPath(attempt);
         JsonNode json = new ObjectMapper().readTree(manifestPath.toFile());
         if (!matches(json, request.manifest())) {
             throw new IOException("sandbox manifest does not match judge request");

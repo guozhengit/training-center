@@ -55,7 +55,8 @@ cd D:\AI-SOURCE\jiupainews\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
 $env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
-& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-web -am spring-boot:run
+& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-core -am -DskipTests install
+& 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -f training-web\pom.xml spring-boot:run
 ```
 
 访问：
@@ -73,6 +74,10 @@ npm run dev
 
 开发模式下访问 http://localhost:5173，Vite 会把 `/api` 代理到 `localhost:8080`。
 
+如需开启轻量 API Key 鉴权，后端设置 `TRAINING_API_KEY`；前端开发或构建时设置
+`VITE_TRAINING_API_KEY`，也可以在浏览器 `localStorage` 写入 `training:apiKey`。
+这是本地工具级别保护，不替代正式多用户登录。
+
 ## CLI
 
 ```powershell
@@ -82,16 +87,22 @@ $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 java -jar training-cli\target\training-cli-1.0.0-SNAPSHOT.jar --help
 ```
 
-当前 CLI 已提供环境诊断、题库检查和数据库迁移；训练闭环命令会继续补齐。
+当前 CLI 已提供环境诊断、题库检查、数据库迁移、训练会话创建、提交/判题记录、历史查看与导出。
 
 ## Linux 服务器部署
 
 推荐使用 `deploy/linux/` 工具包一键部署（含基础镜像构建、compose、备份脚本）：
 
 ```bash
-cd /home/docker
-./training-center/deploy/linux/deploy.sh
+cd /home/docker/training-center
+cp deploy/linux/.env.example deploy/linux/.env
+chmod 600 deploy/linux/.env
+# 编辑生产配置后执行；需要 Docker Compose 2.20+
+bash deploy/linux/deploy.sh
 ```
+
+更新使用 `bash deploy/linux/update.sh`：构建版本镜像 → 停写备份 → 重建容器 → 等待就绪。
+发布记录保存在数据目录 `releases.log`；数据库迁移后的降级需同时恢复匹配备份。
 
 详见 [docs/docker-deployment-linux.md](docs/docker-deployment-linux.md) 和 [deploy/linux/README.md](deploy/linux/README.md)。
 

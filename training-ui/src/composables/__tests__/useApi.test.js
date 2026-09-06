@@ -4,6 +4,7 @@ import { useApi } from '../useApi'
 describe('useApi', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
+    localStorage.clear()
   })
 
   it('fetchJson returns parsed JSON on success', async () => {
@@ -17,9 +18,9 @@ describe('useApi', () => {
     const result = await fetchJson('/api/questions')
 
     expect(result).toEqual(mockData)
-    expect(global.fetch).toHaveBeenCalledWith('/api/questions', {
+    expect(global.fetch).toHaveBeenCalledWith('/api/questions', expect.objectContaining({
       headers: { 'Content-Type': 'application/json' }
-    })
+    }))
   })
 
   it('fetchJson merges custom headers', async () => {
@@ -31,9 +32,24 @@ describe('useApi', () => {
     const { fetchJson } = useApi()
     await fetchJson('/api/data', { headers: { 'X-Custom': 'val' } })
 
-    expect(global.fetch).toHaveBeenCalledWith('/api/data', {
+    expect(global.fetch).toHaveBeenCalledWith('/api/data', expect.objectContaining({
       headers: { 'Content-Type': 'application/json', 'X-Custom': 'val' }
+    }))
+  })
+
+  it('fetchJson includes configured API key header', async () => {
+    localStorage.setItem('training:apiKey', ' secret-key ')
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({})
     })
+
+    const { fetchJson } = useApi()
+    await fetchJson('/api/secure')
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/secure', expect.objectContaining({
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': 'secret-key' }
+    }))
   })
 
   it('fetchJson throws with server message on error', async () => {

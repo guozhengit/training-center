@@ -31,7 +31,8 @@ public class DashboardService {
     private final WorkspaceLocator workspaceLocator;
     private final CatalogCache catalogCache;
     private final ObjectMapper objectMapper;
-    private volatile Map<String, QuestionContentResponse> contentCache;
+    private final java.util.concurrent.ConcurrentHashMap<String, QuestionContentResponse> contentCache =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     public DashboardService(WorkspaceLocator workspaceLocator, CatalogCache catalogCache, ObjectMapper objectMapper) {
         this.workspaceLocator = workspaceLocator;
@@ -133,39 +134,31 @@ public class DashboardService {
     }
 
     public QuestionContentResponse questionContent(String questionId) {
-        Map<String, QuestionContentResponse> cache = contentCache;
-        if (cache == null) {
-            synchronized (this) {
-                cache = contentCache;
-                if (cache == null) {
-                    cache = preloadContent();
-                    contentCache = cache;
-                }
-            }
-        }
-        QuestionContentResponse response = cache.get(questionId);
+        QuestionContentResponse response = contentCache.computeIfAbsent(questionId, this::loadSingleContent);
         if (response == null) {
             throw new IllegalArgumentException("Question not found: " + questionId);
         }
         return response;
     }
 
-    public synchronized void invalidateContentCache() {
-        contentCache = null;
+    public void invalidateContentCache() {
+        contentCache.clear();
     }
 
-    private Map<String, QuestionContentResponse> preloadContent() {
+    /** Lazily loads content for a single question on first access. */
+    private QuestionContentResponse loadSingleContent(String questionId) {
         Path workspace = workspaceLocator.locate();
         TrainingCatalog catalog = catalogCache.get();
         List<QuestionDescriptor> all = catalog.find(null);
-        Map<String, QuestionContentResponse> map = new HashMap<>(all.size());
         for (QuestionDescriptor question : all) {
-            String description = readContentFile(workspace, question.sourceRef());
-            String starterCode = readContentFile(workspace, question.starterRef());
-            String referenceCode = referenceCode(workspace, question);
-            map.put(question.id(), buildContent(question, description, starterCode, referenceCode));
+            if (question.id().equals(questionId)) {
+                String description = readContentFile(workspace, question.sourceRef());
+                String starterCode = readContentFile(workspace, question.starterRef());
+                String referenceCode = referenceCode(workspace, question);
+                return buildContent(question, description, starterCode, referenceCode);
+            }
         }
-        return Map.copyOf(map);
+        return null;
     }
 
     /** Builds the structured practice payload for a single question. */

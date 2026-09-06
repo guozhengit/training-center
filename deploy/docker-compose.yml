@@ -5,11 +5,14 @@ services:
       # compose 位于 deploy/, 上两级即工作区根目录
       context: ../..
       dockerfile: training-center/Dockerfile
-    image: training-center:latest
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-training-center-base:17}
+        VCS_REF: ${VCS_REF:-unknown}
+    image: ${TRAINING_IMAGE:-training-center:latest}
     container_name: training-center
     init: true
     ports:
-      - "8080:8080"
+      - "${TRAINING_BIND_ADDRESS:-0.0.0.0}:${TRAINING_PORT:-8080}:8080"
     environment:
       - TZ=Asia/Shanghai
       - TRAINING_WORKSPACE=/workspace
@@ -17,12 +20,20 @@ services:
       - TRAINING_MAVEN_HOME=/opt/maven
       - TRAINING_PYTHON=python3
       - SERVER_PORT=8080
+      # Optional lightweight API auth. When set, /api/** requires X-API-Key.
+      - TRAINING_API_KEY=${TRAINING_API_KEY:-}
       # JVM tuning for containers
-      - JAVA_OPTS=-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport -Duser.timezone=Asia/Shanghai
+      - JAVA_OPTS=${JAVA_OPTS:--Xms128m -Xmx512m -XX:+UseContainerSupport -Duser.timezone=Asia/Shanghai}
     volumes:
       # Mutable runtime data (database, sandboxes, exports, logs)
       - training-runtime:/workspace/output/training-runtime
     restart: unless-stopped
+    stop_grace_period: 180s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:8080/api/health"]
       interval: 30s
@@ -33,8 +44,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
-          cpus: "2.0"
+          memory: ${TRAINING_MEMORY_LIMIT:-2G}
+          cpus: "${TRAINING_CPU_LIMIT:-2.0}"
         reservations:
           memory: 512M
           cpus: "0.5"

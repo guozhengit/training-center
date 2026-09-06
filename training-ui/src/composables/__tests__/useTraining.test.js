@@ -39,6 +39,7 @@ describe('useTraining', () => {
   beforeEach(() => {
     MockEventSource.instances = []
     global.EventSource = MockEventSource
+    localStorage.clear()
     vi.restoreAllMocks()
   })
 
@@ -106,6 +107,54 @@ describe('useTraining', () => {
       expect(trainingBusy.value).toBe(false)
     })
     expect(dashboard.error.value).toBe('Attempt is not in progress')
+  })
+
+  it('judgeAttempt streams with API key header when configured', async () => {
+    localStorage.setItem('training:apiKey', 'secret-key')
+    const encoder = new TextEncoder()
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode('event: progress\ndata: {"stage":"VALIDATING","message":"校验答题状态"}\n\n'))
+          controller.enqueue(encoder.encode('event: result\ndata: {"status":"PASSED","verdict":"PASSED","sessionCompleted":false,"session":{"id":"s1","attempts":[]}}\n\n'))
+          controller.close()
+        }
+      })
+    })
+    const dashboard = createMockDashboard()
+    const { judgeAttempt, trainingBusy, judgeResults } = useTraining(dashboard)
+
+    await judgeAttempt({ id: 'att-1', questionId: 'q1' })
+
+    expect(global.fetch).toHaveBeenCalledWith('/api/training/attempts/att-1/judge-stream', expect.objectContaining({
+      headers: expect.objectContaining({
+        Accept: 'text/event-stream',
+        'X-API-Key': 'secret-key'
+      })
+    }))
+    expect(trainingBusy.value).toBe(false)
+    expect(judgeResults.value['att-1'].status).toBe('PASSED')
+  })
+
+  it('judgeAttempt handles CRLF-delimited fetch stream events', async () => {
+    localStorage.setItem('training:apiKey', 'secret-key')
+    const encoder = new TextEncoder()
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode('event: result\r\ndata: {"status":"PASSED","verdict":"PASSED","sessionCompleted":false,"session":{"id":"s1","attempts":[]}}\r\n\r\n'))
+          controller.close()
+        }
+      })
+    })
+    const dashboard = createMockDashboard()
+    const { judgeAttempt, judgeResults } = useTraining(dashboard)
+
+    await judgeAttempt({ id: 'att-1', questionId: 'q1' })
+
+    expect(judgeResults.value['att-1'].status).toBe('PASSED')
   })
 
   it('sessionForm defaults to CODING track with 3 questions', () => {

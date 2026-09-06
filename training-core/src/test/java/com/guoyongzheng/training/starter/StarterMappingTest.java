@@ -7,6 +7,7 @@ import com.guoyongzheng.training.process.FailureKind;
 import com.guoyongzheng.training.process.LocalProcessRunner;
 import com.guoyongzheng.training.process.ProcessRequest;
 import com.guoyongzheng.training.process.ProcessResult;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+@Tag("integration")
 class StarterMappingTest {
 
     @Test

@@ -2,8 +2,8 @@ package com.guoyongzheng.exam.od;
 
 
 /**
- * 敌情监控
- * 难度：一星 | 分类：模拟与贪心
+ * Enemy Monitoring
+ * Difficulty: 1-star | Topic: Greedy/Simulation
  */
 public final class OD040Problem040 {
 
@@ -14,6 +14,10 @@ public final class OD040Problem040 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String[] lines) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String input) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }

@@ -1,0 +1,31 @@
+# Paths are relative to the parent workspace used as the build context.
+# This file takes precedence over the workspace's own .dockerignore.
+**
+!training-center/
+!training-center/pom.xml
+!training-center/training-core/**
+!training-center/training-cli/**
+!training-center/training-web/**
+!training-center/training-ui/**
+!training-center/config/**
+!training-center/starters/**
+!training-center/deploy/
+!training-center/deploy/maven/**
+!training-center/deploy/npm/**
+!output/
+!output/coding-ai-exam/**
+!output/interview/**
+**/target/**
+**/dist/**
+**/node_modules/**
+**/.git/**
+**/.idea/**
+**/__pycache__/**
+**/.pytest_cache/**
+**/*.log
+**/.env
+**/.env.*
+**/*.db
+**/*.db-wal
+**/*.db-shm
+training-center/training-web/src/main/resources/static/**

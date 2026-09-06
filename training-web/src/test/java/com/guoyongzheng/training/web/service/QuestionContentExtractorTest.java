@@ -38,6 +38,47 @@ class QuestionContentExtractorTest {
     }
 
     @Test
+    void splitsNewDepthSectionsAsStandaloneBoldMarkers() {
+        String text = """
+                **完整口述稿**
+
+                结论先说，数组、链表和红黑树的组合。
+
+                **继续追问**
+
+                1. 为什么容量是 2 的幂？答：位运算定位。
+
+                **源码级原理**
+
+                - `HashMap.putVal`：核心写入方法。
+
+                **关键代码片段**
+
+                ```java
+                final V putVal(int hash, K key, V value) { /* ... */ }
+                ```
+
+                **实战参数与监控**
+
+                - 初始容量估算：`expectedSize / 0.75 + 1`。
+
+                **深层追问链（5级）**
+
+                1. [基础] 默认容量和负载因子？→ 16 和 0.75。
+                """;
+
+        List<DashboardService.ContentSection> sections = QuestionContentExtractor.splitBoldSections(text);
+
+        assertThat(sections).hasSize(6);
+        assertThat(sections.stream().map(DashboardService.ContentSection::heading)).containsExactly(
+                "完整口述稿", "继续追问", "源码级原理", "关键代码片段", "实战参数与监控", "深层追问链（5级）");
+        assertThat(QuestionContentExtractor.sectionContent(sections, "源码级原理")).contains("HashMap.putVal");
+        assertThat(QuestionContentExtractor.sectionContent(sections, "关键代码片段")).contains("final V putVal");
+        assertThat(QuestionContentExtractor.sectionContent(sections, "实战参数与监控")).contains("初始容量估算");
+        assertThat(QuestionContentExtractor.sectionContent(sections, "深层追问链（5级）")).contains("[基础]");
+    }
+
+    @Test
     void extractsNamedSectionContentByExactHeading() {
         String text = """
                 ## 四、核心案例一

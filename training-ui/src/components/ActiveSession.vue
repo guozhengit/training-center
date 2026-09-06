@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, watch, getCurrentScope, onScopeDispose } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRecorder } from '../composables/useRecorder'
 import { useHint } from '../composables/useHint'
@@ -11,7 +11,7 @@ import CodeEditor from './CodeEditor.vue'
 const { t } = useI18n()
 const { fetchJson } = useApi()
 
-defineProps({
+const props = defineProps({
   activeSession: Object,
   submitForms: Object,
   judgeResults: Object,
@@ -30,8 +30,54 @@ const countdown = useCountdown()
 const contentStore = reactive({})
 // Reference-answer reveal state per attempt: { [attemptId]: boolean }
 const revealState = reactive({})
-// Code editor store: { [attemptId]: code }
+// Code editor store: { [attemptId]: code }, mirrored to localStorage so drafts survive page refresh
 const codeStore = reactive({})
+
+const CODE_STORAGE_PREFIX = 'training:code:'
+const CODE_PERSIST_DELAY_MS = 500
+const codePersistTimers = {}
+
+function readPersistedCode(attemptId) {
+  try {
+    return localStorage.getItem(CODE_STORAGE_PREFIX + attemptId)
+  } catch { /* storage unavailable, ignore */ }
+  return null
+}
+
+function writePersistedCode(attemptId, value) {
+  try {
+    if (value) {
+      localStorage.setItem(CODE_STORAGE_PREFIX + attemptId, value)
+    } else {
+      localStorage.removeItem(CODE_STORAGE_PREFIX + attemptId)
+    }
+  } catch { /* storage full or unavailable, non-critical */ }
+}
+
+function scheduleCodePersist(attemptId, value) {
+  clearTimeout(codePersistTimers[attemptId])
+  codePersistTimers[attemptId] = setTimeout(() => {
+    delete codePersistTimers[attemptId]
+    writePersistedCode(attemptId, value)
+  }, CODE_PERSIST_DELAY_MS)
+}
+
+// Drop persisted drafts that no longer belong to the active session
+function pruneStaleCode() {
+  const keep = new Set((props.activeSession?.attempts ?? []).map((attempt) => attempt.id))
+  try {
+    const stale = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.startsWith(CODE_STORAGE_PREFIX) && !keep.has(key.slice(CODE_STORAGE_PREFIX.length))) {
+        stale.push(key)
+      }
+    }
+    stale.forEach((key) => localStorage.removeItem(key))
+  } catch { /* storage unavailable, ignore */ }
+}
+
+watch(() => props.activeSession, pruneStaleCode, { immediate: true })
 
 async function loadQuestionContent(attempt) {
   const qid = attempt.questionId
@@ -57,9 +103,10 @@ async function loadQuestionContent(attempt) {
       loaded: true,
       showDesc: true
     }
-    // Pre-fill code editor with starter code if empty
-    if (!codeStore[attempt.id]) {
-      codeStore[attempt.id] = data.starterCode || ''
+    // Pre-fill code editor with the persisted draft, falling back to starter code
+    if (codeStore[attempt.id] === undefined) {
+      const persisted = readPersistedCode(attempt.id)
+      codeStore[attempt.id] = persisted !== null ? persisted : (data.starterCode || '')
     }
     if (data.starterCode) {
       hint.setSource(attempt.id, data.starterCode)
@@ -80,11 +127,16 @@ function toggleReveal(attempt) {
 }
 
 function getCode(attemptId) {
-  return codeStore[attemptId] ?? ''
+  if (codeStore[attemptId] === undefined) {
+    const persisted = readPersistedCode(attemptId)
+    codeStore[attemptId] = persisted ?? ''
+  }
+  return codeStore[attemptId]
 }
 
 function setCode(attemptId, value) {
   codeStore[attemptId] = value
+  scheduleCodePersist(attemptId, value)
 }
 
 function scoreTotal(form) {
@@ -128,6 +180,17 @@ const RUBRIC_TRACKS = ['ORAL', 'PROJECT']
 function rubricAnchor(track, key) {
   const base = RUBRIC_TRACKS.includes(track) ? track : 'ORAL'
   return t(`rubric.${base}.${key}`)
+}
+
+if (getCurrentScope()) {
+  // Flush pending draft writes instead of dropping them on unmount
+  onScopeDispose(() => {
+    for (const [attemptId, timer] of Object.entries(codePersistTimers)) {
+      clearTimeout(timer)
+      delete codePersistTimers[attemptId]
+      writePersistedCode(attemptId, codeStore[attemptId])
+    }
+  })
 }
 </script>
 

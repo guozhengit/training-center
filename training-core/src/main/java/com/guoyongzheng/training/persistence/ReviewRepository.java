@@ -45,6 +45,35 @@ public final class ReviewRepository {
         }
     }
 
+    /** Batch-loads oral scores for multiple attempts in a single query to avoid N+1. */
+    public java.util.Map<String, OralScore> findOralScores(Connection connection, java.util.List<String> attemptIds)
+            throws SQLException {
+        java.util.Map<String, OralScore> scores = new java.util.LinkedHashMap<>();
+        if (attemptIds.isEmpty()) {
+            return scores;
+        }
+        String placeholders = String.join(",", java.util.Collections.nCopies(attemptIds.size(), "?"));
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM oral_scores WHERE attempt_id IN (%s)".formatted(placeholders))) {
+            for (int i = 0; i < attemptIds.size(); i++) {
+                statement.setString(i + 1, attemptIds.get(i));
+            }
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    OralScore score = new OralScore(
+                            result.getString("attempt_id"),
+                            result.getInt("correctness"),
+                            result.getInt("structure"),
+                            result.getInt("project_evidence"),
+                            result.getInt("tradeoff"),
+                            result.getInt("fact_restraint"));
+                    scores.put(score.attemptId(), score);
+                }
+            }
+        }
+        return scores;
+    }
+
     public void saveReview(Connection connection, ReviewEntry review) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("""
                 INSERT INTO review_queue

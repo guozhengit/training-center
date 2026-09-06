@@ -9,10 +9,21 @@
 #
 # 数据目录默认 /home/docker/training-data,
 # 可用环境变量 TRAINING_DATA_DIR 覆盖。
-# 备份只需 tar 该目录即可。
+# 使用 backup.sh 停写后备份，避免 SQLite/WAL 与沙箱不一致。
 # ============================================================
 services:
   training-center:
+    environment:
+      SERVER_SHUTDOWN: graceful
+      SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE: 160s
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "--max-time", "4", "http://localhost:8080/actuator/health/readiness"]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     volumes:
       - ${TRAINING_DATA_DIR:-/home/docker/training-data}/training-runtime:/workspace/output/training-runtime
 

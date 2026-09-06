@@ -1,7 +1,7 @@
 # ============================================================
 # .dockerignore (构建上下文根目录: 工作区根目录 jiupai)
-# 注意: 构建上下文必须是工作区根目录, 本文件必须放在这里,
-#       Docker 只在上下文根目录查找 .dockerignore。
+# 兼容旧构建流程；当前应用镜像使用相邻 Dockerfile.dockerignore，
+# 不再要求把本文件复制到父工作区，也不覆盖父目录已有策略。
 # ============================================================
 
 # ---- 通用排除 ----
@@ -40,5 +40,7 @@ training-center/scripts/
 training-center/.mimocode/
 # deploy 目录大部分无需进入构建上下文, 但保留构建加速配置
 training-center/deploy/*
+!training-center/deploy/maven/
 !training-center/deploy/maven/settings.xml
+!training-center/deploy/npm/
 !training-center/deploy/npm/.npmrc

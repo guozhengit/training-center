@@ -40,7 +40,7 @@ COPY training-center/training-cli/pom.xml training-cli/
 COPY training-center/training-web/pom.xml training-web/
 
 # 阿里云 Maven 镜像, 加速依赖下载 (可替换为自己的 settings.xml)
-COPY training-center/deploy/maven/settings.xml /root/.m2/settings.xml
+COPY training-center/deploy/maven/settings.xml /opt/maven/conf/settings.xml
 
 # Download dependencies (cached layer)
 RUN --mount=type=cache,target=/root/.m2 \
@@ -51,6 +51,8 @@ COPY training-center/training-cli/ training-cli/
 COPY training-center/training-web/ training-web/
 
 # Copy frontend dist into static resources
+RUN rm -rf training-web/src/main/resources/static \
+    && mkdir -p training-web/src/main/resources/static
 COPY --from=frontend-build /app/training-ui/dist/ training-web/src/main/resources/static/
 
 RUN --mount=type=cache,target=/root/.m2 \
@@ -64,6 +66,11 @@ FROM ${BASE_IMAGE} AS runtime
 
 LABEL maintainer="guoyongzheng"
 LABEL description="Interview Training Center - coding/oral/project practice platform"
+ARG VCS_REF=unknown
+LABEL org.opencontainers.image.revision=${VCS_REF}
+
+# Keep build-time and offline judge repository identities consistent.
+COPY training-center/deploy/maven/settings.xml /opt/maven/conf/settings.xml
 
 # 创建应用用户 (避免以 root 运行), 固定 uid 1000 便于 bind mount 属主设置
 # 基础镜像自带 uid 1000 的 ubuntu 用户, 先移除避免冲突
@@ -122,4 +129,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -sf http://localhost:8080/api/health || exit 1
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/training-web.jar"]
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/training-web.jar"]

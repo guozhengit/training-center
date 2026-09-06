@@ -1,0 +1,4 @@
+# Linux deployment scripts must remain executable by Bash after Windows edits.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.dockerignore text eol=lf

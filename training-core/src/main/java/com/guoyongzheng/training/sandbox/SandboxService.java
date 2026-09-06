@@ -167,7 +167,7 @@ public final class SandboxService {
         String ownershipToken = UUID.randomUUID().toString();
         Path stagingDirectory = attemptDirectory.resolve(".staging-" + ownershipToken);
         try {
-            writeOwnedText(attemptDirectory.resolve(".owner"), ownershipToken);
+            writeOwnedText(SandboxPaths.ownerPath(attemptDirectory), ownershipToken);
             publicationHook.afterReservation(attemptDirectory);
 
             Files.createDirectory(stagingDirectory);
@@ -210,17 +210,17 @@ public final class SandboxService {
                     mapping.testSelector(),
                     ownershipToken,
                     clock.instant(),
-                    "work",
+                    SandboxPaths.WORK_DIR,
                     portable(mapping.sandboxSourcePath()),
                     portable(mapping.starterPath()));
             String expectedCompleteState = completeState(manifest);
             writeManifest(stagingDirectory.resolve("manifest.json"), manifest);
             publicationHook.afterStaging(stagingDirectory);
 
-            Files.move(stagingDirectory.resolve("work"), attemptDirectory.resolve("work"));
+            Files.move(stagingDirectory.resolve("work"), SandboxPaths.workPath(attemptDirectory));
             Files.move(
                     stagingDirectory.resolve("manifest.json"),
-                    attemptDirectory.resolve("manifest.json"));
+                    SandboxPaths.manifestPath(attemptDirectory));
             Files.delete(stagingDirectory);
             publicationHook.beforeCompletion(attemptDirectory);
 
@@ -245,7 +245,7 @@ public final class SandboxService {
                     manifest)) {
                 throw new IOException("sandbox work integrity changed before state write");
             }
-            Path statePath = attemptDirectory.resolve(".state");
+            Path statePath = SandboxPaths.statePath(attemptDirectory);
             try {
                 stateWriter.write(statePath, expectedCompleteState);
             } catch (IOException | RuntimeException stateFailure) {
@@ -272,7 +272,7 @@ public final class SandboxService {
                 if (Files.exists(attemptDirectory, NO_FOLLOW)
                         && identityStillMatches(attemptIdentity)) {
                     writeFailureStateIfAbsent(
-                            attemptDirectory.resolve(".state"),
+                            SandboxPaths.statePath(attemptDirectory),
                             ownershipToken);
                 }
             } catch (IOException markerFailure) {
@@ -447,9 +447,9 @@ public final class SandboxService {
             FileIdentity sessionIdentity = captureDirectoryIdentity(session);
             FileIdentity attemptIdentity = captureDirectoryIdentity(attempt);
             scanForLinks(attempt);
-            String owner = readOwnedToken(attempt.resolve(".owner"));
+            String owner = readOwnedToken(SandboxPaths.ownerPath(attempt));
             CompleteState state = parseCompleteState(
-                    readExactState(attempt.resolve(".state")));
+                    readExactState(SandboxPaths.statePath(attempt)));
             if (state == null
                     || !owner.equals(state.ownershipToken())
                     || !validatePublishedAttemptForCompletionCheck(
@@ -748,7 +748,7 @@ public final class SandboxService {
 
     private boolean validatePublishedAttempt(Path attempt, SandboxManifest expected)
             throws IOException {
-        Path manifest = attempt.resolve("manifest.json");
+        Path manifest = SandboxPaths.manifestPath(attempt);
         if (!Files.isRegularFile(manifest, NO_FOLLOW)
                 || Files.isSymbolicLink(manifest)) {
             return false;
@@ -764,7 +764,7 @@ public final class SandboxService {
             Path attempt,
             String ownershipToken,
             CompleteState state) throws IOException {
-        Path manifest = attempt.resolve("manifest.json");
+        Path manifest = SandboxPaths.manifestPath(attempt);
         if (!Files.isRegularFile(manifest, NO_FOLLOW)
                 || Files.isSymbolicLink(manifest)) {
             return false;
@@ -781,7 +781,7 @@ public final class SandboxService {
 
     private boolean validatePublishedIntegrity(Path attempt, SandboxManifest published)
             throws IOException {
-        if (!"work".equals(published.workPath())
+        if (!SandboxPaths.WORK_DIR.equals(published.workPath())
                 || !published.starterSha256().equals(published.sandboxSourceSha256())) {
             return false;
         }

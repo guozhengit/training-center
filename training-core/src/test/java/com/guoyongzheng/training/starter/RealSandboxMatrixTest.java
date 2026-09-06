@@ -21,6 +21,7 @@ import com.guoyongzheng.training.sandbox.SandboxManifest;
 import com.guoyongzheng.training.sandbox.SandboxPolicy;
 import com.guoyongzheng.training.sandbox.SandboxService;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -73,6 +74,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * sandbox and judge contracts. Ordinary Maven test runs exercise only the
  * bounded contract tests below and skip the 360-process matrix.
  */
+@Tag("integration")
 class RealSandboxMatrixTest {
 
     private static final String ENABLE_PROPERTY = "real.sandbox.matrix";

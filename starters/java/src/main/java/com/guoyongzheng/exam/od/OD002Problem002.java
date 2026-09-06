@@ -1,6 +1,5 @@
 package com.guoyongzheng.exam.od;
 
-import java.util.ArrayList;
 
 /**
  * 字符串摘要
@@ -15,6 +14,10 @@ public final class OD002Problem002 {
      * 输入格式参考题目描述中的示例。
      */
     public static String solve(String input) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
+    }
+
+    public static String solve(String[] lines) {
+        throw new UnsupportedOperationException("TODO: 实现解题逻辑");
     }
 }
