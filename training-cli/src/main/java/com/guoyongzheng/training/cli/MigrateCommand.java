@@ -27,8 +27,8 @@ public final class MigrateCommand implements Callable<Integer> {
             database.migrate();
             database.lastBackup().ifPresent(backup ->
                     System.out.println("Backup created: " + backup));
-            System.out.println("Migration complete. Schema version: "
-                    + TrainingDatabase.SUPPORTED_SCHEMA_VERSION);
+//            System.out.println("Migration complete. Schema version: "
+//                    + TrainingDatabase.SUPPORTED_SCHEMA_VERSION);
             return 0;
         } catch (Exception exception) {
             System.err.println("Migration failed: " + exception.getMessage());
