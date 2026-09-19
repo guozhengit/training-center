@@ -1,6 +1,8 @@
 package com.guoyongzheng.training.web.service;
 
+import com.guoyongzheng.training.web.config.TrainingProperties;
 import com.guoyongzheng.training.domain.QuestionDescriptor;
+import com.guoyongzheng.training.persistence.PostgresSettings;
 import com.guoyongzheng.training.persistence.TrainingDatabase;
 import org.springframework.stereotype.Component;
 
@@ -13,18 +15,28 @@ import java.util.List;
 /**
  * Manages database readiness: migration, question catalog sync, and connection provisioning.
  * Shared across all training services to avoid duplicating lifecycle logic.
+ *
+ * <p>Supports two backends, selected via {@code training.database-type}:
+ * <ul>
+ *   <li>{@code sqlite} (default): local file database under the workspace.</li>
+ *   <li>{@code postgres}: server-backed database from {@code training.database-url}.</li>
+ * </ul>
  */
 @Component
 public class TrainingDatabaseProvider {
     private final WorkspaceLocator workspaceLocator;
     private final CatalogCache catalogCache;
+    private final TrainingProperties properties;
 
     private Path migratedDatabasePath;
     private TrainingDatabase cachedDatabase;
 
-    public TrainingDatabaseProvider(WorkspaceLocator workspaceLocator, CatalogCache catalogCache) {
+    public TrainingDatabaseProvider(WorkspaceLocator workspaceLocator,
+                                    CatalogCache catalogCache,
+                                    TrainingProperties properties) {
         this.workspaceLocator = workspaceLocator;
         this.catalogCache = catalogCache;
+        this.properties = properties;
     }
 
     public Path workspace() {
@@ -32,6 +44,30 @@ public class TrainingDatabaseProvider {
     }
 
     public synchronized TrainingDatabase readyDatabase() {
+        if (properties.postgresEnabled()) {
+            return readyPostgresDatabase();
+        }
+        return readySqliteDatabase();
+    }
+
+    private TrainingDatabase readyPostgresDatabase() {
+        if (cachedDatabase == null) {
+            TrainingDatabase database = new TrainingDatabase(new PostgresSettings(
+                    properties.databaseUrl(),
+                    properties.databaseUser(),
+                    properties.databasePassword()));
+            database.migrate();
+            try (Connection connection = database.openConnection()) {
+                syncQuestions(connection, catalogCache.get().find(null));
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Cannot sync question catalog to PostgreSQL", exception);
+            }
+            cachedDatabase = database;
+        }
+        return cachedDatabase;
+    }
+
+    private TrainingDatabase readySqliteDatabase() {
         Path workspace = workspaceLocator.locate();
         Path databasePath = workspace.resolve("output/training-runtime/database/training.db")
                 .toAbsolutePath()

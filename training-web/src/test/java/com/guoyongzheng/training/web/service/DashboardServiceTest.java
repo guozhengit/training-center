@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guoyongzheng.training.web.config.TrainingProperties;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DashboardServiceTest {
     private final WorkspaceLocator workspaceLocator =
-            new WorkspaceLocator(new TrainingProperties("", null, null, null, null));
+            new WorkspaceLocator(new TrainingProperties("", null, null, null, null,
+                    null, null, null, null, null, null, null));
     private final DashboardService service = new DashboardService(
-            workspaceLocator, new CatalogCache(workspaceLocator), new ObjectMapper());
+            workspaceLocator, new CatalogCache(workspaceLocator), new ObjectMapper(), Optional.empty());
 
     @Test
     void summarizesUnifiedTrainingCatalog() {

@@ -29,7 +29,7 @@ public class SessionQueryService {
         TrainingDatabase database = databaseProvider.readyDatabase();
         try (Connection connection = database.openConnection()) {
             return new TrainingSessionService.TrainingStatsResponse(
-                    database.path().toString(),
+                    database.describe(),
                     SessionQueries.scalarInt(connection, "SELECT COUNT(*) FROM sessions"),
                     SessionQueries.scalarInt(connection, "SELECT COUNT(*) FROM attempts"),
                     SessionQueries.scalarInt(connection, "SELECT COUNT(*) FROM attempts WHERE status = 'FINISHED'"),
@@ -56,7 +56,7 @@ public class SessionQueryService {
         int safeLimit = Math.max(1, Math.min(limit, 100));
         try (Connection connection = database.openConnection()) {
             return new TrainingSessionService.TrainingHistoryResponse(
-                    database.path().toString(),
+                    database.describe(),
                     safeLimit,
                     attemptHistory(connection, safeLimit));
         } catch (SQLException exception) {

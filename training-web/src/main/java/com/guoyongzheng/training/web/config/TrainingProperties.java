@@ -5,9 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.nio.file.Path;
 
 /**
- * Externalized environment configuration for the training judge runtime.
- * All paths default to the local development machine but can be overridden
- * via environment variables (TRAINING_JDK_HOME, TRAINING_MAVEN_HOME, TRAINING_PYTHON).
+ * Externalized environment configuration for the training judge runtime and
+ * database/Redis connectivity. Paths default to the local development machine
+ * but can be overridden via environment variables
+ * ({@code TRAINING_JDK_HOME}, {@code TRAINING_MAVEN_HOME}, {@code TRAINING_PYTHON},
+ * {@code TRAINING_DATABASE_TYPE}, {@code TRAINING_DB_URL}, {@code TRAINING_DB_USER},
+ * {@code TRAINING_DB_PASSWORD}, {@code TRAINING_REDIS_HOST}, {@code TRAINING_REDIS_PORT},
+ * {@code TRAINING_REDIS_PASSWORD}).
  */
 @ConfigurationProperties(prefix = "training")
 public record TrainingProperties(
@@ -15,7 +19,18 @@ public record TrainingProperties(
         Path jdkHome,
         Path mavenHome,
         String pythonExecutable,
-        Integer sandboxRetentionHours) {
+        Integer sandboxRetentionHours,
+        String databaseType,
+        String databaseUrl,
+        String databaseUser,
+        String databasePassword,
+        String redisHost,
+        Integer redisPort,
+        String redisPassword) {
+
+    /** SQLite (default, local file database) or PostgreSQL (server deployment). */
+    public static final String DATABASE_TYPE_SQLITE = "sqlite";
+    public static final String DATABASE_TYPE_POSTGRES = "postgres";
 
     public TrainingProperties {
         if (workspace == null) {
@@ -33,8 +48,39 @@ public record TrainingProperties(
         if (sandboxRetentionHours == null || sandboxRetentionHours <= 0) {
             sandboxRetentionHours = 72;
         }
+        if (databaseType == null || databaseType.isBlank()) {
+            databaseType = DATABASE_TYPE_SQLITE;
+        }
+        if (databaseUrl == null || databaseUrl.isBlank()) {
+            databaseUrl = "jdbc:postgresql://localhost:5432/training";
+        }
+        if (databaseUser == null || databaseUser.isBlank()) {
+            databaseUser = "postgres";
+        }
+        if (databasePassword == null) {
+            databasePassword = "";
+        }
+        if (redisHost == null) {
+            redisHost = "";
+        }
+        if (redisPort == null || redisPort <= 0) {
+            redisPort = 6379;
+        }
+        if (redisPassword == null) {
+            redisPassword = "";
+        }
         jdkHome = jdkHome.toAbsolutePath().normalize();
         mavenHome = mavenHome.toAbsolutePath().normalize();
+    }
+
+    /** True when the PostgreSQL backend is selected. */
+    public boolean postgresEnabled() {
+        return DATABASE_TYPE_POSTGRES.equalsIgnoreCase(databaseType.trim());
+    }
+
+    /** True when Redis connectivity is configured. */
+    public boolean redisEnabled() {
+        return redisHost != null && !redisHost.isBlank();
     }
 
     /** Returns the JDK bin directory, e.g. D:/jdk/jdk-17.0.12/bin */

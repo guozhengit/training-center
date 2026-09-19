@@ -547,7 +547,7 @@ class TrainingDatabaseTest {
     void failedFlywayMigrationRollsBackAllUserDdlButMayRetainHistoryTable(@TempDir Path directory)
             throws Exception {
         Path path = directory.resolve("failing-migration.db");
-        var dataSource = TrainingDatabase.configuredDataSource(path);
+        var dataSource = SqliteDatabaseEngine.configuredDataSource(path);
 
         assertThatThrownBy(() -> Flyway.configure()
                 .dataSource(dataSource)

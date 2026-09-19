@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,32 +28,52 @@ import java.util.regex.Pattern;
 public class DashboardService {
     private static final int MAX_QUESTION_LIMIT = 300;
     private static final Pattern HEADING_PATTERN = Pattern.compile("^(#{1,6})\\s+(.+?)\\s*$");
+    private static final String CATALOG_SUMMARY_CACHE_KEY = "training:dashboard:catalogSummary";
+    private static final java.time.Duration CATALOG_SUMMARY_CACHE_TTL = java.time.Duration.ofSeconds(60);
 
     private final WorkspaceLocator workspaceLocator;
     private final CatalogCache catalogCache;
     private final ObjectMapper objectMapper;
+    private final Optional<RedisCacheService> redisCache;
     private final java.util.concurrent.ConcurrentHashMap<String, QuestionContentResponse> contentCache =
             new java.util.concurrent.ConcurrentHashMap<>();
 
-    public DashboardService(WorkspaceLocator workspaceLocator, CatalogCache catalogCache, ObjectMapper objectMapper) {
+    public DashboardService(WorkspaceLocator workspaceLocator,
+                            CatalogCache catalogCache,
+                            ObjectMapper objectMapper,
+                            Optional<RedisCacheService> redisCache) {
         this.workspaceLocator = workspaceLocator;
         this.catalogCache = catalogCache;
         this.objectMapper = objectMapper;
+        this.redisCache = redisCache;
     }
 
     public HealthResponse health() {
         Path workspace = workspaceLocator.locate();
         Path report = matrixReportPath(workspace);
+        boolean redisAvailable = redisCache.map(RedisCacheService::ping).orElse(false);
         return new HealthResponse(
                 "UP",
                 workspace.toString(),
                 Files.isDirectory(workspace.resolve("training-center/config")),
                 Files.isRegularFile(workspace.resolve("output/coding-ai-exam/catalog/questions.json")),
                 Files.isRegularFile(report),
+                redisAvailable,
                 Instant.now());
     }
 
     public CatalogSummaryResponse catalogSummary() {
+        Optional<CatalogSummaryResponse> cached = redisCache
+                .flatMap(cache -> cache.get(CATALOG_SUMMARY_CACHE_KEY, CatalogSummaryResponse.class));
+        if (cached.isPresent()) {
+            return cached.get();
+        }
+        CatalogSummaryResponse response = buildCatalogSummary();
+        redisCache.ifPresent(cache -> cache.put(CATALOG_SUMMARY_CACHE_KEY, response, CATALOG_SUMMARY_CACHE_TTL));
+        return response;
+    }
+
+    private CatalogSummaryResponse buildCatalogSummary() {
         Path workspace = workspaceLocator.locate();
         List<QuestionDescriptor> questions = catalogCache.get().find(null);
         return new CatalogSummaryResponse(
@@ -358,6 +379,7 @@ public class DashboardService {
             boolean configAvailable,
             boolean catalogAvailable,
             boolean matrixReportAvailable,
+            boolean redisAvailable,
             Instant checkedAt) {
     }
 

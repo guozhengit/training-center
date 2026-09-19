@@ -40,7 +40,8 @@ class JudgeServiceTest {
 
         JudgeService service = new JudgeService(
                 new WorkspaceBackedDatabaseProvider(workspace, database),
-                new TrainingProperties(workspace.toString(), null, null, null, 1),
+                new TrainingProperties(workspace.toString(), null, null, null, 1,
+                        null, null, null, null, null, null, null),
                 new ObjectMapper(),
                 new JudgeMetrics(new SimpleMeterRegistry()));
 
@@ -53,7 +54,7 @@ class JudgeServiceTest {
         private final TrainingDatabase database;
 
         private WorkspaceBackedDatabaseProvider(Path workspace, TrainingDatabase database) {
-            super(null, null);
+            super(null, null, null);
             this.workspace = workspace;
             this.database = database;
         }

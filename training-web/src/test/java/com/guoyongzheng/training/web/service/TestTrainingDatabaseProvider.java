@@ -7,7 +7,7 @@ final class TestTrainingDatabaseProvider extends TrainingDatabaseProvider {
     private final TrainingDatabase database;
 
     TestTrainingDatabaseProvider(TrainingDatabase database) {
-        super(null, null);
+        super(null, null, null);
         this.database = database;
     }
 
