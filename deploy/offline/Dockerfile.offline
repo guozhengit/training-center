@@ -1,0 +1,115 @@
+# ============================================================
+# 离线构建版 Dockerfile（Docker Hub 不可达时使用）
+#
+# 与标准 Dockerfile 的唯一区别：
+#   Stage 1（node:20-alpine + npm ci + vite build）被跳过，
+#   因为 registry-1.docker.io 在部分网络下不可达。
+#   改为从已构建好的镜像中抽取前端产物，直接 COPY 进构建上下文。
+#
+# 前置：先抽取前端 dist（见 deploy/offline/extract-frontend-dist.sh）
+#   docker create --name tc-fe training-center:<已有镜像> true
+#   docker cp tc-fe:/app/training-web.jar ./_fe/app.jar
+#   unzip -q -o ./_fe/app.jar 'BOOT-INF/classes/static/*' -d ./_fe/zip
+#   mv ./_fe/zip/BOOT-INF/classes/static ./_fe/dist
+#   docker rm tc-fe
+#
+# 构建（上下文必须是 jiupai 根目录）：
+#   DOCKER_BUILDKIT=1 docker build \
+#     -f training-center/deploy/offline/Dockerfile.offline \
+#     --build-arg FE_DIST=_fe/dist \
+#     -t training-center:<tag> .
+# ============================================================
+
+ARG BASE_IMAGE=training-center-base:17
+ARG FE_DIST=_fe/dist
+
+# ============================================================
+# Stage 1: Build backend (fat JAR with frontend embedded)
+# ============================================================
+FROM ${BASE_IMAGE} AS backend-build
+
+WORKDIR /app
+COPY training-center/pom.xml ./
+COPY training-center/training-core/pom.xml training-core/
+COPY training-center/training-cli/pom.xml training-cli/
+COPY training-center/training-web/pom.xml training-web/
+
+# 阿里云 Maven 镜像, 加速依赖下载
+COPY training-center/deploy/maven/settings.xml /opt/maven/conf/settings.xml
+
+# Download dependencies (cached layer)
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B dependency:go-offline -pl training-core,training-web -am -q || true
+
+COPY training-center/training-core/ training-core/
+COPY training-center/training-cli/ training-cli/
+COPY training-center/training-web/ training-web/
+
+# 前端产物：由宿主机预先抽取好，直接拷入静态资源目录
+ARG FE_DIST
+RUN rm -rf training-web/src/main/resources/static \
+    && mkdir -p training-web/src/main/resources/static
+COPY ${FE_DIST}/ training-web/src/main/resources/static/
+
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B package -pl training-web -am -DskipTests -q
+
+# ============================================================
+# Stage 2: Runtime
+# ============================================================
+ARG BASE_IMAGE=training-center-base:17
+FROM ${BASE_IMAGE} AS runtime
+
+LABEL maintainer="guoyongzheng"
+LABEL description="Interview Training Center - coding/oral/project practice platform"
+ARG VCS_REF=unknown
+LABEL org.opencontainers.image.revision=${VCS_REF}
+
+COPY training-center/deploy/maven/settings.xml /opt/maven/conf/settings.xml
+
+# 创建应用用户 (避免以 root 运行), 固定 uid 1000 便于 bind mount 属主设置
+RUN userdel -r ubuntu 2>/dev/null || true \
+    && useradd -m -s /bin/bash -u 1000 training
+
+WORKDIR /workspace
+
+# Copy read-only content (baked into image)
+COPY --chown=training:training training-center/config/ training-center/config/
+COPY --chown=training:training training-center/starters/ training-center/starters/
+COPY --chown=training:training output/coding-ai-exam/ output/coding-ai-exam/
+COPY --chown=training:training output/interview/ output/interview/
+
+# Create mutable runtime directories
+RUN mkdir -p output/training-runtime/database \
+             output/training-runtime/sandboxes \
+             output/training-runtime/exports \
+             output/training-runtime/logs \
+    && chown -R training:training output/training-runtime
+
+# 预热判题 Maven 依赖缓存到 training 用户 .m2
+RUN mkdir -p /home/training/.m2 \
+    && chown -R training:training /home/training/.m2 \
+    && cd /workspace/output/coding-ai-exam/java \
+    && su training -c "HOME=/home/training /opt/maven/bin/mvn -B -ntp -q -Dmaven.repo.local=/home/training/.m2/repository test" \
+    && rm -rf /workspace/output/coding-ai-exam/java/target
+
+ARG TRAINING_VERSION=1.0.0-SNAPSHOT
+
+COPY --from=backend-build --chown=training:training \
+    /app/training-web/target/training-web-${TRAINING_VERSION}.jar /app/training-web.jar
+
+USER training
+
+ENV TRAINING_WORKSPACE=/workspace
+ENV TRAINING_JDK_HOME=${JAVA_HOME}
+ENV TRAINING_MAVEN_HOME=/opt/maven
+ENV TRAINING_PYTHON=python3
+ENV TRAINING_SANDBOX_RETENTION_HOURS=72
+ENV SERVER_PORT=8080
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD curl -sf http://localhost:8080/api/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/training-web.jar"]

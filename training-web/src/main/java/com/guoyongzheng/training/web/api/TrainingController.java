@@ -106,6 +106,12 @@ public class TrainingController {
         return judgeService.judgeAttempt(attemptId);
     }
 
+    @Operation(summary = "Run attempt (dry run)", description = "Runs the attempt's tests without recording a judgement, changing attempt state, or touching the review schedule. This is the 'Run' counterpart to 'Judge'.")
+    @PostMapping("/attempts/{attemptId}/run")
+    public TrainingSessionService.RunAttemptResponse runAttempt(@PathVariable("attemptId") String attemptId) {
+        return judgeService.runAttempt(attemptId);
+    }
+
     @Operation(summary = "Judge attempt (SSE stream)", description = "Streams judge progress stages via Server-Sent Events, ending with the full result.")
     @GetMapping(value = "/attempts/{attemptId}/judge-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter judgeAttemptStream(@PathVariable("attemptId") String attemptId) {

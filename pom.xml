@@ -21,7 +21,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>5.11.4</junit.version>
         <assertj.version>3.26.3</assertj.version>
-        <jackson.version>2.19.0</jackson.version>
         <sqlite-jdbc.version>3.47.2.0</sqlite-jdbc.version>
         <flyway.version>11.0.0</flyway.version>
         <picocli.version>4.7.6</picocli.version>
@@ -42,11 +41,6 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.xerial</groupId>

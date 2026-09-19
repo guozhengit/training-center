@@ -14,6 +14,10 @@ export function useTraining(dashboard) {
   const submitForms = ref({})
   const judgeResults = ref({})
   const judgeProgress = ref(null)
+  // Dry-run ("Run" button) results, keyed by attempt id. Kept separate from judgeResults because
+  // a run is not a submission: it must not be mistaken for one when rendering the result panel.
+  const runResults = ref({})
+  const runBusy = ref(false)
 
   let activeEventSource = null
   let activeJudgeAbortController = null
@@ -283,6 +287,34 @@ export function useTraining(dashboard) {
     }
   }
 
+  /** Runs the attempt's tests without recording anything; safe to call as often as the user likes. */
+  async function runAttempt(attempt, sourceCode) {
+    if (!attempt) return
+    runBusy.value = true
+    trainingMessage.value = ''
+    dashboard.error.value = ''
+    try {
+      if (sourceCode) {
+        await fetchJson(`/api/training/attempts/${attempt.id}/write-source`, {
+          method: 'POST',
+          body: JSON.stringify({ sourceCode })
+        })
+      }
+      const result = await fetchJson(`/api/training/attempts/${attempt.id}/run`, { method: 'POST' })
+      runResults.value = { ...runResults.value, [attempt.id]: result }
+      // A fresh run supersedes any earlier judgement of the same attempt.
+      const staleJudge = { ...judgeResults.value }
+      delete staleJudge[attempt.id]
+      judgeResults.value = staleJudge
+      return result
+    } catch (exception) {
+      dashboard.error.value = exception.message || translate('attempt.judgeFail')
+      return null
+    } finally {
+      runBusy.value = false
+    }
+  }
+
   async function judgeAttemptWithFetchStream(attempt) {
     const controller = new AbortController()
     activeJudgeAbortController = controller
@@ -354,6 +386,10 @@ export function useTraining(dashboard) {
 
   async function applyJudgeResult(attempt, result, isCurrent = () => true) {
     judgeResults.value = { ...judgeResults.value, [attempt.id]: result }
+    // A real judgement supersedes any earlier dry-run of the same attempt.
+    const staleRuns = { ...runResults.value }
+    delete staleRuns[attempt.id]
+    runResults.value = staleRuns
     activeSession.value = result.session
     initializeSubmitForms(result.session)
     if (result.sessionCompleted) { clearSession() } else { persistSession(result.session) }
@@ -496,6 +532,7 @@ export function useTraining(dashboard) {
 
   return {
     trainingBusy, trainingMessage, activeSession, submitForms, judgeResults, judgeProgress,
+    runResults, runBusy, runAttempt,
     sessionForm, trainingTracks, scoreDimensions, activeSessionProgress,
     createTrainingSession, submitAttempt, judgeAttempt, openSandbox,
     loadSessionFromHistory, createSessionFromQuestionIds,

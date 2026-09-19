@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Tm71HEIZF55J9lAwJjM23Y">
+<head data-page-node-id="nHSVi0GRWBN6Te0hI4NAKy">
+<meta charset="UTF-8" data-page-node-id="bHSWIw8LJLLCCEqbxjmcTo">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="vZDh5Uxjco7YZz1shDGZmE">
+<title>Training Center 离线部署 · 傻瓜手册</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --line:#e3e6ea; --text:#1f2328;
+    --muted:#5b6572; --accent:#1a5fb4; --ok:#1a7f37; --warn:#9a6700;
+    --err:#b42318; --codebg:#f2f4f7;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:32px 20px 80px; background:var(--bg); color:var(--text);
+    font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  }
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 24px;font-size:14px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:20px 22px;margin:0 0 18px;
+  }
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+  .meta div{
+    background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;flex:1;min-width:150px;
+  }
+  .meta b{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:3px}
+  h2{
+    font-size:18px;margin:0 0 14px;padding-bottom:10px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
+  }
+  .step{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;background:var(--accent);
+    color:#fff;font-size:13px;font-weight:700;flex:none;
+  }
+  h3{font-size:15px;margin:18px 0 8px}
+  p{margin:0 0 10px}
+  ul{margin:0 0 10px;padding-left:22px}
+  li{margin-bottom:6px}
+  code{
+    background:var(--codebg);padding:2px 6px;border-radius:4px;
+    font:13px/1.5 Consolas,"Courier New",monospace;
+  }
+  .cmd{position:relative;margin:0 0 14px}
+  .cmd pre{
+    background:var(--codebg);border:1px solid var(--line);border-radius:8px;
+    padding:14px 16px;margin:0;overflow-x:auto;
+    font:13px/1.65 Consolas,"Courier New",monospace;white-space:pre;
+  }
+  .copy{
+    position:absolute;top:8px;right:8px;border:1px solid var(--line);
+    background:var(--card);color:var(--muted);border-radius:6px;
+    padding:4px 10px;font-size:12px;cursor:pointer;
+  }
+  .copy:hover{color:var(--accent);border-color:var(--accent)}
+  .copy.done{color:var(--ok);border-color:var(--ok)}
+  .note{
+    border-left:3px solid var(--accent);background:#eef4fb;
+    padding:10px 14px;border-radius:0 6px 6px 0;margin:0 0 14px;font-size:14px;
+  }
+  .warn{border-left-color:var(--warn);background:#fdf6e3}
+  .err{border-left-color:var(--err);background:#fdf0ef}
+  .ok{border-left-color:var(--ok);background:#eef8f1}
+  .expect{font-size:14px;color:var(--muted);margin:0 0 14px}
+  .expect b{color:var(--text)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--codebg);font-weight:600}
+  .tag{
+    display:inline-block;background:var(--codebg);border:1px solid var(--line);
+    border-radius:4px;padding:1px 7px;font-size:12px;margin-right:4px;
+  }
+  .files{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:6px}
+  .files td{border:1px solid var(--line);padding:8px 12px}
+  .files td:last-child{white-space:nowrap;color:var(--muted)}
+  .sha{font:12px/1.5 Consolas,monospace;word-break:break-all;color:var(--muted)}
+</style>
+</head>
+<body data-page-node-id="1XYvqXq3sw9ZjkdJBEBl7I">
+<div class="wrap" data-page-node-id="dtyjrdDMvKG0e88RXMtBqG">
+
+  <h1 data-page-node-id="ylh2qKVVoHnRDW422KEqBW">Training Center 离线部署 · 傻瓜手册</h1>
+  <p class="sub" data-page-node-id="5c3ePgkobYZ2pqW9d4fADA">本地已构建好镜像，服务器只负责导入和运行。全程不需要在服务器上装 JDK / Maven / Node / Python，也不需要访问 GitHub。</p>
+
+  <div class="meta" data-page-node-id="BBH5gA0P6PflsFmeAHzT59">
+    <div data-page-node-id="YLnmS6eoAKdbabTc9BFH1F"><b data-page-node-id="Ir41KuGiBq2p15w8ONE5fC">目标服务器</b>120.48.23.3 (root, 22)</div>
+    <div data-page-node-id="bjlDDA2dad9XtUuD7fMUje"><b data-page-node-id="fDadvAuyFZFHlb2smt5PUU">部署后访问</b>http://120.48.23.3:9091/</div>
+    <div data-page-node-id="I6MY7EaJPAovZAVfHNCH3A"><b data-page-node-id="LFA8T0OxTnJ5fsQy9J0pQ9">预计耗时</b>10~15 分钟（主要是传 403MB）</div>
+    <div data-page-node-id="XODi9I1lZmG9VHJI3desVB"><b data-page-node-id="eUwK4FK7L9RWIw1t06fG1i">版本</b>2a97941-jacksonfix</div>
+  </div>
+
+  <div class="card" data-page-node-id="Ax9h3eavjpTtj0JmVSDE3F">
+    <h2 data-page-node-id="uGjuqCraneASh9yLzT1wPc"><span class="step" data-page-node-id="FFryLNCHcxGxLhBvxt5mef">0</span>准备：三个文件</h2>
+    <p data-page-node-id="JzoPORtXxrjU0sxfT6wRLj">这三个文件已经在本地 <code data-page-node-id="0TDn7MBFkVtIMbmIskYquL">D:\AI-SOURCE\jiupainews</code> 下准备好了：</p>
+    <table class="files" data-page-node-id="9Njb4CmyWYdgGavuKLro3v">
+      <tr data-page-node-id="WluAnyM9EEWt5ORE7yoK8i"><td data-page-node-id="pqCAo84Lc6d6cXzmlAsYVC"><code data-page-node-id="KTToYWkDA88A01BbgeFQ33">training-center-20260914-fix2.tar.gz</code></td><td data-page-node-id="pEILtiCcVgyAYmLiO08Wdf">403 MB · 应用镜像（算法训练台版）</td></tr>
+      <tr data-page-node-id="OlHeazWvZMiOCG5dATdzr3"><td data-page-node-id="B60klAsoPaKH5f2S1uuLwF"><code data-page-node-id="J4BR0KOqaANlVdgXHUUNdf">training-center-src-20260914-fix2.tar.gz</code></td><td data-page-node-id="XxKRplRbHlQUqaoSRaU8Tg">39 KB · 部署脚本</td></tr>
+      <tr data-page-node-id="vxuxEBLDtRV5QjDKsNfPEs"><td data-page-node-id="42HqAHmddTjTHxQ6NEPD5U"><code data-page-node-id="xaJDKZe8DCS3K90RG4RHBu">training-center\deploy\offline\first-deploy.sh</code></td><td data-page-node-id="ZMzlIJtwZJT0n7GAY2Hccu">7 KB · 一键部署脚本</td></tr>
+    </table>
+    <p class="sha" data-page-node-id="EcfTVfHh1WLoULOtgxeXCb">
+      镜像包 SHA256：<code data-page-node-id="5I7OeqrIPrqEQ41lcvwmxT">bcc8a63bf07bc40e74c4241d66a3701309a6578cbe3e147e851ecb416bbf63d6</code>（422591683 字节）<br data-page-node-id="NLNbkYsAPYaXLkDGOXnOTD">
+      源码包 SHA256：以本地 <code>sha256sum</code> 结果为准（本手册在源码包内，写死会自引用失效）
+    </p>
+    <div class="note" data-page-node-id="sEPyNnQ5AzszxW7RtFdx0o">题库已经烤进镜像里了，<b data-page-node-id="Xfd9fQ6ecemrYDiVTPpnPk">不用另外传 output 目录</b>。</div>
+  </div>
+
+  <div class="card" data-page-node-id="jfohHyx7KaciGwXwNlC1TE">
+    <h2 data-page-node-id="ils7TSWW7Fyk3ZBqOeIEhH"><span class="step" data-page-node-id="B3eAX1HXJFWoGee0wSIEp0">1</span>打开 FinalShell 连上服务器</h2>
+    <p data-page-node-id="uHVz3aAUs6iadptQdZiHWR">在 FinalShell 左侧连接列表里双击 <b data-page-node-id="qJdfCuwFlO7RVvewvd22rE">120.48.23.3-baidu</b>，输入密码登录。</p>
+    <div class="note warn" data-page-node-id="C4BT7lvc70wgbdOmIAeMml">如果弹出「主机密钥已变更」警告，<b data-page-node-id="impl1VSFCPTjlNsG1CtXCv">先别直接确认</b>，确认是不是同一台机器再说。</div>
+  </div>
+
+  <div class="card" data-page-node-id="RxUKHlSz2V1rKy7Kse3U6V">
+    <h2 data-page-node-id="suDNFUivqaTkjM7uAljqii"><span class="step" data-page-node-id="FRoNEAe58H67lee3T3VhXj">2</span>拖文件到服务器</h2>
+    <p data-page-node-id="PqhulmghpBqqEJaFUDvFyJ">看 FinalShell 窗口<b data-page-node-id="utpabH0m9GDQJwLA8VWluX">底部</b>，点「文件传输」标签，会出现左右两栏：</p>
+    <ul data-page-node-id="KqfCewFlL3y2617rKt71Yn">
+      <li data-page-node-id="mYnv9FHDOa1IgzVjznDWYc"><b data-page-node-id="PevvtyId6E8tW6jrdAhfjB">左栏（本地）</b>：地址栏填 <code data-page-node-id="y1G5tFk8x6SPzHdkyQkW0b">D:\AI-SOURCE\jiupainews</code> 回车</li>
+      <li data-page-node-id="S5rP6CtGGvou6D9zmkhRIN"><b data-page-node-id="oPAOY3HxDABHyRbqpVO19J">右栏（远程）</b>：导航到 <code data-page-node-id="i5jzuM5Q9CNSu6zIH4ngIv">/home/docker</code>（确认不是 <code data-page-node-id="A12T86ivZIV4vL6KCcijFG">/root</code>）</li>
+    </ul>
+    <p data-page-node-id="nFHMEyC78flG3aMBkFdNmG">把第 0 步那三个文件从左栏<b data-page-node-id="z1lIZrP3gaO3nHa7CQ9GPO">拖到右栏</b>。下方会显示进度和速度。</p>
+    <div class="note" data-page-node-id="T8i1QoQBYsuu690eJH0R9n">传 403MB 的那个文件时如果中断了，在传输列表里右键选<b data-page-node-id="1SYroJIamNU05kPGhZkpOe">续传</b>即可，不用从头再来（这是 FinalShell 比 scp 强的地方）。</div>
+  </div>
+
+  <div class="card" data-page-node-id="BC2gl7x8GxPHxblNU2f7Gs">
+    <h2 data-page-node-id="AiGJjR7bF8MGGEtXBIz5hI"><span class="step" data-page-node-id="IOUfHewkwCGqTkiKgFiXG0">3</span>校验文件没传坏</h2>
+    <p data-page-node-id="jQ7MiZnuAEEewFrtiIFz6n">切回终端标签，粘贴执行：</p>
+    <div class="cmd" data-page-node-id="g41R9FmgPrgPg1mGtbimBr"><button class="copy" data-page-node-id="WSLYapintd5lmu3En1YSip">复制</button><pre data-page-node-id="pWbQNZFvZVGizcozaux92M"><code data-page-node-id="O6j6hwIKiUqUzMoJ3UGlAr">cd /home/docker
+sha256sum training-center-20260914-fix2.tar.gz training-center-src-20260914-fix2.tar.gz
+stat -c '%s  %n' training-center-20260914-fix2.tar.gz</code></pre></div>
+    <p class="expect" data-page-node-id="7SnI05ANR07YAKBRoYfr1C"><b data-page-node-id="7LUlGCSKB9HHjzNr8CY0wt">预期输出</b>：第一行 <code data-page-node-id="Vye88c57dRqPI60VZgwP5P">47161758...3a64279</code>，第二行是源码包（约 39 KB，每次重新打包都会变，以你本地算出的为准），第三行 <code data-page-node-id="7F5Lu9U1NoWvCUScvB7OeF">422277017</code>。关键是<b>第一行和第三行必须对上</b>。</p>
+    <div class="note err" data-page-node-id="5yDD1RWxlNyTLn0koEA1iF">对不上就<b data-page-node-id="SEz72M3Fsh2Tmegk9mcou8">重传</b>，别硬着头皮往下走 —— 文件坏了会在导入到一半时才失败，白白浪费时间。</div>
+  </div>
+
+  <div class="card" data-page-node-id="ij5HNC9gDxhFLzbjvYQ254">
+    <h2 data-page-node-id="ToKWBL7pZ7But5lTuoiyp1"><span class="step" data-page-node-id="RheKZbHxnVBabucHpe4NoS">4</span>一条命令部署</h2>
+    <div class="cmd" data-page-node-id="oPxmLrC8VAAcGdHNbgJDco"><button class="copy" data-page-node-id="KFEatwDCYF7F2Sb5xhHENx">复制</button><pre data-page-node-id="3GvO8Ro7bNa9AWrLquzTiU"><code data-page-node-id="5yQkF7UIuBk9o6y7pZ3jYm">cd /home/docker &amp;&amp; TRAINING_PORT=9091 bash first-deploy.sh</code></pre></div>
+    <p class="expect" data-page-node-id="Tv4M4h9kbtTRGSqctj3SrU">脚本会自动跑完 6 步：环境检查 → 导入镜像 → 展开源码 → 建数据目录 → 写配置 → 启动并等待健康。<br data-page-node-id="6W3or0ygV4sDxvXzstvpnc">
+    <b data-page-node-id="6p5mvt0guGLsAMf7LLypC9">看到</b> <code data-page-node-id="E4cXBIgEoLsRb0ehJ5XKA9">[offline] 部署完成</code> 和 <code data-page-node-id="lvSyKigNiFamnX4SzXxzW2">健康状态: running / healthy</code> 就成了。</p>
+    <div class="note warn" data-page-node-id="ZapOnFNBFgvQAcuRXIMrbV">端口用 <b data-page-node-id="KLytNtxPojjmcKyY7pjlWT">9091</b> 是因为 9090 已经被 <code data-page-node-id="MZzDN1kvDaPcXUBSakqeoy">typing-game</code> 容器占了（8080、80、8010、9549 也都有主）。</div>
+  </div>
+
+  <div class="card" data-page-node-id="HL9cwFsSvlb8I32ryW7LnB">
+    <h2 data-page-node-id="sQVGpR0R19W1NSW5MggEQk"><span class="step" data-page-node-id="DE6HZJNsVO0TCl6u5kE1MF">5</span>验收</h2>
+    <div class="cmd" data-page-node-id="lPdHlbhbKY6Pa2vRRG4fcR"><button class="copy" data-page-node-id="ecdxaBq1vohLPEINqmy9Zf">复制</button><pre data-page-node-id="dWas4nAzo3evoIBvpA8gRt"><code data-page-node-id="D0As5E8SsAen5GFpma1z4C">docker inspect --format='{{.State.Health.Status}}' training-center
+curl -fsS http://127.0.0.1:9091/api/health</code></pre></div>
+    <p class="expect" data-page-node-id="EzbVd6mrHOUdg83FOtQcsw"><b data-page-node-id="MhATjhPmohppMarYrLiSVA">预期</b>：第一行 <code data-page-node-id="WadpTYazJU1WYJ6bIFiVHt">healthy</code>，第二行返回 <code data-page-node-id="0hM5sEo37vv8duHER48Uab">{"status":"UP",...}</code>。</p>
+    <p data-page-node-id="G2htYCrBLFTyXRAESV3QmI">然后浏览器打开 <b data-page-node-id="ZB4H4wwesvhWCRSIaDhZ4u">http://120.48.23.3:9091/</b>，在页面上<b data-page-node-id="JAxIhu0YuTy1otaJego5ei">真实跑一次 Java 判题</b>，确认沙箱正常。</p>
+    <div class="note err" data-page-node-id="2gjEsu5xJAd2ZZxYZU7cPO">打不开页面？多半是防火墙或百度云安全组没放行 9091，看下一步。</div>
+  </div>
+
+  <div class="card" data-page-node-id="oNppFzo77umBvW5RB9h6mT">
+    <h2 data-page-node-id="JVDUuJ4C6fRptq7BKx4xp3"><span class="step" data-page-node-id="bhQXtR72eWIgpq9R35lEtb">6</span>收尾</h2>
+    <p data-page-node-id="IwC6Qob8xRZ9e2Y5kwgqal"><b data-page-node-id="Za3H5qXkfLvq2876wP2aK5">放行端口</b>（两处都要：系统防火墙 + 百度云安全组）：</p>
+    <div class="cmd" data-page-node-id="TFkpfDWwK0HxWQeenUMFPb"><button class="copy" data-page-node-id="sVHRHduLxDh1Q1gsvIkqd7">复制</button><pre data-page-node-id="nX0Oev2t8Rlv283VV7ZUf1"><code data-page-node-id="Eeh7hq3Q24MVKqFRx5Lqz9">firewall-cmd --permanent --add-port=9091/tcp &amp;&amp; firewall-cmd --reload
+firewall-cmd --list-ports</code></pre></div>
+    <p data-page-node-id="VSHBWsCV5SqVXjTKBu4lS0"><b data-page-node-id="bWcRIOtjQpeuo0rRABjljR">删掉归档释放 403MB</b>：</p>
+    <div class="cmd" data-page-node-id="mw9NPBDmfbTiKWpTqfiiMB"><button class="copy" data-page-node-id="UqGX7iQniZDrMv1HQorZO1">复制</button><pre data-page-node-id="D1781zA0zlglpfpdO1fbuS"><code data-page-node-id="XqmkTB80h1JS0FP76qzHWo">rm -f /home/docker/training-center-20260914-fix2.tar.gz /home/docker/training-center-src-20260914-fix2.tar.gz</code></pre></div>
+    <p data-page-node-id="eDJSiVd69iyNjsRq9Ixc3A"><b data-page-node-id="NJgtnYGjJ3FGPmCnfuGgKh">看运行状况</b>：</p>
+    <div class="cmd" data-page-node-id="lGCzrNqdz43QWbqyQ2rTHx"><button class="copy" data-page-node-id="3aJ5uYi5tnFGmicG38yXD7">复制</button><pre data-page-node-id="nu2rKsA7DeHfc5PRPGQAbi"><code data-page-node-id="73zTdfhjXEfkh1g4AZFjlo">docker stats --no-stream training-center
+docker logs --tail 100 training-center</code></pre></div>
+  </div>
+
+  <div class="card" data-page-node-id="X5FdiPd7kDK3CBS7qzOOeK">
+    <h2 data-page-node-id="TFtr8OxL8zq75ANxjhEpBi"><span class="step" data-page-node-id="JMnD1yQ0Spkj6Fx9vEqDKp">!</span>出问题对着这张表查</h2>
+    <table data-page-node-id="8qlnPykWZLKibNpFeBeFka">
+      <tr data-page-node-id="TNrWHmufo7l4ro1fqJja88"><th data-page-node-id="3pP75nH0FaQM7RwYLfqRNc">现象</th><th data-page-node-id="caBFtRYt7Q9E2ljR4X9cnt">原因</th><th data-page-node-id="bw0pISWdVi3U8MBC06Mn77">怎么办</th></tr>
+      <tr data-page-node-id="hS5QtvYlXWCyun7c2FY6r7">
+        <td data-page-node-id="bSVmuSlVjPbEdVazzqQQM4"><code data-page-node-id="4m20E8B1GuhcwHBZ1pGac1">bash: first-deploy.sh: No such file</code></td>
+        <td data-page-node-id="n3MYMjsUsaXBwpI3H6Uz3y">脚本没传到 <code data-page-node-id="Oc9yH4VXqZTNxt5Magh6Bf">/home/docker</code></td>
+        <td data-page-node-id="HgDKK8Ne6tgAuWWGKkxfpV">右边路径栏确认是 <code data-page-node-id="IfswxPp2E9pIHzB1C1yOYt">/home/docker</code>，重拖一次</td>
+      </tr>
+      <tr data-page-node-id="wb2EyJOMxM6gL2bNlFp4iq">
+        <td data-page-node-id="puTGlGfNtytv8LcnkIgHS4"><code data-page-node-id="5o5BYzsJptWVvfsKekvZ98">bad interpreter: /bin/bash^M</code></td>
+        <td data-page-node-id="0fsaDdAi3nyLiZxFzFC448">文件被转成 Windows 换行了</td>
+        <td data-page-node-id="mGix26IFnRuGp2RFL25hXb">用 SFTP 重传（二进制模式），别用记事本改</td>
+      </tr>
+      <tr data-page-node-id="cYC53EToDCnJH1A0l90vuG">
+        <td data-page-node-id="QzeeoPskFBXNcAnNlnJpQ4">sha256 对不上</td>
+        <td data-page-node-id="Jyclobo5hwT38iHOFT6S0C">传输损坏</td>
+        <td data-page-node-id="YYb4WxOO7rBGulBYCIc12Z">删掉重传，SFTP 支持续传</td>
+      </tr>
+      <tr data-page-node-id="uiJtwRVDT4YEszEV0qMP90">
+        <td data-page-node-id="vehUmtwZEizayZXqFGevKi">docker load 报错 / 卡住</td>
+        <td data-page-node-id="UbfCHE0hJYXDGk7drQUVUJ">磁盘不够</td>
+        <td data-page-node-id="tOPjOWyJx2AG4f88NniEwn"><code data-page-node-id="xriP9GsI8rju7ezskyHtgd">df -h /home/docker</code>，需要 4G 以上</td>
+      </tr>
+      <tr data-page-node-id="AkZiowV3BXVmHbFJPYzWgY">
+        <td data-page-node-id="eCnaWOuXV7HFvyeOkg6CC3"><code data-page-node-id="BYyyS5qravd1SH7E4lFsld">Loaded image:</code> 后面不是 <code data-page-node-id="T0M6xnLVFMBvkZOJpgfAir">20260914-fix2</code></td>
+        <td data-page-node-id="OXZhuJB9Q6itXeGl7bcQMo">导进了别的镜像</td>
+        <td data-page-node-id="v6xMhFYGII0HGohQDR5d3j"><code data-page-node-id="dVp05Rw8FpaxQDGtFPnHkT">docker images training-center</code> 看一眼，手动指定 tag</td>
+      </tr>
+      <tr data-page-node-id="GUuGUGH5kCcOjo7FeZzjj1">
+        <td data-page-node-id="JZcbkJ0HbX3DmkXi87EUeW">健康状态不是 healthy</td>
+        <td data-page-node-id="mdmKJoeYYrzAu5E2EpgboE">应用没起来</td>
+        <td data-page-node-id="7EKGPcUT6Ruv7MiL79gcEU"><code data-page-node-id="kFjaAVKnlnVKHNuuy5hpGf">docker logs --tail 100 training-center</code> 看报错，贴出来</td>
+      </tr>
+      <tr data-page-node-id="8prOJ3MtEJEkI4FRsTmC4B">
+        <td data-page-node-id="Q2TIyLlHAdSG7GWdaPKMcG">服务器能 curl 通，外网打不开</td>
+        <td data-page-node-id="nMtJKZEIMDlRdcXCKMpcIV">端口没放行</td>
+        <td data-page-node-id="vwR4zdwNQroCLuZtOuJ6T6">系统防火墙 + 百度云安全组都要开 9091</td>
+      </tr>
+      <tr data-page-node-id="3Ztl5JWMFmPHBqXESDAuHR">
+        <td data-page-node-id="eJ5jAkNeZDkwQXbP4dwDxB">端口冲突</td>
+        <td data-page-node-id="3tKP0RQ3vjk4MkUcFMQLNF">9091 也被占了</td>
+        <td data-page-node-id="2TNus0AuHNefdp9HTbCafA">换端口：<code data-page-node-id="siarG0YfV10H7XvgFPIXZl">TRAINING_PORT=9092 bash first-deploy.sh</code></td>
+      </tr>
+    </table>
+  </div>
+
+    <div class="card">
+    <h2><span class="step">✓</span>这一版是什么</h2>
+    <p>上一版（<code>20260908-fix1</code>）是应急产物。当时的情况是：部署后健康检查一直 <code>unhealthy</code>，根因是 <b>Jackson 版本冲突</b> —— fat jar 里 <code>jackson-databind</code> 被单独升到 2.19.0，其余 7 个组件还是 2.17.3，2.19 的 databind 调 <code>JsonProperty.isRequired()</code> 期望 <code>OptBoolean</code> 而 2.17.3 返回 <code>boolean</code>，于是 <code>NoSuchMethodError</code>。修复是删掉 pom 里那个只覆盖单个组件的版本声明，交回 Spring Boot 3.3.7 统一管理。</p>
+    <div class="note">为什么当年没第一时间发现：<code>/api/health</code> 返回的是 Map，不走 bean 序列化所以一直是 200；而健康检查真正打的是返回 Health 对象的 actuator 端点，那里才炸。<b>冒烟测试必须打健康检查实际用的那个端点</b>。</div>
+    <p>这一版（<code>20260914</code>）做两件事：</p>
+    <ul>
+      <li><b>把修复固化成正式镜像</b>：上一版是靠临时拼的 <code>Dockerfile.rebuild</code> 抠出来的，能跑但没法复现。这次换成正式的 <code>deploy/offline/Dockerfile.offline</code>，构建过程可重复。</li>
+      <li><b>离线构建链路脚本化</b>：新增 <code>build-offline.ps1</code>，一条命令完成「抽前端产物 → 构建 → 导出 → 算校验值」，下次更新不用再手搓。</li>
+    </ul>
+    <p>本次冒烟实测：<code>/api/health</code>、<code>/actuator/health</code>、<code>/</code>、<code>/index.html</code>、<code>/api/catalog/summary</code>、<code>/api/questions/filters</code>、<code>/api/stats</code>、<code>/api/history</code> 全部 200，容器状态 <code>healthy</code>，题库 300 题（CODING 212 / ORAL 80 / PROJECT 8）可正常读取。</p>
+  </div>
+
+<div class="card" data-page-node-id="hUzX65lZpqBJHBDJqM6JtH">
+    <h2 data-page-node-id="SiUI8qiwlMg6xMZY9jXyd9"><span class="step" data-page-node-id="5lMKYguKB9RXoiVwbJPn34">+</span>以后怎么更新</h2>
+    <p data-page-node-id="yTWlPgx1oDCCz8JIPYUmh3">代码改了之后，在本地跑一条命令就行（需要 Docker Desktop 开着）。它会<b data-page-node-id="x1">自动从现有镜像抽取前端产物 → 构建 → 导出 → 算校验值</b>：</p>
+    <div class="cmd" data-page-node-id="IFfYoLGGRa4omRIZbwDn70"><button class="copy" data-page-node-id="eeen3ZMtzwa2UoyUGmgu78">复制</button><pre data-page-node-id="4zOkIPCzBarpM3BTe1vGGb"><code data-page-node-id="4TBRz0kgzBurJLTL8zarH8">cd D:\AI-SOURCE\jiupainews\training-center
+.\deploy\offline\build-offline.ps1 -Tag 新版本号</code></pre></div>
+    <div class="note warn" data-page-node-id="6BWpTLbFEcuRBN4seZxWiN">为什么要用这个脚本而不是标准 <code data-page-node-id="dgjomhxFxsbv06b6EDaydK">Dockerfile</code>？标准版第一步要 <code data-page-node-id="bgTbmF5nTkuY3cHpzGRTtR">docker pull node:20-alpine</code> 来编译前端，而本机连不上 Docker Hub（没有 HTTPS 代理，<code data-page-node-id="x2">registry-1.docker.io</code> 直接超时）。<br data-page-node-id="Fcrslj8H9Byw0iSKuXEIfx">
+    脚本改走 <code data-page-node-id="x3">deploy/offline/Dockerfile.offline</code>：跳过前端编译，直接从已有镜像里把 <code data-page-node-id="x4">BOOT-INF/classes/static</code> 抠出来用。<b data-page-node-id="x5">前端代码没改时这是安全的</b>。<br data-page-node-id="Fcrslj8H9Byw0iSKuXEIfx">
+    如果改了 <code data-page-node-id="x6">training-ui</code>：npm registry 是通的，在 <code>training-ui</code> 下跑 <code>npm run build</code>，然后把 <code>FE_DIST</code> 指向 <code>training-center/training-ui/dist</code> 即可（<code>.dockerignore</code> 已为它开例外）：</div>
+    <div class="cmd"><button class="copy">复制</button><pre><code>cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+npm run build
+cd D:\AI-SOURCE\jiupainews
+docker buildx build --builder desktop-linux --load \
+  -f training-center/deploy/offline/Dockerfile.offline \
+  --build-arg FE_DIST=training-center/training-ui/dist \
+  -t training-center:新版本号 .</code></pre></div>
+    <div class="note warn">不要用 <code>DOCKER_BUILDKIT=1 docker build</code>：本机连不上 Docker Hub 时，它会去拉 <code>moby/buildkit</code> 镜像而超时失败。要用上面的 <code>docker buildx build --builder desktop-linux --load</code>。</div>
+    <p data-page-node-id="B2LIuXpgGr0m1hZDF0RWoJ">然后把新的 tar.gz 拖到 <code data-page-node-id="CFDa1A66SNAHlmD6YrIHEI">/home/docker</code>，执行：</p>
+    <div class="cmd" data-page-node-id="pxQ3AvFVSWomwkeMZJpth3"><button class="copy" data-page-node-id="ohMV1MCbnVxVlUUkH7i4Q7">复制</button><pre data-page-node-id="5qAX9oA5vMHp2BQmfgMC6k"><code data-page-node-id="Gm0W07wX25I3nUTUiqBdr0">cd /home/docker/training-center &amp;&amp; bash deploy/linux/deploy.sh --image training-center:新版本号</code></pre></div>
+    <p class="expect" data-page-node-id="IznPZvdHQ7G0Rw05fEAnE2">旧容器会自动打上 <code data-page-node-id="6bEGRxp9bp0IDsXfeAJhxF">rollback-</code> 标签、数据会先备份再替换，出问题能退回去。</p>
+  </div>
+
+  <div class="card" data-page-node-id="JDrXYqyF6JuHMPPXduYlTE">
+    <h2 data-page-node-id="bXRJDm465hwjynX9ViCv7p"><span class="step" data-page-node-id="KnEtx6Ndn7lGGbfSMjBAsU">i</span>几个要知道的限制</h2>
+    <ul data-page-node-id="Kra5iGYiD4HckieM4yX6uA">
+      <li data-page-node-id="9028cNfUQT3VNCPs7C6fki"><b data-page-node-id="NSt7DfHtwgjehFQ4Vw0W0X">只能单路判题</b>：容器内存上限 1G + JVM 堆 256M，同时跑两路会 OOM。要并发得调大 <code data-page-node-id="FtBpwCULtGygDWRYmJIxNO">TRAINING_MEMORY_LIMIT</code>。</li>
+      <li data-page-node-id="HtHBRnQev3IfTUxXs6wK9Q"><b data-page-node-id="OKVoATBsh6uLkbSN0jECK7">目录沙箱 ≠ 安全隔离</b>：判题进程和 Web 共用容器、用户和文件权限。这是给可信人员用的训练平台，不要开放给不可信用户提交代码。</li>
+      <li data-page-node-id="TJoALzAKpJfQCCfEpsaJCG"><b data-page-node-id="9ytUMtOfGxRYkx2wDq5NhZ">SQLite 单实例</b>：数据目录别挂到 NFS / CIFS 上。</li>
+      <li data-page-node-id="zAbaHCTSKLp6WyC701vf1F"><b data-page-node-id="NGFd0HLGtcetyXouFsKHxB">数据位置</b>：<code data-page-node-id="oSW99LACDr6gdr2erthj8N">/home/docker/training-data/training-runtime</code>，备份在 <code data-page-node-id="rKpVnXzOY29qOAeDoHiu9c">/home/docker/backups</code>。手动备份跑 <code data-page-node-id="BGRvR9aezOPovM8XRJ4078">bash /home/docker/training-center/deploy/linux/backup.sh</code>。</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var code = btn.parentElement.querySelector('code');
+    var text = code.innerText;
+    function done(){
+      btn.textContent = '已复制';
+      btn.classList.add('done');
+      setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('done'); }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch(e) { btn.textContent = '手动复制'; }
+      document.body.removeChild(ta);
+    }
+  });
+});
+</script>
+</body>
+</html>

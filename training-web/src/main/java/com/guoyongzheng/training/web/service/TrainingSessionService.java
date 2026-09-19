@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import com.guoyongzheng.training.judge.CaseResult;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -497,9 +498,30 @@ public class TrainingSessionService {
             String stdoutExcerpt,
             String stderrExcerpt,
             String compileHint,
+            List<CaseResult> cases,
             Instant nextReviewAt,
             boolean sessionCompleted,
             TrainingSessionResponse session) {
+    }
+
+    /**
+     * Outcome of a dry-run ("Run" button). Deliberately carries no judgement id, review date or
+     * session state: running the public cases must not look like a submission to the user, and it
+     * must not move the spaced-repetition schedule.
+     */
+    public record RunAttemptResponse(
+            String attemptId,
+            String questionId,
+            String runnerKind,
+            String status,
+            Integer passedCount,
+            Integer failedCount,
+            long durationMillis,
+            int exitCode,
+            List<CaseResult> cases,
+            String stdoutExcerpt,
+            String stderrExcerpt,
+            String compileHint) {
     }
 
     public record OpenSandboxResponse(

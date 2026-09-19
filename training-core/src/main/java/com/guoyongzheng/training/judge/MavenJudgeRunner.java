@@ -61,10 +61,26 @@ public final class MavenJudgeRunner implements JudgeRunner {
             TestCounts counts = process.stdoutTruncated() || process.stderrTruncated()
                     ? TestCounts.UNKNOWN
                     : counts(process.stdout(), process.stderr());
-            return JudgeSupport.result(process, counts);
+            // Surefire always writes target/surefire-reports/TEST-*.xml, even under -q, and those
+            // files are the only place that carries per-case detail. A compile failure leaves no
+            // report behind, which correctly degrades to an empty case list.
+            List<CaseResult> cases = SurefireReportParser.parse(prepared.workingDirectory());
+            // Under -q Maven prints no "Tests run:" summary, so the console-derived counts stay
+            // unknown even for a perfectly good run. Fall back to the reports we just parsed.
+            return JudgeSupport.result(process, counts.known() ? counts : countsFrom(cases))
+                    .withCases(cases);
         } catch (IOException | RuntimeException exception) {
             return JudgeSupport.environmentError(safeMessage(exception), started);
         }
+    }
+
+    private static TestCounts countsFrom(List<CaseResult> cases) {
+        if (cases.isEmpty()) {
+            return TestCounts.UNKNOWN;
+        }
+        long passed = cases.stream().filter(c -> c.status() == CaseStatus.PASSED).count();
+        long failed = cases.stream().filter(CaseResult::failed).count();
+        return new TestCounts((int) passed, (int) failed);
     }
 
     private static TestCounts counts(String stdout, String stderr) {

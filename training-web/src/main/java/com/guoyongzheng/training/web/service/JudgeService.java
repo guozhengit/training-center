@@ -51,6 +51,7 @@ import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Handles automatic judge execution: sandbox provisioning, Maven/Pytest invocation,
@@ -107,6 +108,56 @@ public class JudgeService {
             throw new IllegalArgumentException("Auto judge only supports CODING attempts: " + attemptId);
         }
 
+        return withJudgeSlot(progress, () -> runJudge(attemptId, attempt, question, progress));
+    }
+
+    /**
+     * Runs the attempt's tests without recording anything: no judgement row, no attempt state
+     * transition, no review scheduling. This is the "Run" button next to "Submit" — the user has to
+     * be able to poke at the public cases as often as they like without it counting as a submission.
+     */
+    public TrainingSessionService.RunAttemptResponse runAttempt(String attemptId) {
+        return runAttemptWithProgress(attemptId, event -> { });
+    }
+
+    public TrainingSessionService.RunAttemptResponse runAttemptWithProgress(
+            String attemptId, Consumer<JudgeProgressEvent> progress) {
+        log.info("[Judge] dry-run attemptId={}", attemptId);
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "校验答题状态"));
+        TrainingDatabase database = databaseProvider.readyDatabase();
+        AttemptRepository.Attempt attempt = readAttempt(database, attemptId);
+        if (attempt.status() != AttemptStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Attempt is not in progress: " + attemptId);
+        }
+        QuestionDescriptor question = readQuestion(database, attempt.questionId());
+        if (question.track() != Track.CODING) {
+            throw new IllegalArgumentException("Auto judge only supports CODING attempts: " + attemptId);
+        }
+        return withJudgeSlot(progress, () -> {
+            PreparedRun prepared = prepareRun(attempt, question, progress);
+            JudgementResult result = executeRunner(prepared, progress);
+            String compileHint = result.status() != JudgementStatus.PASSED
+                    ? CompileErrorDiagnostics.compileHint(result.stderr())
+                    : null;
+            progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.COMPLETED,
+                    result.status() == JudgementStatus.PASSED ? "运行通过" : "运行未通过"));
+            return new TrainingSessionService.RunAttemptResponse(
+                    attempt.id(),
+                    question.id(),
+                    prepared.mapping().runnerKind().name(),
+                    result.status().name(),
+                    result.passedCount(),
+                    result.failedCount(),
+                    result.duration().toMillis(),
+                    result.exitCode(),
+                    result.cases(),
+                    excerpt(result.stdout()),
+                    excerpt(result.stderr()),
+                    compileHint);
+        });
+    }
+
+    private <T> T withJudgeSlot(Consumer<JudgeProgressEvent> progress, Supplier<T> action) {
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.VALIDATING, "等待可用判题席位"));
         boolean slotHeld = false;
         try {
@@ -119,7 +170,7 @@ public class JudgeService {
             throw new IllegalStateException("判题排队被中断", exception);
         }
         try {
-            return runJudge(attemptId, attempt, question, progress);
+            return action.get();
         } finally {
             if (slotHeld) {
                 judgeSlots.release();
@@ -127,11 +178,13 @@ public class JudgeService {
         }
     }
 
-    private TrainingSessionService.JudgeAttemptResponse runJudge(
-            String attemptId,
-            AttemptRepository.Attempt attempt,
-            QuestionDescriptor question,
-            Consumer<JudgeProgressEvent> progress) {
+    private record PreparedRun(StarterMapping mapping, SandboxManifest manifest, Path sandboxPath) {
+    }
+
+    /** Provisions the sandbox and cleans stale build output; shared by judge and dry-run. */
+    private PreparedRun prepareRun(AttemptRepository.Attempt attempt,
+                                   QuestionDescriptor question,
+                                   Consumer<JudgeProgressEvent> progress) {
         Path workspace = databaseProvider.workspace();
         TrainingDatabase database = databaseProvider.readyDatabase();
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_PREPARING, "准备沙箱环境"));
@@ -142,23 +195,37 @@ public class JudgeService {
                 .toAbsolutePath()
                 .normalize();
         progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.SANDBOX_READY, "沙箱就绪"));
-
         cleanBuildArtifacts(sandboxPath);
+        return new PreparedRun(mapping, manifest, sandboxPath);
+    }
+
+    /** Executes the runner and returns the raw outcome; callers decide what to persist. */
+    private JudgementResult executeRunner(PreparedRun prepared, Consumer<JudgeProgressEvent> progress) {
+        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.JUDGE_RUNNING,
+                prepared.mapping().runnerKind() == RunnerKind.MAVEN ? "Maven 编译并执行测试" : "Pytest 执行测试"));
+        JudgeRunner runner = prepared.mapping().runnerKind() == RunnerKind.MAVEN
+                ? new MavenJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady)
+                : new PytestJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady);
+        return runner.judge(new JudgeRequest(
+                prepared.sandboxPath(),
+                prepared.manifest(),
+                JUDGE_TIMEOUT,
+                judgeEnvironment(prepared.mapping().runnerKind())));
+    }
+
+    private TrainingSessionService.JudgeAttemptResponse runJudge(
+            String attemptId,
+            AttemptRepository.Attempt attempt,
+            QuestionDescriptor question,
+            Consumer<JudgeProgressEvent> progress) {
+        TrainingDatabase database = databaseProvider.readyDatabase();
+        PreparedRun prepared = prepareRun(attempt, question, progress);
 
         String judgementId = "web-judgement-" + UUID.randomUUID();
         Instant startedAt = clock.instant();
         appendRunningJudgement(database, judgementId, attempt.id(), startedAt);
 
-        progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.JUDGE_RUNNING,
-                mapping.runnerKind() == RunnerKind.MAVEN ? "Maven 编译并执行测试" : "Pytest 执行测试"));
-        JudgeRunner runner = mapping.runnerKind() == RunnerKind.MAVEN
-                ? new MavenJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady)
-                : new PytestJudgeRunner(new LocalProcessRunner(), this::isSandboxStructurallyReady);
-        JudgementResult result = runner.judge(new JudgeRequest(
-                sandboxPath,
-                manifest,
-                JUDGE_TIMEOUT,
-                judgeEnvironment(mapping.runnerKind())));
+        JudgementResult result = executeRunner(prepared, progress);
         Instant finishedAt = clock.instant();
         String compileHint = result.status() != JudgementStatus.PASSED
                 ? CompileErrorDiagnostics.compileHint(result.stderr())
@@ -203,8 +270,8 @@ public class JudgeService {
                         attempt.id(),
                         attempt.sessionId(),
                         question.id(),
-                        mapping.runnerKind().name(),
-                        sandboxPath.toString(),
+                            prepared.mapping().runnerKind().name(),
+                            prepared.sandboxPath().toString(),
                         result.status().name(),
                         verdict,
                         result.passedCount(),
@@ -213,10 +280,11 @@ public class JudgeService {
                         result.exitCode(),
                         excerpt(result.stdout()),
                         excerpt(result.stderr()),
-                        compileHint,
-                        nextReviewAt,
-                        sessionCompleted,
-                        readSession(connection, attempt.sessionId()));
+                            compileHint,
+                            result.cases(),
+                            nextReviewAt,
+                            sessionCompleted,
+                            readSession(connection, attempt.sessionId()));
             });
             progress.accept(JudgeProgressEvent.of(JudgeProgressEvent.Stage.COMPLETED,
                     result.status() == JudgementStatus.PASSED ? "判题通过" : "判题未通过"));
