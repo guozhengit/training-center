@@ -18,7 +18,7 @@ class WorkspaceLocatorTest {
                 null, null, null, null, null, null, null));
         Path workspace = locator.locateFrom(nested);
 
-        assertThat(workspace.resolve("training-center/config")).isDirectory();
+        assertThat(workspace.resolve("config")).isDirectory();
         assertThat(workspace.resolve("output/coding-ai-exam/catalog/questions.json")).isRegularFile();
     }
 }

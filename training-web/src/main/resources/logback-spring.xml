@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId:-no-trace}] %logger{36} - %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出：按天滚动，保留 30 天，单文件 100MB -->
+    <!-- 路径相对工作区根(容器里 CWD=/workspace), 即 output/training-runtime/logs,
+         该目录已 chown 给运行用户(uid 1000); 不要改成 /var/log 之类的绝对路径,
+         否则容器以非 root 启动时会因无法创建目录导致 Logging system failed to initialize -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>output/training-runtime/logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>output/training-runtime/logs/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- DIAG 专用日志：单独文件，方便排障时快速查 -->
+    <appender name="DIAG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>output/training-runtime/logs/diag.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>output/training-runtime/logs/diag.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- DIAG logger：只 DiagnosticService 的日志进 diag.log，也进 root -->
+    <logger name="com.guoyongzheng.training.web.service.DiagnosticService" level="INFO" additivity="true">
+        <appender-ref ref="DIAG_FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

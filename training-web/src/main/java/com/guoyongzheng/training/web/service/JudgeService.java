@@ -669,9 +669,9 @@ public class JudgeService {
     }
 
     private StarterMapping starterMapping(Path workspace, String questionId) {
-        Path mappingPath = workspace.resolve("training-center/config/starter-mapping.json");
-        Path odMappingPath = workspace.resolve("training-center/config/od-starter-mapping.json");
-        Path importedMappingPath = workspace.resolve("training-center/config/imported-starter-mapping.json");
+        Path mappingPath = workspace.resolve("config/starter-mapping.json");
+        Path odMappingPath = workspace.resolve("config/od-starter-mapping.json");
+        Path importedMappingPath = workspace.resolve("config/imported-starter-mapping.json");
         StarterMapping result = findInMappingFile(mappingPath, questionId);
         if (result == null && Files.exists(odMappingPath)) {
             result = findInMappingFile(odMappingPath, questionId);
@@ -712,7 +712,7 @@ public class JudgeService {
     private SandboxService sandboxService(Path workspace) {
         return new SandboxService(new SandboxPolicy(
                 workspace.resolve("output/coding-ai-exam"),
-                workspace.resolve("training-center/starters"),
+                workspace.resolve("starters"),
                 sandboxRoot(workspace)), Clock.systemUTC());
     }
 
@@ -744,7 +744,14 @@ public class JudgeService {
 
     private static Path starterRelativePath(String value) {
         Path raw = Path.of(value);
-        Path prefix = Path.of("training-center", "starters");
+        // Keep backward compatibility with starter_path values written before the
+        // workspace root became training-center itself (old format used the
+        // "starters/..." prefix relative to the former parent root).
+        Path legacyPrefix = Path.of("training-center", "starters");
+        if (raw.startsWith(legacyPrefix) && raw.getNameCount() > legacyPrefix.getNameCount()) {
+            return legacyPrefix.relativize(raw);
+        }
+        Path prefix = Path.of("starters");
         if (raw.startsWith(prefix) && raw.getNameCount() > prefix.getNameCount()) {
             return prefix.relativize(raw);
         }

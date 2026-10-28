@@ -42,7 +42,7 @@ public class WorkspaceLocator {
     }
 
     private static boolean isWorkspaceRoot(Path candidate) {
-        return Files.isDirectory(candidate.resolve("training-center/config"))
+        return Files.isDirectory(candidate.resolve("config"))
                 && Files.isRegularFile(candidate.resolve("output/coding-ai-exam/catalog/questions.json"));
     }
 }

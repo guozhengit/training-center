@@ -20,9 +20,12 @@ import java.util.Map;
 public class DiagnosticController {
 
     private final DiagnosticService service;
+    private final com.guoyongzheng.training.web.service.TokenBucketRateLimiter rateLimiter;
 
-    public DiagnosticController(DiagnosticService service) {
+    public DiagnosticController(DiagnosticService service,
+                                 com.guoyongzheng.training.web.service.TokenBucketRateLimiter rateLimiter) {
         this.service = service;
+        this.rateLimiter = rateLimiter;
     }
 
     @Operation(summary = "List all diagnostic cases")
@@ -101,5 +104,114 @@ public class DiagnosticController {
     @GetMapping("/deadlock")
     public Map<String, Object> deadlock() throws Exception {
         return service.deadlock();
+    }
+
+    @Operation(summary = "Trigger heap dump via jcmd")
+    @GetMapping("/heap-dump")
+    public Map<String, Object> heapDump() {
+        return service.heapDump();
+    }
+
+    @Operation(summary = "17 Unbounded queue thread pool (task pileup)")
+    @GetMapping("/threadpool-unbounded")
+    public Map<String, Object> threadpoolUnbounded(@RequestParam(name = "tasks", defaultValue = "500") int tasks,
+                                                    @RequestParam(name = "slowMs", defaultValue = "100") int slowMs) throws Exception {
+        return service.threadpoolUnbounded(tasks, slowMs);
+    }
+
+    @Operation(summary = "18 Thread pool starvation (all threads busy, new task waits)")
+    @GetMapping("/threadpool-starve")
+    public Map<String, Object> threadpoolStarve(@RequestParam(name = "holdSeconds", defaultValue = "10") int holdSeconds) throws Exception {
+        return service.threadpoolStarve(holdSeconds);
+    }
+
+    @Operation(summary = "19 Token bucket rate limiter burst test")
+    @GetMapping("/rate-limit")
+    public Map<String, Object> rateLimit(@RequestParam(name = "n", defaultValue = "50") int n) {
+        return rateLimiter.burst(n);
+    }
+
+    @Operation(summary = "20 Show traceId + logback file output")
+    @GetMapping("/trace-demo")
+    public Map<String, Object> traceDemo() {
+        Map<String, Object> m = new java.util.LinkedHashMap<>();
+        m.put("case", "20 traceId + logback 文件落盘");
+        m.put("rootCause", "MDC Filter 给每个请求生成 traceId，logback pattern %X{traceId} 打印，同时落盘到 /var/log/training-center/app.log 和 diag.log");
+        m.put("observed", "看响应头 X-Trace-Id；grep traceId /var/log/training-center/diag.log");
+        m.put("howToVerify", "curl -i 看响应头；grep <traceId> /var/log/training-center/diag.log");
+        return m;
+    }
+
+    @Operation(summary = "16a OOM Java heap space (fills heap, triggers auto heap dump then exit)")
+    @GetMapping("/oom-heap")
+    public Map<String, Object> oomHeap() {
+        return service.oomHeap();
+    }
+
+    @Operation(summary = "16b OOM Direct buffer memory (off-heap)")
+    @GetMapping("/oom-direct")
+    public Map<String, Object> oomDirect() {
+        return service.oomDirect();
+    }
+
+    @Operation(summary = "16c OOM Unable to create new native thread")
+    @GetMapping("/oom-thread")
+    public Map<String, Object> oomThread() {
+        return service.oomThread();
+    }
+
+    @Operation(summary = "16d OOM GC overhead limit exceeded")
+    @GetMapping("/oom-gc-overhead")
+    public Map<String, Object> oomGcOverhead() {
+        return service.oomGcOverhead();
+    }
+
+    @Operation(summary = "21 CLOSE_WAIT connection leak (server accepts but never closes)")
+    @GetMapping("/conn-leak")
+    public Map<String, Object> connLeak(@RequestParam(name = "mode", defaultValue = "start") String mode,
+                                        @RequestParam(name = "sockets", defaultValue = "50") int sockets) throws Exception {
+        return service.connLeak(mode, sockets);
+    }
+
+    @Operation(summary = "22 Short-lived connections piling up TIME_WAIT")
+    @GetMapping("/short-conn")
+    public Map<String, Object> shortConn(@RequestParam(name = "n", defaultValue = "100") int n) throws Exception {
+        return service.shortConn(n);
+    }
+
+    @Operation(summary = "23 Deleted-but-held fd (lsof | grep deleted)")
+    @GetMapping("/deleted-fd")
+    public Map<String, Object> deletedFd(@RequestParam(name = "mode", defaultValue = "start") String mode,
+                                         @RequestParam(name = "mb", defaultValue = "64") int mb) throws Exception {
+        return service.deletedFd(mode, mb);
+    }
+
+    @Operation(summary = "24 Disk fill drill (⚠️ cloud server only)")
+    @GetMapping("/disk-full")
+    public Map<String, Object> diskFull(@RequestParam(name = "mode", defaultValue = "start") String mode,
+                                        @RequestParam(name = "mb", defaultValue = "1024") int mb) throws Exception {
+        return service.diskFull(mode, mb);
+    }
+
+    @Operation(summary = "25 Network latency injection via tc netem (⚠️ cloud server only, affects port 8080 only)")
+    @GetMapping("/net-latency")
+    public Map<String, Object> netLatency(@RequestParam(name = "mode", defaultValue = "on") String mode,
+                                          @RequestParam(name = "delayMs", defaultValue = "200") int delayMs) throws Exception {
+        return service.netLatency(mode, delayMs);
+    }
+
+    @Operation(summary = "26 Disk IO spike (background writer, %util / wa / D-state)")
+    @GetMapping("/io-spike")
+    public Map<String, Object> ioSpike(@RequestParam(name = "mode", defaultValue = "start") String mode,
+                                       @RequestParam(name = "mb", defaultValue = "200") int mb,
+                                       @RequestParam(name = "seconds", defaultValue = "10") int seconds) throws Exception {
+        return service.ioSpike(mode, mb, seconds);
+    }
+
+    @Operation(summary = "27 Lock contention (many threads BLOCKED on one lock)")
+    @GetMapping("/lock-contention")
+    public Map<String, Object> lockContention(@RequestParam(name = "threads", defaultValue = "30") int threads,
+                                              @RequestParam(name = "ms", defaultValue = "3000") int ms) throws Exception {
+        return service.lockContention(threads, ms);
     }
 }

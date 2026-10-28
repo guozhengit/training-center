@@ -39,6 +39,10 @@ spring:
       host: ${TRAINING_REDIS_HOST:localhost}
       port: ${TRAINING_REDIS_PORT:6379}
       password: ${TRAINING_REDIS_PASSWORD:}
+      username: ${TRAINING_REDIS_USERNAME:}
+      sentinel:
+        master: ${TRAINING_REDIS_SENTINEL_MASTER:}
+        nodes: ${TRAINING_REDIS_SENTINEL_NODES:}
 
 training:
   workspace: ${TRAINING_WORKSPACE:}

@@ -55,7 +55,7 @@ public class DashboardService {
         return new HealthResponse(
                 "UP",
                 workspace.toString(),
-                Files.isDirectory(workspace.resolve("training-center/config")),
+                Files.isDirectory(workspace.resolve("config")),
                 Files.isRegularFile(workspace.resolve("output/coding-ai-exam/catalog/questions.json")),
                 Files.isRegularFile(report),
                 redisAvailable,
@@ -222,7 +222,7 @@ public class DashboardService {
         if (question.track() != Track.CODING || question.starterRef() == null) {
             return null;
         }
-        String prefix = "training-center/starters/";
+        String prefix = "starters/";
         if (!question.starterRef().startsWith(prefix)) {
             return null;
         }
