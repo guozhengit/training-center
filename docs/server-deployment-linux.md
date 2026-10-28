@@ -115,10 +115,10 @@ starters
 docs
 ```
 
-如果需要自动判题，还应确认工作区内有：
+如果需要自动判题，还应确认服务器工作区内存在题库（离线镜像模式已烤入容器 `/workspace/output`；若走服务器端构建，则 `sync-data.ps1` 同步后位于 `training-center/output`）：
 
 ```bash
-ls /home/docker/output/coding-ai-exam
+ls /home/docker/training-center/output/coding-ai-exam
 ```
 
 ## 5. 构建前端

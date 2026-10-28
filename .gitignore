@@ -36,3 +36,9 @@ desktop.ini
 .settings/
 .classpath
 .project
+
+# Training question bank & runtime data (migrated under repo root)
+/output/
+
+# WorkBuddy agent workspace data (runtime, not source)
+.workbuddy/

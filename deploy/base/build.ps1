@@ -5,7 +5,7 @@
 #   .\deploy\base\build.ps1            # 默认版本
 #   $env:MAVEN_VERSION = "3.9.9"; .\deploy\base\build.ps1
 #
-# 必须在工作区根目录 (jiupai, 含 training-center/ 与 output/) 下执行
+# 必须在 training-center 的父目录下执行 (training-center 即工作区根, output/ 已并入其内)
 # ============================================================
 $ErrorActionPreference = "Stop"
 

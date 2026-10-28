@@ -12,9 +12,9 @@
 !training-center/deploy/
 !training-center/deploy/maven/**
 !training-center/deploy/npm/**
-!output/
-!output/coding-ai-exam/**
-!output/interview/**
+!training-center/output/
+!training-center/output/coding-ai-exam/**
+!training-center/output/interview/**
 **/target/**
 **/dist/**
 **/node_modules/**

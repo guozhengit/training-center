@@ -3,7 +3,7 @@
 Training Center 数据同步脚本 (Windows 本机 → Linux 服务器)
 
 用途:
-  output/coding-ai-exam 与 output/interview 不在 git 仓库内,
+  training-center/output/coding-ai-exam 与 training-center/output/interview 不在 git 仓库内,
   而是构建应用镜像时烘焙进镜像。本地改动(尤其是 `training import`
   导入的题目内容)必须同步到服务器后才能生效。
 
@@ -30,8 +30,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# 工作区根目录: <repo>/deploy -> <repo> -> jiupainews 根目录
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+# 工作区根目录(即 training-center 本身): <repo>/deploy -> <repo>
+$repoRoot = Split-Path -Parent $PSScriptRoot
 $outDir   = Join-Path $repoRoot "output"
 
 if (-not (Test-Path $outDir)) {
@@ -47,12 +47,12 @@ foreach ($name in $dirs) {
         continue
     }
 
-    Write-Host "==> mkdir -p $RemoteBase/output/$name" -ForegroundColor Cyan
-    & ssh -p $Port $Server "mkdir -p '$RemoteBase/output/$name'"
+    Write-Host "==> mkdir -p $RemoteBase/training-center/output/$name" -ForegroundColor Cyan
+    & ssh -p $Port $Server "mkdir -p '$RemoteBase/training-center/output/$name'"
     if ($LASTEXITCODE -ne 0) { throw "ssh 失败, 请检查服务器地址与公钥登录" }
 
     Write-Host "==> 同步 $name ($((Get-ChildItem $src -Recurse -File).Count) 个文件) ..." -ForegroundColor Cyan
-    & scp -r -P $Port -o StrictHostKeyChecking=accept-new "$src" "${Server}:$RemoteBase/output/"
+    & scp -r -P $Port -o StrictHostKeyChecking=accept-new "$src" "${Server}:$RemoteBase/training-center/output/"
     if ($LASTEXITCODE -ne 0) { throw "scp 同步 $name 失败" }
 }
 

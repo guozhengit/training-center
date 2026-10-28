@@ -66,10 +66,10 @@ class DeploymentTest(unittest.TestCase):
         for name in ("Dockerfile", ".dockerignore", "Dockerfile.dockerignore"):
             if (REPO / name).exists():
                 shutil.copy(REPO / name, self.repo / name)
-        catalog = self.root / "output/coding-ai-exam/catalog"
+        catalog = self.repo / "output/coding-ai-exam/catalog"
         catalog.mkdir(parents=True)
         (catalog / "questions.json").write_text("[]", encoding="utf-8")
-        (self.root / "output/interview").mkdir()
+        (self.repo / "output/interview").mkdir()
         self.data = self.root / "data with spaces"
         (self.data / "training-runtime/database").mkdir(parents=True)
         (self.data / "training-runtime/database/training.db").write_bytes(b"test-data")

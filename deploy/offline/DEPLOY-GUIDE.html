@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-page-node-id="Tm71HEIZF55J9lAwJjM23Y">
 <head data-page-node-id="nHSVi0GRWBN6Te0hI4NAKy">
 <meta charset="UTF-8" data-page-node-id="bHSWIw8LJLLCCEqbxjmcTo">
@@ -95,7 +95,7 @@
 
   <div class="card" data-page-node-id="Ax9h3eavjpTtj0JmVSDE3F">
     <h2 data-page-node-id="uGjuqCraneASh9yLzT1wPc"><span class="step" data-page-node-id="FFryLNCHcxGxLhBvxt5mef">0</span>准备：三个文件</h2>
-    <p data-page-node-id="JzoPORtXxrjU0sxfT6wRLj">这三个文件已经在本地 <code data-page-node-id="0TDn7MBFkVtIMbmIskYquL">D:\AI-SOURCE\jiupainews</code> 下准备好了：</p>
+    <p data-page-node-id="JzoPORtXxrjU0sxfT6wRLj">这三个文件已经在本地 <code data-page-node-id="0TDn7MBFkVtIMbmIskYquL">D:\AI-SOURCE</code> 下准备好了：</p>
     <table class="files" data-page-node-id="9Njb4CmyWYdgGavuKLro3v">
       <tr data-page-node-id="WluAnyM9EEWt5ORE7yoK8i"><td data-page-node-id="pqCAo84Lc6d6cXzmlAsYVC"><code data-page-node-id="KTToYWkDA88A01BbgeFQ33">training-center-20260914-fix2.tar.gz</code></td><td data-page-node-id="pEILtiCcVgyAYmLiO08Wdf">403 MB · 应用镜像（算法训练台版）</td></tr>
       <tr data-page-node-id="OlHeazWvZMiOCG5dATdzr3"><td data-page-node-id="B60klAsoPaKH5f2S1uuLwF"><code data-page-node-id="J4BR0KOqaANlVdgXHUUNdf">training-center-src-20260914-fix2.tar.gz</code></td><td data-page-node-id="XxKRplRbHlQUqaoSRaU8Tg">39 KB · 部署脚本</td></tr>
@@ -118,7 +118,7 @@
     <h2 data-page-node-id="suDNFUivqaTkjM7uAljqii"><span class="step" data-page-node-id="FRoNEAe58H67lee3T3VhXj">2</span>拖文件到服务器</h2>
     <p data-page-node-id="PqhulmghpBqqEJaFUDvFyJ">看 FinalShell 窗口<b data-page-node-id="utpabH0m9GDQJwLA8VWluX">底部</b>，点「文件传输」标签，会出现左右两栏：</p>
     <ul data-page-node-id="KqfCewFlL3y2617rKt71Yn">
-      <li data-page-node-id="mYnv9FHDOa1IgzVjznDWYc"><b data-page-node-id="PevvtyId6E8tW6jrdAhfjB">左栏（本地）</b>：地址栏填 <code data-page-node-id="y1G5tFk8x6SPzHdkyQkW0b">D:\AI-SOURCE\jiupainews</code> 回车</li>
+      <li data-page-node-id="mYnv9FHDOa1IgzVjznDWYc"><b data-page-node-id="PevvtyId6E8tW6jrdAhfjB">左栏（本地）</b>：地址栏填 <code data-page-node-id="y1G5tFk8x6SPzHdkyQkW0b">D:\AI-SOURCE</code> 回车</li>
       <li data-page-node-id="S5rP6CtGGvou6D9zmkhRIN"><b data-page-node-id="oPAOY3HxDABHyRbqpVO19J">右栏（远程）</b>：导航到 <code data-page-node-id="i5jzuM5Q9CNSu6zIH4ngIv">/home/docker</code>（确认不是 <code data-page-node-id="A12T86ivZIV4vL6KCcijFG">/root</code>）</li>
     </ul>
     <p data-page-node-id="nFHMEyC78flG3aMBkFdNmG">把第 0 步那三个文件从左栏<b data-page-node-id="z1lIZrP3gaO3nHa7CQ9GPO">拖到右栏</b>。下方会显示进度和速度。</p>
@@ -226,14 +226,14 @@ docker logs --tail 100 training-center</code></pre></div>
 <div class="card" data-page-node-id="hUzX65lZpqBJHBDJqM6JtH">
     <h2 data-page-node-id="SiUI8qiwlMg6xMZY9jXyd9"><span class="step" data-page-node-id="5lMKYguKB9RXoiVwbJPn34">+</span>以后怎么更新</h2>
     <p data-page-node-id="yTWlPgx1oDCCz8JIPYUmh3">代码改了之后，在本地跑一条命令就行（需要 Docker Desktop 开着）。它会<b data-page-node-id="x1">自动从现有镜像抽取前端产物 → 构建 → 导出 → 算校验值</b>：</p>
-    <div class="cmd" data-page-node-id="IFfYoLGGRa4omRIZbwDn70"><button class="copy" data-page-node-id="eeen3ZMtzwa2UoyUGmgu78">复制</button><pre data-page-node-id="4zOkIPCzBarpM3BTe1vGGb"><code data-page-node-id="4TBRz0kgzBurJLTL8zarH8">cd D:\AI-SOURCE\jiupainews\training-center
+    <div class="cmd" data-page-node-id="IFfYoLGGRa4omRIZbwDn70"><button class="copy" data-page-node-id="eeen3ZMtzwa2UoyUGmgu78">复制</button><pre data-page-node-id="4zOkIPCzBarpM3BTe1vGGb"><code data-page-node-id="4TBRz0kgzBurJLTL8zarH8">cd D:\AI-SOURCE\training-center
 .\deploy\offline\build-offline.ps1 -Tag 新版本号</code></pre></div>
     <div class="note warn" data-page-node-id="6BWpTLbFEcuRBN4seZxWiN">为什么要用这个脚本而不是标准 <code data-page-node-id="dgjomhxFxsbv06b6EDaydK">Dockerfile</code>？标准版第一步要 <code data-page-node-id="bgTbmF5nTkuY3cHpzGRTtR">docker pull node:20-alpine</code> 来编译前端，而本机连不上 Docker Hub（没有 HTTPS 代理，<code data-page-node-id="x2">registry-1.docker.io</code> 直接超时）。<br data-page-node-id="Fcrslj8H9Byw0iSKuXEIfx">
     脚本改走 <code data-page-node-id="x3">deploy/offline/Dockerfile.offline</code>：跳过前端编译，直接从已有镜像里把 <code data-page-node-id="x4">BOOT-INF/classes/static</code> 抠出来用。<b data-page-node-id="x5">前端代码没改时这是安全的</b>。<br data-page-node-id="Fcrslj8H9Byw0iSKuXEIfx">
     如果改了 <code data-page-node-id="x6">training-ui</code>：npm registry 是通的，在 <code>training-ui</code> 下跑 <code>npm run build</code>，然后把 <code>FE_DIST</code> 指向 <code>training-center/training-ui/dist</code> 即可（<code>.dockerignore</code> 已为它开例外）：</div>
-    <div class="cmd"><button class="copy">复制</button><pre><code>cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+    <div class="cmd"><button class="copy">复制</button><pre><code>cd D:\AI-SOURCE\training-center\training-ui
 npm run build
-cd D:\AI-SOURCE\jiupainews
+cd D:\AI-SOURCE
 docker buildx build --builder desktop-linux --load \
   -f training-center/deploy/offline/Dockerfile.offline \
   --build-arg FE_DIST=training-center/training-ui/dist \

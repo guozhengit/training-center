@@ -1,4 +1,4 @@
-# Training Center 启动与部署指南
+﻿# Training Center 启动与部署指南
 
 本文档偏本地开发与通用启动说明。服务器部署请优先参考：
 
@@ -25,27 +25,26 @@ Maven  D:\Program Files (x86)\apache-maven-3.9.9
 
 ## 2. 工作区结构
 
-应用会通过 `TRAINING_WORKSPACE` 或自动向上查找定位工作区根目录。有效工作区需要同时存在：
+应用会通过 `TRAINING_WORKSPACE` 或自动向上查找定位工作区根目录（即 `training-center/` 目录本身）。有效工作区需要同时存在：
 
-- `training-center/config/`
+- `config/`
 - `output/coding-ai-exam/catalog/questions.json`
 
-推荐结构：
+推荐结构（自 2026-10-08 起 `output/` 已并入 `training-center/` 根目录）：
 
 ```text
-D:/AI-SOURCE/jiupainews/
-├─ training-center/
-│  ├─ config/
-│  ├─ starters/
-│  ├─ training-core/
-│  ├─ training-cli/
-│  ├─ training-web/
-│  ├─ training-ui/
-│  └─ deploy/
-└─ output/
-   ├─ coding-ai-exam/
-   ├─ interview/
-   └─ training-runtime/
+D:/AI-SOURCE/training-center/   ← 工作区根目录
+├─ config/                     ← 口述/项目/OD 题索引与 starter 映射
+├─ starters/                   ← 训练用 starter 代码（保留 TODO）
+├─ output/                     ← 只读题库 + 运行期数据
+│  ├─ coding-ai-exam/
+│  ├─ interview/
+│  └─ training-runtime/
+├─ training-core/
+├─ training-cli/
+├─ training-web/
+├─ training-ui/
+└─ deploy/
 ```
 
 ## 3. 后端启动
@@ -53,7 +52,7 @@ D:/AI-SOURCE/jiupainews/
 ### 3.1 编译与测试
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' test
@@ -64,10 +63,10 @@ $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
 ### 3.2 开发启动
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
-$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
+$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE'
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-core -am -DskipTests install
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -f training-web\pom.xml spring-boot:run
 ```
@@ -81,7 +80,7 @@ $env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
 ### 3.3 打包运行
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 npm --prefix training-ui run build
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-web -am -Pfrontend -DskipTests package
 java -jar training-web\target\training-web-1.0.0-SNAPSHOT.jar
@@ -101,7 +100,7 @@ java -jar training-web\target\training-web-1.0.0-SNAPSHOT.jar
 ## 5. 前端开发
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+cd D:\AI-SOURCE\training-center\training-ui
 npm install
 npm run dev
 ```
@@ -122,7 +121,7 @@ npm run build
 ## 6. CLI 工具
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-cli -am package
 java -jar training-cli\target\training-cli-1.0.0-SNAPSHOT.jar --help
 ```
@@ -140,12 +139,12 @@ java -jar training-cli\target\training-cli-1.0.0-SNAPSHOT.jar --help
 
 ## 7. Docker Compose 部署
 
-从 `jiupainews` 根目录构建镜像，因为 Dockerfile 需要读取 `output/coding-ai-exam`：
+从 `training-center` 的**父目录**构建镜像（构建上下文须包含 `training-center/` 子目录），因为 Dockerfile 需要读取 `training-center/output/coding-ai-exam`：
 
 先构建基础镜像（JDK + Maven + Python + pytest），再构建应用镜像：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews
+cd D:\AI-SOURCE
 docker build -f training-center/deploy/base/Dockerfile -t training-center-base:17 .
 docker build -f training-center/Dockerfile -t training-center:latest .
 ```
@@ -153,7 +152,7 @@ docker build -f training-center/Dockerfile -t training-center:latest .
 启动：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center\deploy
+cd D:\AI-SOURCE\training-center\deploy
 docker compose up -d
 ```
 
@@ -186,10 +185,10 @@ Compose 默认：
 
 ### Cannot locate workspace root
 
-确认从 `training-center` 或其子目录启动，且上级目录存在 `output/coding-ai-exam/catalog/questions.json`。也可以显式设置：
+确认从 `training-center` 目录或其子目录启动，且 `training-center/output/coding-ai-exam/catalog/questions.json` 存在。也可以显式设置工作区根：
 
 ```powershell
-$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
+$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\training-center'
 ```
 
 ### 判题返回环境错误
@@ -202,4 +201,4 @@ $env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
 
 ### Docker 构建找不到题库
 
-构建上下文必须是 `jiupainews` 根目录，不能直接用 `training-center` 子目录作为上下文。
+构建上下文必须是 `工作区` 根目录，不能直接用 `training-center` 子目录作为上下文。

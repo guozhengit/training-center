@@ -1,9 +1,10 @@
 # ============================================================
 # Training Center 应用镜像
 #
-# 构建上下文必须为工作区根目录 (jiupai 根目录), 需包含:
-#   - training-center/          (本仓库)
-#   - output/coding-ai-exam/    (只读题库, 判题资源)
+# 构建上下文必须为 training-center 的父目录 (含 training-center/ 子目录),
+# 因为本仓库 training-center/ 即工作区根, 且 output/ 已并入其内:
+#   - training-center/                      (本仓库 = 工作区根, 内含 config/ starters/ output/)
+#   - training-center/output/coding-ai-exam/ (只读题库, 判题资源)
 #
 # 运行时基础镜像 (JDK 17 + Maven + Python + pytest):
 #   - 镜像: training-center-base:17
@@ -77,18 +78,21 @@ COPY training-center/deploy/maven/settings.xml /opt/maven/conf/settings.xml
 RUN userdel -r ubuntu 2>/dev/null || true \
     && useradd -m -s /bin/bash -u 1000 training
 
-# Workspace layout:
-#   /workspace/training-center/config/       ← read-only question indexes
-#   /workspace/training-center/starters/     ← read-only starter code
-#   /workspace/output/coding-ai-exam/        ← read-only reference answers + tests
-#   /workspace/output/training-runtime/      ← MUTABLE: database, sandboxes, exports, logs
+# Workspace layout (TRAINING_WORKSPACE=/workspace, 故 /workspace 必须直接含
+# config/ 与 output/ —— 与 WorkspaceLocator.isWorkspaceRoot 判定一致):
+#   /workspace/config/                   ← read-only question indexes
+#   /workspace/starters/                 ← read-only starter code
+#   /workspace/output/coding-ai-exam/    ← read-only reference answers + tests
+#   /workspace/output/training-runtime/  ← MUTABLE: database, sandboxes, exports, logs
 WORKDIR /workspace
 
-# Copy read-only content (baked into image)
-COPY --chown=training:training training-center/config/ training-center/config/
-COPY --chown=training:training training-center/starters/ training-center/starters/
-COPY --chown=training:training output/coding-ai-exam/ output/coding-ai-exam/
-COPY --chown=training:training output/interview/ output/interview/
+# Copy read-only content (baked into image). With the new workspace model,
+# TRAINING_WORKSPACE=/workspace must directly contain config/ and output/,
+# so content is placed at /workspace/config, /workspace/starters, /workspace/output.
+COPY --chown=training:training training-center/config/ /workspace/config/
+COPY --chown=training:training training-center/starters/ /workspace/starters/
+COPY --chown=training:training training-center/output/coding-ai-exam/ /workspace/output/coding-ai-exam/
+COPY --chown=training:training training-center/output/interview/ /workspace/output/interview/
 
 # Create mutable runtime directories
 RUN mkdir -p output/training-runtime/database \

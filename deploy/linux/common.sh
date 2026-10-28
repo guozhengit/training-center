@@ -4,7 +4,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-WORKSPACE_ROOT="$(cd "$REPO_DIR/.." && pwd)"
+# 工作区根 = training-center 本身 (config/ 与 output/ 已并入其内)
+WORKSPACE_ROOT="$REPO_DIR"
 info() { printf '[training] %s\n' "$*"; }
 die() { printf '[training] ERROR: %s\n' "$*" >&2; exit 1; }
 

@@ -111,5 +111,5 @@ Write-Host '=== 触发远端一键部署 ===' -ForegroundColor Cyan
 ssh -p $Port -t $Server "cd $RemoteDir && bash first-deploy.sh"
 
 Write-Host ''
-Write-Host ('访问: http://<服务器IP>:9090/') -ForegroundColor Green
+Write-Host ('访问: http://<服务器IP>:9091/') -ForegroundColor Green
 Write-Host '如需查看日志: ssh 上去执行 docker logs --tail 100 training-center' -ForegroundColor Gray

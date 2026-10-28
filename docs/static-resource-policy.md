@@ -1,4 +1,4 @@
-# 静态资源管理策略
+﻿# 静态资源管理策略
 
 `training-ui/dist/` 和 `training-web/src/main/resources/static/` 都属于前端构建产物，不作为源码长期维护。
 
@@ -7,14 +7,14 @@
 开发阶段：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+cd D:\AI-SOURCE\training-center\training-ui
 npm run dev
 ```
 
 生产构建：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 npm --prefix training-ui run build
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-web -am -Pfrontend -DskipTests package
 ```

@@ -1,8 +1,9 @@
 services:
   training-center:
     build:
-      # 工作区根目录 (jiupai, 需包含 output/coding-ai-exam + output/interview)
-      # compose 位于 deploy/, 上两级即工作区根目录
+      # 工作区根 = training-center 本身 (output/ 已并入其内)。
+      # compose 位于 deploy/, 上两级即 training-center 的父目录(构建上下文),
+      # 其中 training-center/ 子目录即为工作区根。
       context: ../..
       dockerfile: training-center/Dockerfile
       args:

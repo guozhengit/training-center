@@ -1,8 +1,8 @@
-# Interview Training Center
+﻿# Interview Training Center
 
 本项目是一个本地面试训练中心，用于机试题、口述题和项目答辩训练。
 
-它采用 Java 17 + Maven 多模块后端、Spring Boot Web API、Vue 3 前端和 SQLite 本地数据库。只读题库来自 `output/coding-ai-exam` 与 `output/interview`，运行期数据统一写入 `output/training-runtime`。
+它采用 Java 17 + Maven 多模块后端、Spring Boot Web API、Vue 3 前端和 SQLite 本地数据库。只读题库位于本仓库内的 `output/coding-ai-exam` 与 `output/interview`（已并入 training-center 根目录），运行期数据写入 `output/training-runtime`。
 
 ## 模块结构
 
@@ -27,7 +27,7 @@ training-center/
 
 ## 后端测试
 
-在仓库根目录 `D:\AI-SOURCE\jiupainews` 或 `training-center` 目录执行：
+在仓库根目录（即 `training-center` 目录，例如 `D:\AI-SOURCE\training-center`）执行：
 
 ```powershell
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
@@ -40,7 +40,7 @@ $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
 ## 前端测试与构建
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+cd D:\AI-SOURCE\training-center\training-ui
 npm install
 npm run test:run
 npm run build
@@ -51,10 +51,10 @@ npm run build
 后端：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 $env:Path = 'D:\jdk\jdk-17.0.12\bin;' + $env:Path
-$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
+$env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\training-center'
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-core -am -DskipTests install
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -f training-web\pom.xml spring-boot:run
 ```
@@ -68,7 +68,7 @@ $env:TRAINING_WORKSPACE = 'D:\AI-SOURCE\jiupainews'
 前端开发模式：
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center\training-ui
+cd D:\AI-SOURCE\training-center\training-ui
 npm run dev
 ```
 
@@ -81,7 +81,7 @@ npm run dev
 ## CLI
 
 ```powershell
-cd D:\AI-SOURCE\jiupainews\training-center
+cd D:\AI-SOURCE\training-center
 $env:JAVA_HOME = 'D:\jdk\jdk-17.0.12'
 & 'D:\Program Files (x86)\apache-maven-3.9.9\bin\mvn.cmd' -pl training-cli -am package
 java -jar training-cli\target\training-cli-1.0.0-SNAPSHOT.jar --help
@@ -107,6 +107,8 @@ bash deploy/linux/deploy.sh
 详见 [docs/docker-deployment-linux.md](docs/docker-deployment-linux.md) 和 [deploy/linux/README.md](deploy/linux/README.md)。
 
 ## 数据边界
+
+> 自 2026-10-08 起，`output/` 已并入 `training-center/` 根目录，因此以下路径均相对于 `training-center/` 根目录（即工作区根）。
 
 - 只读题库：`output/coding-ai-exam`、`output/interview`
 - 可写运行期：`output/training-runtime`
