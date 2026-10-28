@@ -34,6 +34,8 @@ export default {
     prioritizeWrong: '优先错题/未见题',
     dueReviewOnly: '只抽到期复习',
     start: '开始训练',
+    randomHint: '随机抽题：按下面条件随机抽取，未做过的题优先出现。',
+    randomStart: '随机抽题',
     busy: '处理中...',
     created: '已创建 {mode} 训练：{count} 道题',
     singleCreated: '已创建专项训练：{id}',

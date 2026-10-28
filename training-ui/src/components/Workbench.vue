@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useApi } from '../composables/useApi'
 import { renderMarkdown } from '../composables/useMarkdown'
 import CodeEditor from './CodeEditor.vue'
+import SessionCreator from './SessionCreator.vue'
 
 const props = defineProps({
   dashboard: { type: Object, required: true },
@@ -68,6 +69,9 @@ const result = computed(() => {
 
 const cases = computed(() => result.value?.cases ?? [])
 const passedCases = computed(() => cases.value.filter((item) => item.status === 'PASSED').length)
+// stdout/stderr can both be empty on a clean pass (mvn -q + no System.out), which used to leave
+// the expanded console panel blank and look broken. Expose that state explicitly.
+const consoleEmpty = computed(() => !result.value?.stdoutExcerpt && !result.value?.stderrExcerpt)
 const running = computed(() => props.training.runBusy.value || props.training.trainingBusy.value)
 
 const editorCode = computed({
@@ -130,6 +134,50 @@ function selectQuestion(question) {
     emit('start', question)
   }
 }
+
+// --- Current training session linkage -------------------------------------
+// The bench can only judge/run an attempt that belongs to the active session, so the session's
+// attempts are the authoritative "what am I practising right now" list.
+const sessionAttempts = computed(() => activeSession.value?.attempts ?? [])
+const sessionQuestionIds = computed(() => sessionAttempts.value.map((attempt) => attempt.questionId))
+const sessionIndex = computed(() => sessionQuestionIds.value.indexOf(selectedId.value))
+const inSession = computed(() => sessionIndex.value >= 0)
+const sessionPosition = computed(() =>
+  inSession.value ? `${sessionIndex.value + 1} / ${sessionQuestionIds.value.length}` : null
+)
+
+const prevSessionQuestion = computed(() => {
+  if (!inSession.value || sessionIndex.value === 0) return null
+  return questions.value.find((item) => item.id === sessionQuestionIds.value[sessionIndex.value - 1]) ?? null
+})
+
+const nextSessionQuestion = computed(() => {
+  if (!inSession.value || sessionIndex.value >= sessionQuestionIds.value.length - 1) return null
+  return questions.value.find((item) => item.id === sessionQuestionIds.value[sessionIndex.value + 1]) ?? null
+})
+
+function gotoSessionQuestion(question) {
+  if (question) selectQuestion(question)
+}
+
+// A freshly drawn session (random draw / retrain) has no selection yet, so the middle pane would
+// stay on the placeholder and the draw would look like it did nothing. Jump to the first question
+// of the new session to close the loop.
+watch(sessionQuestionIds, (ids, previous) => {
+  if (!ids.length) return
+  const changed = ids.length !== previous?.length || ids[0] !== previous?.[0]
+  if (!changed) return
+  if (inSession.value) return
+  const target = questions.value.find((item) => item.id === ids[0])
+  if (target) {
+    selectQuestion(target)
+  } else {
+    // Catalog may still be loading; select by id so the content pane can still resolve it.
+    selectedId.value = ids[0]
+    activeTab.value = ''
+    loadContent(ids[0])
+  }
+}, { immediate: true })
 
 async function runCode() {
   const attempt = currentAttempt.value
@@ -238,6 +286,16 @@ onBeforeUnmount(() => {
 <template>
   <div class="wb">
     <aside class="wb-side">
+      <SessionCreator
+        :session-form="training.sessionForm.value"
+        :training-tracks="training.trainingTracks.value"
+        :training-busy="training.trainingBusy.value"
+        :active-session="activeSession"
+        :active-session-progress="training.activeSessionProgress.value"
+        compact
+        @create="training.createTrainingSession()"
+      />
+
       <div class="side-head">
         <strong>题库</strong>
         <span class="count">{{ filteredQuestions.length }}</span>
@@ -254,6 +312,7 @@ onBeforeUnmount(() => {
             <span class="q-id">{{ question.id }}</span>
             <span class="q-title">{{ question.title }}</span>
             <span class="q-tags">
+              <em v-if="sessionQuestionIds.includes(question.id)" class="in-session" title="属于当前训练组">本组</em>
               <em v-if="animIds[question.id]" class="anim-dot" title="有算法动画">动画</em>
               <em class="tag" :class="'tone-' + (DIFFICULTY_TONE[question.difficulty] || 'gray')">
                 {{ question.difficulty }}
@@ -271,6 +330,29 @@ onBeforeUnmount(() => {
       </div>
 
       <template v-else>
+        <div v-if="inSession" class="session-nav">
+          <button
+            type="button"
+            class="nav-btn"
+            :disabled="!prevSessionQuestion"
+            @click="gotoSessionQuestion(prevSessionQuestion)"
+          >
+            ← 上一题
+          </button>
+          <span class="session-pos">
+            本组第 <strong>{{ sessionPosition }}</strong> 题
+            <em v-if="sessionAttempts.length > 1" class="session-total">（共 {{ sessionAttempts.length }} 题）</em>
+          </span>
+          <button
+            type="button"
+            class="nav-btn"
+            :disabled="!nextSessionQuestion"
+            @click="gotoSessionQuestion(nextSessionQuestion)"
+          >
+            下一题 →
+          </button>
+        </div>
+
         <header class="q-head">
           <div>
             <span class="q-num">{{ selectedQuestion.id }}</span>
@@ -374,9 +456,16 @@ onBeforeUnmount(() => {
         </div>
 
         <details class="console" @toggle="showConsole = !showConsole">
-          <summary>控制台输出</summary>
+          <summary>
+            控制台输出
+            <em v-if="!consoleEmpty && result.status === 'PASSED'" class="console-tag ok">有输出</em>
+            <em v-else-if="consoleEmpty" class="console-tag">空</em>
+          </summary>
           <pre v-if="result.stdoutExcerpt">{{ result.stdoutExcerpt }}</pre>
           <pre v-if="result.stderrExcerpt" class="err">{{ result.stderrExcerpt }}</pre>
+          <p v-if="consoleEmpty" class="console-empty">
+            {{ result.status === 'PASSED' ? '本次运行没有控制台输出：所有用例通过，且代码未打印内容。' : '本次运行没有产生控制台输出。' }}
+          </p>
         </details>
       </template>
     </aside>
@@ -516,6 +605,61 @@ onBeforeUnmount(() => {
 .tone-purple {
   background: #f0ecfd;
   color: #5b4bb7;
+}
+
+.in-session {
+  font-style: normal;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #e7f0fe;
+  color: #2563eb;
+  border: 1px solid #c7d9f7;
+}
+
+.session-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  margin-bottom: 10px;
+  background: #eef4ff;
+  border: 1px solid #d5e3fb;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #334155;
+}
+
+.session-nav .nav-btn {
+  padding: 4px 10px;
+  border: 1px solid #c7d9f7;
+  border-radius: 7px;
+  background: #fff;
+  color: #2563eb;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.session-nav .nav-btn:disabled {
+  color: #a8b6cc;
+  border-color: #e2e8f2;
+  cursor: not-allowed;
+  background: #f8fafc;
+}
+
+.session-pos {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-total {
+  color: #7b8aa0;
+  font-style: normal;
 }
 
 .q-head {
@@ -704,6 +848,10 @@ onBeforeUnmount(() => {
 .case-name {
   font-weight: 600;
   color: #182235;
+  /* flex item 默认 min-width:auto，不加 min-width:0 就无法收缩到内容宽度以下，
+     text-overflow:ellipsis 会失效，并把右侧耗时挤出/折行 */
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -713,11 +861,14 @@ onBeforeUnmount(() => {
   margin-left: auto;
   color: #94a3b8;
   font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .case-status {
   margin-top: 2px;
   color: #64748b;
+  line-height: 1.5;
 }
 
 .case.passed .case-status {
@@ -770,6 +921,36 @@ onBeforeUnmount(() => {
 .console summary {
   cursor: pointer;
   color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-tag {
+  font-style: normal;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: #eef2f8;
+  color: #7b8aa0;
+  border: 1px solid #e2e8f2;
+}
+
+.console-tag.ok {
+  background: #e7f6e9;
+  color: #2f7a3d;
+  border-color: #cfe8d4;
+}
+
+.console-empty {
+  margin: 8px 0 0;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: #f6f8fb;
+  border: 1px dashed #dbe3ee;
+  color: #7b8aa0;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .console pre {

@@ -34,6 +34,8 @@ export default {
     prioritizeWrong: 'Prioritize wrong/unseen',
     dueReviewOnly: 'Due reviews only',
     start: 'Start Training',
+    randomHint: 'Random draw: questions are picked at random below, with unseen ones prioritized.',
+    randomStart: 'Draw Randomly',
     busy: 'Processing...',
     created: 'Created {mode} training: {count} questions',
     singleCreated: 'Focused training created: {id}',
