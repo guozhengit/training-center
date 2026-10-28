@@ -24,9 +24,9 @@ class ImportedCatalogTest {
     void mergesImportedQuestionsIntoTheCatalog(@TempDir Path temporaryDirectory) throws IOException {
         Path root = workspaceRoot();
         JsonNode realCoding = read(root.resolve("output/coding-ai-exam/catalog/questions.json"));
-        JsonNode realOd = read(root.resolve("training-center/config/od-questions.json"));
-        JsonNode realOralArray = read(root.resolve("training-center/config/oral-questions.json")).path("questions");
-        JsonNode realProjectArray = read(root.resolve("training-center/config/project-cases.json")).path("cases");
+        JsonNode realOd = read(root.resolve("config/od-questions.json"));
+        JsonNode realOralArray = read(root.resolve("config/oral-questions.json")).path("questions");
+        JsonNode realProjectArray = read(root.resolve("config/project-cases.json")).path("cases");
         JsonNode realOral = realOralArray.get(0);
         JsonNode realProject = realProjectArray.get(0);
 
@@ -65,15 +65,15 @@ class ImportedCatalogTest {
 
         TrainingCatalog catalog = new CatalogLoader().load(root,
                 root.resolve("output/coding-ai-exam/catalog/questions.json"),
-                root.resolve("training-center/config/oral-questions.json"),
-                root.resolve("training-center/config/project-cases.json"),
+                root.resolve("config/oral-questions.json"),
+                root.resolve("config/project-cases.json"),
                 importedIndex);
 
         QuestionDescriptor x001 = catalog.require("X001");
         assertThat(x001.track()).isEqualTo(Track.CODING);
         assertThat(x001.groupName()).isEqualTo("basic");
         assertThat(x001.starterRef()).isEqualTo(
-                "training-center/starters/java/src/main/java/com/guoyongzheng/exam/basic/B001TwoSum.java");
+                "starters/java/src/main/java/com/guoyongzheng/exam/basic/B001TwoSum.java");
 
         QuestionDescriptor x002 = catalog.require("X002");
         assertThat(x002.track()).isEqualTo(Track.ORAL);

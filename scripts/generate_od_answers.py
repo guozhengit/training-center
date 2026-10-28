@@ -14,7 +14,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-WORKSPACE_ROOT = PROJECT_ROOT.parent
+WORKSPACE_ROOT = PROJECT_ROOT
 RAW_JSON = SCRIPT_DIR / "od-raw.json"
 OUTPUT_DIR = WORKSPACE_ROOT / "output" / "coding-ai-exam" / "java" / "src" / "main" / "java" / "com" / "guoyongzheng" / "exam" / "od"
 STARTER_DIR = PROJECT_ROOT / "starters" / "java" / "src" / "main" / "java" / "com" / "guoyongzheng" / "exam" / "od"

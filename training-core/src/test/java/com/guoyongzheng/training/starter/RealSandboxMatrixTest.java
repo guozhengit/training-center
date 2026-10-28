@@ -87,7 +87,7 @@ class RealSandboxMatrixTest {
             "788F8BECF03F4C1886276BD449A0403706BBB5D98792A9D13C5E29E82E8C4FAC";
     private static final String EXPECTED_STARTER_HASH =
             "CB8A2ECCEEEC00312E3C608544F7CF14D5504CF6698B357261CBD5C8212F9E48";
-    private static final String STARTER_PREFIX = "training-center/starters/";
+    private static final String STARTER_PREFIX = "starters/";
     private static final Clock MANIFEST_CLOCK = Clock.fixed(
             Instant.parse("2026-07-27T00:00:00Z"), ZoneOffset.UTC);
     private static final Set<String> TREE_EXCLUSIONS = Set.of(

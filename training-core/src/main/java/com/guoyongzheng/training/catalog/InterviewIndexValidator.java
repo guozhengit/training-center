@@ -26,7 +26,7 @@ public final class InterviewIndexValidator {
     }
 
     private List<String> validateOral(Path root, List<String> violations) {
-        JsonNode entries = readEntries(root.resolve("training-center/config/oral-questions.json"), "questions", violations);
+        JsonNode entries = readEntries(root.resolve("config/oral-questions.json"), "questions", violations);
         List<String> ids = ids(entries, "oral", violations);
         validateExactSequence(ids, "O", 80, "oral", violations);
         validateUniqueQuestionHeadings(root, entries, "oral", violations);
@@ -34,7 +34,7 @@ public final class InterviewIndexValidator {
     }
 
     private List<String> validateProjects(Path root, List<String> violations) {
-        JsonNode entries = readEntries(root.resolve("training-center/config/project-cases.json"), "cases", violations);
+        JsonNode entries = readEntries(root.resolve("config/project-cases.json"), "cases", violations);
         List<String> ids = ids(entries, "project", violations);
         validateExactSequence(ids, "P", 8, "project", violations);
         validateProjectLocators(root, entries, violations);

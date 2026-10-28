@@ -27,9 +27,9 @@ public final class CatalogLoader {
         Path root = approvedWorkspaceRoot(workspaceRoot);
         return load(root,
                 root.resolve("output/coding-ai-exam/catalog/questions.json"),
-                root.resolve("training-center/config/oral-questions.json"),
-                root.resolve("training-center/config/project-cases.json"),
-                root.resolve("training-center/config/imported-questions.json"));
+                root.resolve("config/oral-questions.json"),
+                root.resolve("config/project-cases.json"),
+                root.resolve("config/imported-questions.json"));
     }
 
     /**
@@ -39,7 +39,7 @@ public final class CatalogLoader {
     public TrainingCatalog load(Path workspaceRoot, Path codingIndex, Path oralIndex, Path projectIndex) {
         Path root = approvedWorkspaceRoot(workspaceRoot);
         return load(root, codingIndex, oralIndex, projectIndex,
-                root.resolve("training-center/config/imported-questions.json"));
+                root.resolve("config/imported-questions.json"));
     }
 
     /** Loads explicit indexes including a caller-supplied imported index (used by tests). */
@@ -70,7 +70,7 @@ public final class CatalogLoader {
     private static void loadOdQuestionsIfPresent(Path workspaceRoot, Path codingRoot,
                                                   List<QuestionDescriptor> questions,
                                                   Map<String, QuestionDescriptor> byId) {
-        Path odIndex = workspaceRoot.resolve("training-center/config/od-questions.json");
+        Path odIndex = workspaceRoot.resolve("config/od-questions.json");
         if (!Files.isRegularFile(odIndex)) {
             return; // OD catalog is optional
         }
@@ -103,7 +103,7 @@ public final class CatalogLoader {
                 requiredText(entry, "difficulty", id),
                 language,
                 contentPath,
-                "training-center/starters/" + sourcePath,
+                "starters/" + sourcePath,
                 priority));
     }
 

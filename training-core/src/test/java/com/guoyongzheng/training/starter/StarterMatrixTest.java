@@ -128,7 +128,7 @@ class StarterMatrixTest {
     void reportBindingRejectsExitZeroWithNoSelectedTestsAndUnrelatedMavenXml()
             throws IOException {
         StarterTestSupport.MappingRow python = new StarterTestSupport.MappingRow(
-                "I001", "training-center/starters/python/src/ai_exam/i001.py",
+                "I001", "starters/python/src/ai_exam/i001.py",
                 "python/src/ai_exam/i001.py", "PYTEST", "python/tests/test_i001.py");
         Path pythonXml = pytestReportPath(temporaryDirectory, python);
         Files.createDirectories(pythonXml.getParent());
@@ -145,7 +145,7 @@ class StarterMatrixTest {
                 .hasMessageContaining("zero selected tests");
 
         StarterTestSupport.MappingRow maven = new StarterTestSupport.MappingRow(
-                "B001", "training-center/starters/java/src/main/java/Example.java",
+                "B001", "starters/java/src/main/java/Example.java",
                 "java/src/main/java/Example.java", "MAVEN", "ExpectedTest");
         Path reports = temporaryDirectory.resolve("java/target/surefire-reports");
         Files.createDirectories(reports);
@@ -167,7 +167,7 @@ class StarterMatrixTest {
     @Test
     void boundMavenReportSuppliesCountsAndFailureEvidence() throws IOException {
         StarterTestSupport.MappingRow mapping = new StarterTestSupport.MappingRow(
-                "B001", "training-center/starters/java/src/main/java/Example.java",
+                "B001", "starters/java/src/main/java/Example.java",
                 "java/src/main/java/Example.java", "MAVEN", "ExpectedTest");
         Path reports = temporaryDirectory.resolve("java/target/surefire-reports");
         Files.createDirectories(reports);

@@ -77,7 +77,7 @@ class TrainingCliTest {
 
     @Test
     void cliTrainingWorkflowCanStartSubmitJudgeHistoryAndExport(@TempDir Path directory) throws Exception {
-        Path workspace = Path.of("D:/AI-SOURCE/jiupainews");
+        Path workspace = Path.of(System.getenv().getOrDefault("TRAINING_WORKSPACE", "D:/AI-SOURCE"));
         assumeTrue(Files.isRegularFile(workspace.resolve("output/coding-ai-exam/catalog/questions.json")),
                 "local workspace catalog is required");
         Path database = directory.resolve("workflow.db");

@@ -8,14 +8,14 @@ import unicodedata
 from pathlib import Path
 
 SCRIPTS = Path(__file__).parent
-WORKSPACE = SCRIPTS.parent.parent  # jiupainews root
+WORKSPACE = SCRIPTS.parent  # workspace root = training-center 自身 (output/ 已并入其内)
 RAW = json.loads((SCRIPTS / "od-raw.json").read_text(encoding="utf-8"))
 
 # Output paths
 CONTENT_DIR = WORKSPACE / "output/coding-ai-exam/content/od"
-STARTER_DIR = WORKSPACE / "training-center/starters/java/src/main/java/com/guoyongzheng/exam/od"
+STARTER_DIR = WORKSPACE / "starters/java/src/main/java/com/guoyongzheng/exam/od"
 TEST_DIR = WORKSPACE / "output/coding-ai-exam/java/src/test/java/com/guoyongzheng/exam/od"
-CATALOG_OUT = WORKSPACE / "training-center/config/od-questions.json"
+CATALOG_OUT = WORKSPACE / "config/od-questions.json"
 MAPPING_OUT = SCRIPTS / "od-starter-mapping.json"
 
 PACKAGE = "com.guoyongzheng.exam.od"
@@ -235,7 +235,7 @@ def main():
         (WORKSPACE / "output/coding-ai-exam" / content_file).write_text(md, encoding="utf-8")
 
         # 2. Starter Java
-        starter_rel = f"training-center/starters/java/src/main/java/com/guoyongzheng/exam/od/{class_name}.java"
+        starter_rel = f"starters/java/src/main/java/com/guoyongzheng/exam/od/{class_name}.java"
         sandbox_rel = f"java/src/main/java/com/guoyongzheng/exam/od/{class_name}.java"
         starter_code = generate_starter(entry, class_name)
         (STARTER_DIR / f"{class_name}.java").write_text(starter_code, encoding="utf-8")

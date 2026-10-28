@@ -34,7 +34,7 @@ public final class DoctorCommand implements Callable<Integer> {
         Path root = workspace.toAbsolutePath().normalize();
         TrainingPaths paths = new TrainingPaths(
                 root,
-                root.resolve("training-center/config"),
+                root.resolve("config"),
                 root.resolve("training-center/runtime"),
                 root.resolve("training-center/runtime/sandboxes"),
                 root.resolve("training-center/runtime/exports"),

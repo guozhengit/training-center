@@ -47,7 +47,7 @@ class InterviewIndexValidatorTest {
     @Test
     void rejectsMissingOralAnswerAndFollowUpLocators(@TempDir Path temporaryDirectory) throws IOException {
         Path fixtureRoot = fixtureWorkspace(temporaryDirectory);
-        Path oralIndexPath = fixtureRoot.resolve("training-center/config/oral-questions.json");
+        Path oralIndexPath = fixtureRoot.resolve("config/oral-questions.json");
         ObjectNode oralIndex = (ObjectNode) JSON.readTree(Files.readString(oralIndexPath, StandardCharsets.UTF_8));
         ObjectNode firstQuestion = (ObjectNode) caseById(oralIndex.path("questions"), "O001");
         firstQuestion.put("answer_locator", "");
@@ -63,8 +63,8 @@ class InterviewIndexValidatorTest {
     @Test
     void rejectsDuplicateScopedOralAndProjectLocators(@TempDir Path temporaryDirectory) throws IOException {
         Path fixtureRoot = fixtureWorkspace(temporaryDirectory);
-        ObjectNode oralIndex = readObject(fixtureRoot.resolve("training-center/config/oral-questions.json"));
-        ObjectNode projectIndex = readObject(fixtureRoot.resolve("training-center/config/project-cases.json"));
+        ObjectNode oralIndex = readObject(fixtureRoot.resolve("config/oral-questions.json"));
+        ObjectNode projectIndex = readObject(fixtureRoot.resolve("config/project-cases.json"));
         JsonNode o001 = caseById(oralIndex.path("questions"), "O001");
         JsonNode p007 = caseById(projectIndex.path("cases"), "P007");
 
@@ -104,7 +104,7 @@ class InterviewIndexValidatorTest {
 
     private static JsonNode readProjectCases() throws IOException {
         return JSON.readTree(Files.readString(
-                workspaceRoot().resolve("training-center/config/project-cases.json"), StandardCharsets.UTF_8)).path("cases");
+                workspaceRoot().resolve("config/project-cases.json"), StandardCharsets.UTF_8)).path("cases");
     }
 
     private static JsonNode caseById(JsonNode cases, String id) {
@@ -118,9 +118,9 @@ class InterviewIndexValidatorTest {
 
     private static Path fixtureWorkspace(Path temporaryDirectory) throws IOException {
         Path fixtureRoot = temporaryDirectory.resolve("workspace");
-        Path oralIndex = workspaceRoot().resolve("training-center/config/oral-questions.json");
-        Path projectIndex = workspaceRoot().resolve("training-center/config/project-cases.json");
-        Path fixtureConfig = fixtureRoot.resolve("training-center/config");
+        Path oralIndex = workspaceRoot().resolve("config/oral-questions.json");
+        Path projectIndex = workspaceRoot().resolve("config/project-cases.json");
+        Path fixtureConfig = fixtureRoot.resolve("config");
         Files.createDirectories(fixtureConfig);
         Files.copy(oralIndex, fixtureConfig.resolve("oral-questions.json"), StandardCopyOption.REPLACE_EXISTING);
         Files.copy(projectIndex, fixtureConfig.resolve("project-cases.json"), StandardCopyOption.REPLACE_EXISTING);

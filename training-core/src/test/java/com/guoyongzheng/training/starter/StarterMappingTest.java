@@ -127,7 +127,7 @@ class StarterMappingTest {
         assertThat(first.failureKind()).withFailMessage(first.stderr())
                 .isEqualTo(FailureKind.NONE);
         Path generated = temporaryWorkspace.resolve(
-                "training-center/config/starter-mapping.json");
+                "config/starter-mapping.json");
         byte[] firstBytes = Files.readAllBytes(generated);
         ProcessResult second = runGenerator(temporaryWorkspace);
         assertThat(second.failureKind()).withFailMessage(second.stderr())
@@ -191,7 +191,7 @@ class StarterMappingTest {
         assertThat(initial.failureKind()).withFailMessage(initial.stderr())
                 .isEqualTo(FailureKind.NONE);
 
-        Path config = workspace.resolve("training-center/config");
+        Path config = workspace.resolve("config");
         Files.delete(config.resolve("starter-mapping.json"));
         Files.delete(config);
         Path outside = temporaryRoot.resolve("outside-config");
@@ -225,7 +225,7 @@ class StarterMappingTest {
         ProcessResult initial = runGenerator(temporaryWorkspace);
         assertThat(initial.failureKind()).withFailMessage(initial.stderr())
                 .isEqualTo(FailureKind.NONE);
-        Path config = temporaryWorkspace.resolve("training-center/config");
+        Path config = temporaryWorkspace.resolve("config");
         Path mapping = config.resolve("starter-mapping.json");
         byte[] prior = Files.readAllBytes(mapping);
 
@@ -249,7 +249,7 @@ class StarterMappingTest {
         ProcessResult initial = runGenerator(temporaryWorkspace);
         assertThat(initial.failureKind()).withFailMessage(initial.stderr())
                 .isEqualTo(FailureKind.NONE);
-        Path config = temporaryWorkspace.resolve("training-center/config");
+        Path config = temporaryWorkspace.resolve("config");
         Path mapping = config.resolve("starter-mapping.json");
         byte[] prior = Files.readAllBytes(mapping);
 
@@ -283,7 +283,7 @@ class StarterMappingTest {
         ProcessResult initial = runGenerator(temporaryWorkspace);
         assertThat(initial.failureKind()).withFailMessage(initial.stderr())
                 .isEqualTo(FailureKind.NONE);
-        Path config = temporaryWorkspace.resolve("training-center/config");
+        Path config = temporaryWorkspace.resolve("config");
         Path mapping = config.resolve("starter-mapping.json");
         byte[] validMapping = Files.readAllBytes(mapping);
 
@@ -413,7 +413,7 @@ class StarterMappingTest {
         assertThat(result.stderr() + result.stdout())
                 .containsIgnoringCase(diagnosticFragment);
         assertThat(Files.readAllBytes(workspace.resolve(
-                "training-center/config/starter-mapping.json")))
+                "config/starter-mapping.json")))
                 .containsExactly(expectedMapping);
     }
 }
@@ -443,7 +443,7 @@ final class StarterTestSupport {
         while (candidate != null) {
             if (Files.isRegularFile(candidate.resolve(
                     "output/coding-ai-exam/catalog/questions.json"))
-                    && Files.isDirectory(candidate.resolve("training-center"))) {
+                    && Files.isDirectory(candidate.resolve("config"))) {
                 return candidate;
             }
             candidate = candidate.getParent();
@@ -457,11 +457,11 @@ final class StarterTestSupport {
     }
 
     static Path starterRoot() {
-        return workspaceRoot().resolve("training-center/starters");
+        return workspaceRoot().resolve("starters");
     }
 
     static List<MappingRow> loadMappings() {
-        Path path = workspaceRoot().resolve("training-center/config/starter-mapping.json");
+        Path path = workspaceRoot().resolve("config/starter-mapping.json");
         JsonNode root = readJson(path, "Starter mapping");
         if (!root.isArray()) {
             throw new IllegalArgumentException("Starter mapping root must be a JSON array");
@@ -538,7 +538,7 @@ final class StarterTestSupport {
         }
         return new MappingRow(
                 row.questionId(),
-                "training-center/starters/" + row.sourcePath(),
+                "starters/" + row.sourcePath(),
                 row.sourcePath(),
                 runner,
                 selector);
@@ -692,7 +692,7 @@ final class StarterTestSupport {
         if (!row.questionId().matches("(?:B|A|I|OD)\\d{3}")) {
             throw new IllegalArgumentException("Malformed mapping id: " + row.questionId());
         }
-        String expectedPrefix = "training-center/starters/";
+        String expectedPrefix = "starters/";
         if (!row.starterPath().equals(expectedPrefix + row.sandboxSourcePath())) {
             throw new IllegalArgumentException(
                     row.questionId() + " Starter path does not mirror sandbox source path");

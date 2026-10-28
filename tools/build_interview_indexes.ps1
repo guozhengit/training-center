@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$WorkspaceRoot = (Join-Path $PSScriptRoot '..\..'))
+param([string]$WorkspaceRoot = (Join-Path $PSScriptRoot '..'))
 
 $ErrorActionPreference = 'Stop'
 $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
@@ -60,10 +60,10 @@ for ($index = 0; $index -lt 8; $index++) {
     if ($evidenceEntry.Count -ne 1) { throw "Cannot locate explicit evidence entry for P{0:D3}." -f ($index + 1) }
     $projectCases.Add([ordered]@{ id = ('P{0:D3}' -f ($index + 1)); project_name = $projectNames[$index]; project_nature = $projectNatures[$index]; title = $sectionHeading.Substring(3); source_path = $projectRelative; section_heading = $sectionHeading; evidence_entry = $evidenceEntry[0]; fact_boundary = $headings[$headings.Count - 1]; recommended_seconds = 120 })
 }
-Write-Utf8Json (Get-WorkspacePath 'training-center/config/oral-questions.json') ([ordered]@{ version = 1; source_path = $oralRelative; questions = $oralQuestions })
-Write-Utf8Json (Get-WorkspacePath 'training-center/config/project-cases.json') ([ordered]@{ version = 1; source_path = $projectRelative; cases = $projectCases })
+Write-Utf8Json (Get-WorkspacePath 'config/oral-questions.json') ([ordered]@{ version = 1; source_path = $oralRelative; questions = $oralQuestions })
+Write-Utf8Json (Get-WorkspacePath 'config/project-cases.json') ([ordered]@{ version = 1; source_path = $projectRelative; cases = $projectCases })
 
-$planPath = Get-WorkspacePath 'training-center/config/plan-template.json'
+$planPath = Get-WorkspacePath 'config/plan-template.json'
 if (-not (Test-Path -LiteralPath $planPath -PathType Leaf)) { throw 'Plan template is required.' }
 $plan = Get-Content -Raw -Encoding utf8 $planPath | ConvertFrom-Json
 $planLines = [System.Collections.Generic.List[string]]::new()

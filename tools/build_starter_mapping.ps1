@@ -576,7 +576,7 @@ function ConvertTo-DeterministicJsonString {
 
 if ([string]::IsNullOrWhiteSpace($WorkspaceRoot)) {
     $WorkspaceRoot = [System.IO.Path]::GetFullPath(
-        [System.IO.Path]::Combine($PSScriptRoot, '..', '..'))
+        [System.IO.Path]::Combine($PSScriptRoot, '..'))
 } else {
     $WorkspaceRoot = [System.IO.Path]::GetFullPath($WorkspaceRoot)
 }
@@ -589,7 +589,7 @@ $WorkspaceRoot = (Resolve-Path -LiteralPath $WorkspaceRoot).Path
 $officialRoot = [System.IO.Path]::Combine($WorkspaceRoot, 'output', 'coding-ai-exam')
 $catalogPath = [System.IO.Path]::Combine($officialRoot, 'catalog', 'questions.json')
 $mappingPath = [System.IO.Path]::Combine(
-    $WorkspaceRoot, 'training-center', 'config', 'starter-mapping.json')
+    $WorkspaceRoot, 'config', 'starter-mapping.json')
 
 if (-not (Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
     throw "Official catalog not found: $catalogPath"
@@ -695,7 +695,7 @@ for ($index = 0; $index -lt $catalogCount; $index++) {
 
     $mappings.Add([ordered]@{
         question_id = $id
-        starter_path = 'training-center/starters/' + $sourcePath
+        starter_path = 'starters/' + $sourcePath
         sandbox_source_path = $sourcePath
         runner_kind = $runnerKind
         test_selector = $testSelector
@@ -724,7 +724,7 @@ $lines.Add(']')
 $json = [string]::Join("`n", $lines) + "`n"
 
 $mappingDirectory = Ensure-SafeDirectory `
-    -Workspace $WorkspaceRoot -Relative 'training-center/config'
+    -Workspace $WorkspaceRoot -Relative 'config'
 Assert-ContainedPath -Root $WorkspaceRoot -Candidate $mappingPath `
     -Description 'Starter mapping output'
 if ($mappingPath.StartsWith(

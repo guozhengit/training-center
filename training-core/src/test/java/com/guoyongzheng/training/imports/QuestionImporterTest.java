@@ -53,9 +53,9 @@ class QuestionImporterTest {
         assertThat(content).isEqualTo("## X001\n\n题目内容");
         assertThat(workspace.resolve("output/coding-ai-exam/java/src/main/java/com/guoyongzheng/exam/custom/X001Add.java")).isRegularFile();
         assertThat(workspace.resolve("output/coding-ai-exam/java/src/test/java/com/guoyongzheng/exam/custom/X001AddTest.java")).isRegularFile();
-        assertThat(workspace.resolve("training-center/starters/java/src/main/java/com/guoyongzheng/exam/custom/X001Add.java")).isRegularFile();
+        assertThat(workspace.resolve("starters/java/src/main/java/com/guoyongzheng/exam/custom/X001Add.java")).isRegularFile();
 
-        JsonNode index = read(workspace.resolve("training-center/config/imported-questions.json"));
+        JsonNode index = read(workspace.resolve("config/imported-questions.json"));
         JsonNode entry = index.get(0);
         assertThat(entry.path("id").asText()).isEqualTo("X001");
         assertThat(entry.path("type").asText()).isEqualTo("coding");
@@ -65,7 +65,7 @@ class QuestionImporterTest {
         assertThat(entry.path("test_path").asText())
                 .isEqualTo("java/src/test/java/com/guoyongzheng/exam/custom/X001AddTest.java");
 
-        JsonNode mapping = read(workspace.resolve("training-center/config/imported-starter-mapping.json"));
+        JsonNode mapping = read(workspace.resolve("config/imported-starter-mapping.json"));
         assertThat(mapping.path(0).path("question_id").asText()).isEqualTo("X001");
         assertThat(mapping.path(0).path("runner_kind").asText()).isEqualTo("MAVEN");
         assertThat(mapping.path(0).path("test_selector").asText()).isEqualTo("X001AddTest");
@@ -87,8 +87,8 @@ class QuestionImporterTest {
 
         assertThat(workspace.resolve("output/coding-ai-exam/python/src/ai_exam/X010.py")).isRegularFile();
         assertThat(workspace.resolve("output/coding-ai-exam/python/tests/test_X010.py")).isRegularFile();
-        assertThat(workspace.resolve("training-center/starters/python/src/ai_exam/X010.py")).isRegularFile();
-        JsonNode mapping = read(workspace.resolve("training-center/config/imported-starter-mapping.json"));
+        assertThat(workspace.resolve("starters/python/src/ai_exam/X010.py")).isRegularFile();
+        JsonNode mapping = read(workspace.resolve("config/imported-starter-mapping.json"));
         assertThat(mapping.path(0).path("runner_kind").asText()).isEqualTo("PYTEST");
         assertThat(mapping.path(0).path("test_selector").asText()).isEqualTo("python/tests/test_X010.py");
     }
@@ -137,7 +137,7 @@ class QuestionImporterTest {
 
         assertThat(result.dryRun()).isTrue();
         assertThat(result.writtenFiles()).isZero();
-        assertThat(workspace.resolve("training-center/config/imported-questions.json")).doesNotExist();
+        assertThat(workspace.resolve("config/imported-questions.json")).doesNotExist();
     }
 
     @Test
@@ -197,7 +197,7 @@ class QuestionImporterTest {
     }
 
     private static JsonNode index(Path workspace, String id) throws IOException {
-        JsonNode root = read(workspace.resolve("training-center/config/imported-questions.json"));
+        JsonNode root = read(workspace.resolve("config/imported-questions.json"));
         for (JsonNode entry : root) {
             if (id.equals(entry.path("id").asText())) {
                 return entry;

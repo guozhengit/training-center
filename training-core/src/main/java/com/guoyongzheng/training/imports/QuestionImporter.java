@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 public final class QuestionImporter {
     private static final ObjectMapper JSON = new ObjectMapper();
 
-    private static final Path QUESTIONS_INDEX = Path.of("training-center/config/imported-questions.json");
-    private static final Path MAPPING_INDEX = Path.of("training-center/config/imported-starter-mapping.json");
+    private static final Path QUESTIONS_INDEX = Path.of("config/imported-questions.json");
+    private static final Path MAPPING_INDEX = Path.of("config/imported-starter-mapping.json");
 
     private static final Pattern JAVA_CLASS =
             Pattern.compile("\\b(?:public\\s+|abstract\\s+|final\\s+|strictfp\\s+)*class\\s+([A-Za-z_$][A-Za-z0-9_$]*)");
@@ -189,7 +189,7 @@ public final class QuestionImporter {
                         .resolve(group);
                 Path javaTest = root.resolve("output/coding-ai-exam/java/src/test/java/com/guoyongzheng/exam")
                         .resolve(group);
-                Path starterDir = root.resolve("training-center/starters/java/src/main/java/com/guoyongzheng/exam")
+                Path starterDir = root.resolve("starters/java/src/main/java/com/guoyongzheng/exam")
                         .resolve(group);
                 written += writeText(javaMain.resolve(className + ".java"), solution);
                 written += writeText(javaTest.resolve(className + "Test.java"), test);
@@ -199,7 +199,7 @@ public final class QuestionImporter {
                         .resolve(id + ".py"), solution);
                 written += writeText(root.resolve("output/coding-ai-exam/python/tests")
                         .resolve("test_" + id + ".py"), test);
-                written += writeText(root.resolve("training-center/starters/python/src/ai_exam")
+                written += writeText(root.resolve("starters/python/src/ai_exam")
                         .resolve(id + ".py"), starter);
             }
             return written;
@@ -230,12 +230,12 @@ public final class QuestionImporter {
             node.put("question_id", id);
             if (language.equals("java")) {
                 String main = "java/src/main/java/com/guoyongzheng/exam/" + group + "/" + className + ".java";
-                node.put("starter_path", "training-center/starters/" + main);
+                node.put("starter_path", "starters/" + main);
                 node.put("sandbox_source_path", main);
                 node.put("runner_kind", "MAVEN");
                 node.put("test_selector", className + "Test");
             } else {
-                node.put("starter_path", "training-center/starters/python/src/ai_exam/" + id + ".py");
+                node.put("starter_path", "starters/python/src/ai_exam/" + id + ".py");
                 node.put("sandbox_source_path", "python/src/ai_exam/" + id + ".py");
                 node.put("runner_kind", "PYTEST");
                 node.put("test_selector", "python/tests/test_" + id + ".py");
@@ -403,9 +403,9 @@ public final class QuestionImporter {
     private static Set<String> reservedIds(Path root) throws IOException {
         Set<String> reserved = new LinkedHashSet<>();
         collectIds(root.resolve("output/coding-ai-exam/catalog/questions.json"), null, reserved);
-        collectIds(root.resolve("training-center/config/oral-questions.json"), "questions", reserved);
-        collectIds(root.resolve("training-center/config/project-cases.json"), "cases", reserved);
-        collectIds(root.resolve("training-center/config/od-questions.json"), null, reserved);
+        collectIds(root.resolve("config/oral-questions.json"), "questions", reserved);
+        collectIds(root.resolve("config/project-cases.json"), "cases", reserved);
+        collectIds(root.resolve("config/od-questions.json"), null, reserved);
         collectIds(root.resolve(QUESTIONS_INDEX), null, reserved);
         return reserved;
     }

@@ -34,9 +34,9 @@ class CatalogLoaderTest {
         assertThat(all.subList(0, 120).stream().map(QuestionDescriptor::id))
                 .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("output/coding-ai-exam/catalog/questions.json"), null));
         assertThat(all.subList(120, 200).stream().map(QuestionDescriptor::id))
-                .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("training-center/config/oral-questions.json"), "questions"));
+                .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("config/oral-questions.json"), "questions"));
         assertThat(all.subList(200, 208).stream().map(QuestionDescriptor::id))
-                .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("training-center/config/project-cases.json"), "cases"));
+                .containsExactlyElementsOf(indexIds(workspaceRoot().resolve("config/project-cases.json"), "cases"));
         assertThat(all.stream().filter(question -> question.track() == Track.CODING)).hasSize(212);
         assertThat(catalog.find(new QuestionFilter(Track.ORAL, null, null, null, null))).hasSize(80);
         assertThat(catalog.find(new QuestionFilter(Track.PROJECT, null, null, null, null))).hasSize(8);
@@ -161,8 +161,8 @@ class CatalogLoaderTest {
         Path oral = directory.resolve("oral-questions.json");
         Path project = directory.resolve("project-cases.json");
         Files.copy(root.resolve("output/coding-ai-exam/catalog/questions.json"), coding);
-        Files.copy(root.resolve("training-center/config/oral-questions.json"), oral);
-        Files.copy(root.resolve("training-center/config/project-cases.json"), project);
+        Files.copy(root.resolve("config/oral-questions.json"), oral);
+        Files.copy(root.resolve("config/project-cases.json"), project);
         return new IndexPaths(coding, oral, project);
     }
 
@@ -192,10 +192,10 @@ class CatalogLoaderTest {
             JsonNode source = coding.get(index);
             QuestionDescriptor question = all.get(index);
             assertThat(question.sourceRef()).isEqualTo(source.path("content_path").asText());
-            assertThat(question.starterRef()).isEqualTo("training-center/starters/" + source.path("source_path").asText());
+            assertThat(question.starterRef()).isEqualTo("starters/" + source.path("source_path").asText());
         }
 
-        JsonNode oral = readIndex(workspaceRoot().resolve("training-center/config/oral-questions.json"), "questions");
+        JsonNode oral = readIndex(workspaceRoot().resolve("config/oral-questions.json"), "questions");
         for (int index = 0; index < oral.size(); index++) {
             JsonNode source = oral.get(index);
             QuestionDescriptor question = all.get(120 + index);
@@ -203,7 +203,7 @@ class CatalogLoaderTest {
             assertThat(question.starterRef()).isNull();
         }
 
-        JsonNode projects = readIndex(workspaceRoot().resolve("training-center/config/project-cases.json"), "cases");
+        JsonNode projects = readIndex(workspaceRoot().resolve("config/project-cases.json"), "cases");
         for (int index = 0; index < projects.size(); index++) {
             JsonNode source = projects.get(index);
             QuestionDescriptor question = all.get(200 + index);
